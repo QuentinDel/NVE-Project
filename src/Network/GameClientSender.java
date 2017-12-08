@@ -7,7 +7,10 @@ package Network;
 
 import com.jme3.network.Client;
 import java.util.concurrent.LinkedBlockingQueue;
-import Network.Util.MyAbstractMessage;
+import Network.gameserver.GameToAuthSender;
+import com.jme3.network.Message;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,21 +20,22 @@ public class GameClientSender implements Runnable {
     private static final float CLIENT_SEND_RATE = 30f;
     
     private Client serverConnection;
+    private LinkedBlockingQueue<Message> outgoing;
     
-    public GameClientSender(Client serverConnection) {
+    public GameClientSender(Client serverConnection, LinkedBlockingQueue<Message> outgoing) {
         this.serverConnection = serverConnection;
-    }
-    
-    
-    private void sendMessage(MyAbstractMessage msg){
-        this.serverConnection.send(msg);
-        
+        this.outgoing = outgoing;
     }
 
     @Override
     public void run() {
         while(true){
-            //TODO: Construct messages from a BlockingLinkedQUeue
+            try {
+                Message msg = outgoing.take();
+                this.serverConnection.send(msg);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameToAuthSender.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

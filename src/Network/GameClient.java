@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
+import com.jme3.network.Message;
 
 /**
  *
@@ -34,7 +35,13 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     private Client authConnection;
     private Client gameConnection;
     
-    // the scene contains just a rotating box
+    // Messsage queues
+    private LinkedBlockingQueue<Message> outgoingAuth;
+    private LinkedBlockingQueue<Message> outgoingGame;
+    
+    // Serverlist
+    private ArrayList<ServerLite> servers;
+    
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
     
@@ -54,10 +61,10 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         setDisplayFps(false);
         try {
             //Initialize the queue to use to send informations
-            //LinkedBlockingQueue<PlayerInput> requestToSend = new LinkedBlockingQueue<>();
+            outgoingAuth = new LinkedBlockingQueue<>();
             
             authConnection = Network.connectToServer(hostname, port); 
-            this.authSender = new GameClientSender(authConnection);
+            this.authSender = new GameClientSender(authConnection, outgoingAuth);
 
             //Setup the listener for the authentication server
             authListener = new GameClientAuthListener(authConnection, this);
@@ -69,22 +76,22 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             authConnection.addClientStateListener(this);
             authConnection.start();
             new Thread(authSender).start();
-            
+            outgoingAuth.put(new Util.RefreshMessage());
         }catch (IOException ex) {
             ex.printStackTrace();
             this.destroy();
             this.stop();
+        }catch (InterruptedException ex) {
+            
         }
         
     }
-    
-    private final ActionListener actionListener = new ActionListener() {
-        @Override
-        public void onAction(String name, boolean isPressed, float tpf) {
-            
-        }
-    };
 
+    public void setServerList(ArrayList<ServerLite> servers) {
+        this.servers = servers;
+    }
+    
+    
     @Override
     public void simpleUpdate(float tpf) {
         

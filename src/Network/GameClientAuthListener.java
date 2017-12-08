@@ -9,9 +9,10 @@ import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.concurrent.Callable;
+import java.util.ArrayList;
 import Network.Util.GameServerListsMessage;
-import Network.Util.MyAbstractMessage;
 import Network.Util.RefreshMessage;
+import Network.Util.ServerLite;
 
 /**
  * Listener for Packets from the Authentication server
@@ -37,10 +38,18 @@ public class GameClientAuthListener implements MessageListener<Client>{
     @Override
     public void messageReceived(Client source, Message m) {
         if (m instanceof GameServerListsMessage) {
-            //TODO implement
             
-        } else if (m instanceof RefreshMessage) {
-            //TODO implement
-        }   
+            final GameServerListsMessage msg = (GameServerListsMessage) m;
+            final ArrayList<ServerLite> servers = msg.getServersList();
+            
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.setServerList(servers);
+                    System.out.println(servers);
+                    return true;
+                }
+            });
+        }
     }
 }
