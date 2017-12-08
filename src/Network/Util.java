@@ -15,6 +15,9 @@ public class Util {
     
     public static final int PORT = 7006;
     
+    public static final int RUNNING = 0;
+    public static final int WAITING = 1;
+    
     public static void initialiseSerializables() {
         Serializer.registerClasses(
             GameServerListsMessage.class,
@@ -42,24 +45,16 @@ public class Util {
 
     }
     
-    /**
-     * Used for now to send a collection of data for a player
-     */
-    @Serializable
-    public static class ServerLite{
-            
-    }
-    
    
     @Serializable
     public static class GameServerListsMessage extends MyAbstractMessage {
-        private ArrayList<ServerLite> serversList;
+        private ArrayList<GameServerLite> serversList;
         
         public GameServerListsMessage() {
         }
         
         
-        public ArrayList<ServerLite> getServersList() {
+        public ArrayList<GameServerLite> getServersList() {
             return serversList;
         }
         

@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Network;
+package Network.AuthServer;
 
+import Network.GameServerLite;
+import Network.Util;
 import Network.Util.GameInformationMessage;
 import Network.Util.RefreshMessage;
 import com.jme3.app.SimpleApplication;
@@ -13,6 +15,7 @@ import com.jme3.network.Server;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -22,7 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class AuthServer extends SimpleApplication{
     
     private Server authServer;
-    private final int port;
+    private final int port;    
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -63,10 +66,7 @@ public class AuthServer extends SimpleApplication{
         authServer.addConnectionListener(new MyConnectionListener());
         
         // add a packet sender that takes messages from the blockingqueue
-        //new Thread(new MessageSender()).start();
+        new Thread(new AuthMessageSender()).start();
     }
-    
-    
-    
 
 }

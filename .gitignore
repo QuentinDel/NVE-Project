@@ -3,3 +3,5 @@
 /dist
 /*.dll
 /*.so
+/*.xml
+/*.properties
