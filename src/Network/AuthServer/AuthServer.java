@@ -15,6 +15,7 @@ import com.jme3.network.Server;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -24,8 +25,10 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class AuthServer extends SimpleApplication{
     
-    private Server authServer;
+    private static Server authServer;
     private final int port;    
+    private ConcurrentHashMap< String, GameServerLite > gamingServerInfos;
+    private LinkedBlockingQueue<Callable> outgoing;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -35,7 +38,9 @@ public class AuthServer extends SimpleApplication{
     }
     
     public AuthServer(int port) {
-        this.port = port;               
+        this.port = port;      
+        this.gamingServerInfos = new ConcurrentHashMap<>();
+        this.outgoing = new LinkedBlockingQueue<>();
     }
     
     
@@ -58,15 +63,15 @@ public class AuthServer extends SimpleApplication{
         System.out.println("Server started");
         
         // add a listeners
-        authServer.addMessageListener(new AuthServerListener(), 
+        authServer.addMessageListener(new AuthServerListener(gamingServerInfos, outgoing), 
                 GameInformationMessage.class,
                 RefreshMessage.class
         );
         
-        authServer.addConnectionListener(new MyConnectionListener());
+        authServer.addConnectionListener(new AuthConnectionListener(authServer, gamingServerInfos, outgoing));
         
         // add a packet sender that takes messages from the blockingqueue
-        new Thread(new AuthMessageSender()).start();
+        new Thread(new AuthMessageSender(outgoing)).start();
     }
 
 }

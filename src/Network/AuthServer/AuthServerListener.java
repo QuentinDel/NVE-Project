@@ -6,6 +6,8 @@
 package Network.AuthServer;
 
 import Network.GameServerLite;
+import Network.Util;
+import Network.Util.GameInformationMessage;
 import com.jme3.math.Vector2f;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -26,15 +28,34 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
     private ConcurrentHashMap< String, GameServerLite > gamingServerInfos;
     private LinkedBlockingQueue<Callable> outgoing;
     
-    public AuthServerListener(LinkedBlockingQueue<Callable> outgoing){
-        gamingServerInfos = new ConcurrentHashMap<>();
+    public AuthServerListener(ConcurrentHashMap< String, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
+        this.gamingServerInfos = gamingServerInfos;
         this.outgoing = outgoing;
     }
 
+
     @Override
     public void messageReceived(HostedConnection source, Message m) {
+        
+        if (m instanceof Network.Util.GameInformationMessage){
+            GameInformationMessage msg = (GameInformationMessage) m;
+            gamingServerInfos.put(msg.getGameServerInfo().getAddress(), msg.getGameServerInfo());
+        }
+        
+        
         if (m instanceof Network.Util.RefreshMessage) {
-           
+            try {
+                outgoing.put(new Callable() {
+                    @Override
+                    public Object call() throws Exception {
+                        
+                        //AuthServer.server.broadcast(msg);
+                        return true;
+                    }
+                });
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AuthServerListener.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
           

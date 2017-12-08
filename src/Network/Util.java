@@ -6,6 +6,7 @@ import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class Util {
@@ -25,7 +26,8 @@ public class Util {
             JoinGameMessage.class,
             JoinAckMessage.class,    
             LobbyInformationMessage.class,
-            GameInformationMessage.class
+            GameInformationMessage.class,
+            GameServerLite.class
         );
     }
     
@@ -48,13 +50,14 @@ public class Util {
    
     @Serializable
     public static class GameServerListsMessage extends MyAbstractMessage {
-        private ArrayList<GameServerLite> serversList;
+        private final Collection<GameServerLite> serversList;
         
-        public GameServerListsMessage() {
+        public GameServerListsMessage(Collection<GameServerLite> serversList) {
+            this.serversList = serversList;
         }
         
         
-        public ArrayList<GameServerLite> getServersList() {
+        public Collection<GameServerLite> getServersList() {
             return serversList;
         }
         
@@ -94,10 +97,15 @@ public class Util {
     
     @Serializable
     public static class GameInformationMessage extends MyAbstractMessage {
+        private final GameServerLite gameServerInfo;
         
-        public GameInformationMessage() {
+        public GameInformationMessage(GameServerLite gameServerInfo) {
+            this.gameServerInfo = gameServerInfo;
         }
         
+        public GameServerLite getGameServerInfo(){
+            return gameServerInfo;
+        }
     }
     
     

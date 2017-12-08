@@ -5,10 +5,13 @@
  */
 package Network;
 
+import com.jme3.network.serializing.Serializable;
+
 /**
  *
  * @author Quentin
  */
+@Serializable
 public class GameServerLite {
 
     private final String address;
