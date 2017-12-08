@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Network;
+package Network.GameClient;
 
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
-import Network.Util.JoinGameMessage;
+import Network.Util.JoinAckMessage;
 import Network.Util.LobbyInformationMessage;
-import Network.Util.MyAbstractMessage;
 
 /**
  * Listener for Packets from the Game server
@@ -37,7 +36,7 @@ public class GameClientListener implements MessageListener<Client>{
     // this method is called whenever network packets arrive
     @Override
     public void messageReceived(Client source, Message m) {
-        if (m instanceof JoinGameMessage) {
+        if (m instanceof JoinAckMessage) {
             //TODO implement
             
         } else if (m instanceof LobbyInformationMessage) {

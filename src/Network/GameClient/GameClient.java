@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Network;
+package Network.GameClient;
 
+import Network.GameServerLite;
+import Network.Util;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.network.Client;
@@ -16,6 +18,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import com.jme3.network.Message;
+import java.util.Collection;
 
 /**
  *
@@ -40,7 +43,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     private LinkedBlockingQueue<Message> outgoingGame;
     
     // Serverlist
-    private ArrayList<GameServerLite> servers;
+    private Collection<GameServerLite> servers;
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
@@ -69,8 +72,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             //Setup the listener for the authentication server
             authListener = new GameClientAuthListener(authConnection, this);
             authConnection.addMessageListener(authListener,
-                GameServerListsMessage.class,
-                RefreshMessage.class);
+                GameServerListsMessage.class);
             
             // finally start the communication channel to the server
             authConnection.addClientStateListener(this);
@@ -87,7 +89,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         
     }
 
-    public void setServerList(ArrayList<GameServerLite> servers) {
+    public void setServerList(Collection<GameServerLite> servers) {
         this.servers = servers;
     }
     

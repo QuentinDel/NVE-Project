@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Network;
+package Network.GameClient;
 
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.concurrent.Callable;
-import java.util.ArrayList;
 import Network.Util.GameServerListsMessage;
 import Network.Util.RefreshMessage;
 import Network.GameServerLite;
+import Network.GameServerLite;
+import java.util.Collection;
 
 /**
  * Listener for Packets from the Authentication server
@@ -40,7 +41,7 @@ public class GameClientAuthListener implements MessageListener<Client>{
         if (m instanceof GameServerListsMessage) {
             
             final GameServerListsMessage msg = (GameServerListsMessage) m;
-            final ArrayList<GameServerLite> servers = msg.getServersList();
+            final Collection<GameServerLite> servers = msg.getServersList();
             
             gameClient.enqueue(new Callable() {
                 @Override

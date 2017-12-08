@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Network;
+package Network.GameClient;
 
 import com.jme3.network.Client;
 import java.util.concurrent.LinkedBlockingQueue;
