@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import Network.Util.GameServerListsMessage;
 import Network.Util.RefreshMessage;
-import Network.Util.ServerLite;
+import Network.GameServerLite;
 
 /**
  * Listener for Packets from the Authentication server
@@ -40,7 +40,7 @@ public class GameClientAuthListener implements MessageListener<Client>{
         if (m instanceof GameServerListsMessage) {
             
             final GameServerListsMessage msg = (GameServerListsMessage) m;
-            final ArrayList<ServerLite> servers = msg.getServersList();
+            final ArrayList<GameServerLite> servers = msg.getServersList();
             
             gameClient.enqueue(new Callable() {
                 @Override

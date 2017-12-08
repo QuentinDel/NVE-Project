@@ -40,7 +40,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     private LinkedBlockingQueue<Message> outgoingGame;
     
     // Serverlist
-    private ArrayList<ServerLite> servers;
+    private ArrayList<GameServerLite> servers;
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
@@ -87,7 +87,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         
     }
 
-    public void setServerList(ArrayList<ServerLite> servers) {
+    public void setServerList(ArrayList<GameServerLite> servers) {
         this.servers = servers;
     }
     
