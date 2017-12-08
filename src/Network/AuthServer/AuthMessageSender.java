@@ -5,7 +5,6 @@
  */
 package Network.AuthServer;
 
-import Network.GameServerLite;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;

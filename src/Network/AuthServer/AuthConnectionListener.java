@@ -2,6 +2,7 @@ package Network.AuthServer;
 
 import Network.GameServerLite;
 import Network.Util;
+import Network.Util.GameServerListsMessage;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.Filter;
 import com.jme3.network.Filters;
@@ -34,7 +35,7 @@ class AuthConnectionListener implements ConnectionListener {
             outgoing.put(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    Util.MyAbstractMessage msg = new Util.GameServerListsMessage(gamingServerInfos.values());
+                    Util.MyAbstractMessage msg = new GameServerListsMessage(gamingServerInfos.values());
                     msg.setReliable(true);
                     server.broadcast(Filters.in(c), msg);
                     return true;

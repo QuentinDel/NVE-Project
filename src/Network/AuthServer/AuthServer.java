@@ -5,9 +5,9 @@
  */
 package Network.AuthServer;
 
-import Network.GameServerLite;
 import Network.Util;
 import Network.Util.GameInformationMessage;
+import Network.GameServerLite;
 import Network.Util.RefreshMessage;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Network;

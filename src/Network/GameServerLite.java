@@ -5,21 +5,20 @@
  */
 package Network;
 
-import com.jme3.network.serializing.Serializable;
-
 /**
- *
- * @author Quentin
- */
-@Serializable
-public class GameServerLite {
+    *
+    * @author Quentin
+    */
+public class GameServerLite{
 
-    private final String address;
-    private final String idMap;
-    private final int nbPlayers;
-    private final int status;
-    private final int scoreBlue;
-    private final int scoreRed;
+    private String address;
+    private String idMap;
+    private int nbPlayers;
+    private int status;
+    private int scoreBlue;
+    private int scoreRed;
+
+    public GameServerLite(){}
 
     public GameServerLite(String address, String idMap, int nbPlayers, int status, int scoreBlue, int scoreRed){
         this.address = address;
@@ -31,16 +30,15 @@ public class GameServerLite {
     }
 
     public String getAddress(){ return address; }
-        
-    public String getIdMap(){ return idMap; }
-    
-    public int getNbPlayers(){ return nbPlayers; }
-    
-    public int getStatus(){ return status; }
-    
-    public int getScoreBlue(){ return scoreBlue; }
-    
-    public int getScoreRed(){ return scoreRed; }
-    
-}
 
+    public String getIdMap(){ return idMap; }
+
+    public int getNbPlayers(){ return nbPlayers; }
+
+    public int getStatus(){ return status; }
+
+    public int getScoreBlue(){ return scoreBlue; }
+
+    public int getScoreRed(){ return scoreRed; }
+
+}

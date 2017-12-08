@@ -21,15 +21,17 @@ public class Util {
     
     public static void initialiseSerializables() {
         Serializer.registerClasses(
+            //GameServerLite.class,
             GameServerListsMessage.class,
             RefreshMessage.class,
             JoinGameMessage.class,
             JoinAckMessage.class,    
             LobbyInformationMessage.class,
-            GameInformationMessage.class,
-            GameServerLite.class
+           GameInformationMessage.class
         );
     }
+    
+     
     
     abstract public static class MyAbstractMessage extends AbstractMessage {
 
@@ -47,10 +49,13 @@ public class Util {
 
     }
     
+    
    
     @Serializable
     public static class GameServerListsMessage extends MyAbstractMessage {
-        private final Collection<GameServerLite> serversList;
+        private Collection<GameServerLite> serversList;
+        
+        public GameServerListsMessage(){}
         
         public GameServerListsMessage(Collection<GameServerLite> serversList) {
             this.serversList = serversList;
@@ -97,7 +102,9 @@ public class Util {
     
     @Serializable
     public static class GameInformationMessage extends MyAbstractMessage {
-        private final GameServerLite gameServerInfo;
+        private GameServerLite gameServerInfo;
+        
+        public GameInformationMessage(){}
         
         public GameInformationMessage(GameServerLite gameServerInfo) {
             this.gameServerInfo = gameServerInfo;
@@ -109,5 +116,5 @@ public class Util {
     }
     
     
-    
+     
 }
