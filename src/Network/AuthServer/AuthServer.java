@@ -26,7 +26,6 @@ public class AuthServer extends SimpleApplication{
     
     private Server authServer;
     private final int port;    
-    private ConcurrentHashMap< String, GameServerLite > gamingServerInfos = new ConcurrentHashMap<>();
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -67,7 +66,7 @@ public class AuthServer extends SimpleApplication{
         authServer.addConnectionListener(new MyConnectionListener());
         
         // add a packet sender that takes messages from the blockingqueue
-        //new Thread(new MessageSender()).start();
+        new Thread(new AuthMessageSender()).start();
     }
 
 }
