@@ -63,7 +63,7 @@ public class AuthServer extends SimpleApplication{
         System.out.println("Server started");
         
         // add a listeners
-        authServer.addMessageListener(new AuthServerListener(gamingServerInfos, outgoing), 
+        authServer.addMessageListener(new AuthServerListener(authServer, gamingServerInfos, outgoing), 
                 GameInformationMessage.class,
                 RefreshMessage.class
         );
