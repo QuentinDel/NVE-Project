@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
+    <useControls filename="nifty-default-controls.xml"/>
+    <useStyles filename="nifty-default-styles.xml"/>
+    <screen id="start" controller="AppStates.Menu">
+        <layer id="background" childLayout="center" backgroundColor="#000f"/>
+        <layer id="foreground" childLayout="vertical" backgroundColor="#0000">
+            <panel id="panel_top" childLayout="center" backgroundColor="#f008" width="75%" style="nifty-panel-red" align="center" height="15%">
+                <control name="label" width="50%" text="Supraball Ripoff" height="50%"/>
+            </panel>
+            <panel id="panel_mid" childLayout="center" backgroundColor="#0f08" width="75%" align="center" height="65%">
+                <panel id="panel_mid_inner" childLayout="vertical" width="75%" align="center" height="80%">
+                    <panel id="panel_mid_top" childLayout="center" width="100%" align="center" height="80%">
+                        <control name="listBox" id="serverbrowser" forceSelection="true" width="100%" displayItems="15" height="100%"/>
+                    </panel>
+                    <panel id="panel_mid_bottom" childLayout="vertical" width="100%" align="center" height="20%">
+                        <control name="button" id="RefreshButton" label="Refresh" align="left">
+                            <interact onClick="refreshServerbrowser()"/>
+                        </control>
+                        <control name="textfield" id="PlayerName" width="20%" text="PlayerName" height="30px" maxLength="20"/>
+                    </panel>
+                </panel>
+            </panel>
+            <panel id="panel_bottom" childLayout="horizontal" backgroundColor="#f008" width="75%" align="center" height="20%">
+                <panel id="panel_bottom_left" childLayout="center" width="50%" style="nifty-panel-red" valign="center" height="50%">
+                    <control name="button" id="JoinButton" valign="center" label="Join Server" align="center" height="50%">
+                        <interact onClick="joinServer()"/>
+                    </control>
+                </panel>
+                <panel id="panel_bottom_right" childLayout="center" width="50%" style="nifty-panel-red" valign="center" height="50%">
+                    <control name="button" id="QuitButton" valign="center" label="Quit" align="center" height="50%">
+                        <interact onClick="quitGame()"/>
+                    </control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+</nifty>

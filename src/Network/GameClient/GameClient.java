@@ -8,15 +8,13 @@ package Network.GameClient;
 import Network.GameServerLite;
 import Network.Util;
 import com.jme3.app.SimpleApplication;
-import com.jme3.input.controls.ActionListener;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Network;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
+import AppStates.Menu;
 import com.jme3.network.Message;
 import java.util.Collection;
 
@@ -45,12 +43,17 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     // Serverlist
     private Collection<GameServerLite> servers;
     
+    // AppStates
+    private Menu menu = new Menu();
+    
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
     
     public GameClient(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
+        
+        this.stateManager.attach(menu);
     }
     
     public static void main(String[] args) {
@@ -62,6 +65,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     public void simpleInitApp() {
         setDisplayStatView(false);
         setDisplayFps(false);
+        this.menu.setEnabled(true);
+        
         try {
             //Initialize the queue to use to send informations
             outgoingAuth = new LinkedBlockingQueue<>();
@@ -90,9 +95,55 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
-        this.servers = servers;
+        if (menu.isEnabled()) {
+            menu.populateServerbrowser(servers);
+        }
     }
     
+    public void joinServer(GameServerLite server) {
+        if (gameConnection != null) {
+            gameConnection.close();
+            //TODO close the old senderThread here
+        }
+        try {           
+            System.out.println("Connect to a game server");
+            //Initialize the queue to use to send informations
+            outgoingGame = new LinkedBlockingQueue<>();
+            
+            gameConnection = Network.connectToServer(server.getAddress(), server.getPort());
+            this.gameSender = new GameClientSender(gameConnection, outgoingGame);
+
+            //Setup the listener for the game server
+            gameListener = new GameClientListener(gameConnection, this);
+            gameConnection.addMessageListener(authListener,
+                JoinAckMessage.class,
+                LobbyInformationMessage.class,
+                GameInformationMessage.class);
+            
+            // finally start the communication channel to the server
+            gameConnection.addClientStateListener(this);
+            gameConnection.start();
+            new Thread(gameSender).start();
+            outgoingAuth.put(new Util.RefreshMessage());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            this.destroy();
+            this.stop();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void queueRefreshMessage() {
+        System.out.println("Queueing refresh message to auth server");
+        try {
+            if (outgoingAuth != null) {
+                outgoingAuth.put(new RefreshMessage());   
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
     
     @Override
     public void simpleUpdate(float tpf) {
@@ -102,8 +153,12 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     // takes down all communication channels gracefully, when called
     @Override
     public void destroy() {
-        authConnection.close();
-        gameConnection.close();
+        if (authConnection != null) {
+            authConnection.close();
+        }
+        if (gameConnection != null) {
+            gameConnection.close();
+        }
         super.destroy();
     }
     
