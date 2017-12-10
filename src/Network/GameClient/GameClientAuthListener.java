@@ -47,7 +47,6 @@ public class GameClientAuthListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.setServerList(servers);
-                    System.out.println(servers);
                     return true;
                 }
             });
