@@ -13,6 +13,7 @@ public class GameServerLite{
 
     private String address;
     private String idMap;
+    private int port;
     private int nbPlayers;
     private int status;
     private int scoreBlue;
@@ -20,9 +21,10 @@ public class GameServerLite{
 
     public GameServerLite(){}
 
-    public GameServerLite(String address, String idMap, int nbPlayers, int status, int scoreBlue, int scoreRed){
+    public GameServerLite(String address, String idMap, int port, int nbPlayers, int status, int scoreBlue, int scoreRed){
         this.address = address;
         this.idMap = idMap;
+        this.port = port;
         this.nbPlayers = nbPlayers;
         this.status = status;
         this.scoreBlue = scoreBlue;
@@ -33,6 +35,8 @@ public class GameServerLite{
 
     public String getIdMap(){ return idMap; }
 
+    public int getPort() { return port; }
+    
     public int getNbPlayers(){ return nbPlayers; }
 
     public int getStatus(){ return status; }
@@ -40,5 +44,14 @@ public class GameServerLite{
     public int getScoreBlue(){ return scoreBlue; }
 
     public int getScoreRed(){ return scoreRed; }
+    
+    @Override
+    public String toString() {
+        return address + tabs(20) + idMap + tabs(10) + nbPlayers + tabs(10) + scoreBlue + "-" + scoreRed;
+    }
+    
+    private String tabs(int n) {
+        return new String(new char[n]).replace("\0", "    ");
+    }
 
 }
