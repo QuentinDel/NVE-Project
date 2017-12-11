@@ -83,15 +83,11 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             authConnection.addClientStateListener(this);
             authConnection.start();
             new Thread(authSender).start();
-            outgoingAuth.put(new Util.RefreshMessage());
         }catch (IOException ex) {
             ex.printStackTrace();
             this.destroy();
             this.stop();
-        }catch (InterruptedException ex) {
-            
         }
-        
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
@@ -100,7 +96,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         }
     }
     
-    public void joinServer(GameServerLite server) {
+    public void joinServer(GameServerLite server, String name) {
         if (gameConnection != null) {
             gameConnection.close();
             //TODO close the old senderThread here

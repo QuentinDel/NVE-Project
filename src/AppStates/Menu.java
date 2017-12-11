@@ -35,6 +35,7 @@ public class Menu extends BaseAppState implements ScreenController {
     private GameClient sapp;
     
     private GameServerLite currentServer;
+    private String playerName;
     
     @Override
     public void initialize(Application app) {
@@ -95,7 +96,12 @@ public class Menu extends BaseAppState implements ScreenController {
     
     public void joinServer() {
         if (currentServer != null) {
-            sapp.joinServer(currentServer);
+            TextField input = nifty.getCurrentScreen().findNiftyControl("PlayerName", TextField.class);
+            String playerName = "Bob"; //Default name
+            if (input != null) {
+                playerName = input.getRealText();
+            }
+            sapp.joinServer(currentServer, playerName);
         } else {
             System.out.println("No server selected");
         }
