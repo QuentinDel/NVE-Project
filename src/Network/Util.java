@@ -7,6 +7,7 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class Util {
@@ -21,13 +22,13 @@ public class Util {
     
     public static void initialiseSerializables() {
         Serializer.registerClasses(
-            //GameServerLite.class,
+            GameServerLite.class,
             GameServerListsMessage.class,
             RefreshMessage.class,
             JoinGameMessage.class,
             JoinAckMessage.class,    
             LobbyInformationMessage.class,
-           GameInformationMessage.class
+            GameInformationMessage.class
         );
     }
     
@@ -49,20 +50,67 @@ public class Util {
 
     }
     
+    @Serializable
+    public static class GameServerLite{
+
+        private String address;
+        private String idMap;
+        private int port;
+        private int nbPlayers;
+        private int status;
+        private int scoreBlue;
+        private int scoreRed;
+
+        public GameServerLite(){}
+
+        public GameServerLite(String address, String idMap, int port, int nbPlayers, int status, int scoreBlue, int scoreRed){
+            this.address = address;
+            this.idMap = idMap;
+            this.port = port;
+            this.nbPlayers = nbPlayers;
+            this.status = status;
+            this.scoreBlue = scoreBlue;
+            this.scoreRed = scoreRed;
+        }
+
+        public String getAddress(){ return address; }
+
+        public String getIdMap(){ return idMap; }
+
+        public int getPort() { return port; }
+
+        public int getNbPlayers(){ return nbPlayers; }
+
+        public int getStatus(){ return status; }
+
+        public int getScoreBlue(){ return scoreBlue; }
+
+        public int getScoreRed(){ return scoreRed; }
+
+        @Override
+        public String toString() {
+            return address + tabs(20) + idMap + tabs(10) + nbPlayers + tabs(10) + scoreBlue + "-" + scoreRed;
+        }
+
+        private String tabs(int n) {
+            return new String(new char[n]).replace("\0", "    ");
+        }
+
+    }
     
    
     @Serializable
     public static class GameServerListsMessage extends MyAbstractMessage {
-        private Collection<GameServerLite> serversList;
+        private ArrayList<GameServerLite> serversList;
         
         public GameServerListsMessage(){}
         
-        public GameServerListsMessage(Collection<GameServerLite> serversList) {
+        public GameServerListsMessage(ArrayList<GameServerLite> serversList) {
             this.serversList = serversList;
         }
         
         
-        public Collection<GameServerLite> getServersList() {
+        public ArrayList<GameServerLite> getServersList() {
             return serversList;
         }
         
@@ -116,5 +164,6 @@ public class Util {
     }
     
     
+
      
 }
