@@ -7,6 +7,7 @@ import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -16,6 +17,7 @@ public class Util {
     public static final String HOSTNAME = "127.0.0.1";
     
     public static final int PORT = 7006;
+    public static final int PORT_GAME = 7007;
     
     public static final int RUNNING = 0;
     public static final int WAITING = 1;
@@ -160,6 +162,50 @@ public class Util {
         
         public GameServerLite getGameServerInfo(){
             return gameServerInfo;
+        }
+    }
+
+    public static class BiMap<K,V> {
+        ConcurrentHashMap<K,V> map = new ConcurrentHashMap<>();
+        ConcurrentHashMap<V,K> inversedMap = new ConcurrentHashMap<>();
+
+        public void put(K k, V v) {
+            map.put(k, v);
+            inversedMap.put(v, k);
+        }
+
+        public V get(K k) {
+            return map.get(k);
+        }
+
+        public K getKey(V v) {
+            return inversedMap.get(v);
+        }
+
+        public int size() {
+            return map.size();
+        }
+
+        public boolean containsKey(K k) {
+            return map.containsKey(k);
+        }
+
+        public boolean containsValue(V v) {
+            return map.containsValue(v);
+        }
+
+        public V remove(K k) {
+            V v = map.remove(k);
+            inversedMap.remove(v);
+            return v;
+        }
+
+        public Enumeration<V> values() {
+            return inversedMap.keys();
+        }
+
+        public Enumeration<K> keys() {
+            return map.keys();
         }
     }
     

@@ -29,32 +29,35 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     private GameToAuthSender authSender;
     private LinkedBlockingQueue<Message> outgoingAuth;
     private GameInformationGenerator gameInfoGen;
+    private Util.BiMap<Integer,Integer> connPlayerMap;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        new GameServer(Util.PORT, Util.HOSTNAME).start(JmeContext.Type.Headless);
+        new GameServer(Util.PORT_GAME, Util.HOSTNAME).start(JmeContext.Type.Headless);
     }
     
     public GameServer(int port, String hostnameAuth) {
         this.port = port;
         this.hostnameAuth = hostnameAuth;
+        this.connPlayerMap = new Util.BiMap();
     }
 
     @Override
     @SuppressWarnings("CallToPrintStackTrace")
     public void simpleInitApp() {
         try {
-            /* Connect to auth server */
-            auth = Network.connectToServer(hostnameAuth, port); 
-            auth.start();
-            auth.addClientStateListener(this);
-            
             /* Start gameserver */
             System.out.println("Using port " + port);
             server = Network.createServer(port);
             server.start();
             System.out.println("Server started");
+
+            /* Connect to auth server */
+            auth = Network.connectToServer(hostnameAuth, port);
+            auth.start();
+            auth.addClientStateListener(this);
+
         } catch (IOException ex) {
             System.out.println("No good");
             ex.printStackTrace();
@@ -67,11 +70,16 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         new Thread(authSender).start();
         /* add game info generator */
         // TODO: it needs some information
-        gameInfoGen = new GameInformationGenerator(outgoingAuth);
+        gameInfoGen = new GameInformationGenerator(outgoingAuth, connPlayerMap);
         new Thread(gameInfoGen).start();
         // TODO: add auth listener (if we need one?)
-        // TODO: add connection listener for clients
-        // TODO: add listener for clients
+
+        /* add connection listener for clients */
+        server.addConnectionListener(new ClientConnectionListener(connPlayerMap));
+
+        /* add message listener */
+        server.addMessageListener(new GameServerListener(),
+                                  Util.JoinGameMessage.class);
     }
 
     @Override
@@ -88,4 +96,5 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     public void clientDisconnected(Client c, DisconnectInfo info) {
         System.out.println(info);
     }
+
 }

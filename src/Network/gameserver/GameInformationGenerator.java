@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Network.Util;
 import Network.Util.GameInformationMessage;
 import com.jme3.network.Message;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,26 +18,32 @@ import java.util.logging.Logger;
  */
 public class GameInformationGenerator implements Runnable {
     LinkedBlockingQueue<Message> outgoing;
+    Util.GameServerLite serverInfo;
+    private Util.BiMap<Integer,Integer> connPlayerMap;
 
-    public GameInformationGenerator(LinkedBlockingQueue<Message> outgoing) {
+    public GameInformationGenerator(LinkedBlockingQueue<Message> outgoing, Util.BiMap<Integer,Integer> connPlayerMap) {
         this.outgoing = outgoing;
+        this.connPlayerMap = connPlayerMap;
     }
 
     @Override
     public void run() {
-        //gather information(needs to be fed with necessary references or updated with data)
-        //send it to outgoing queue
-        GameInformationMessage msg = new GameInformationMessage();
-        try {
-            outgoing.put(msg);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(GameInformationGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        //sleep
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(GameInformationGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        while (true) {
+            //gather information(needs to be fed with necessary references or updated with data)
+            serverInfo = new Util.GameServerLite(Util.HOSTNAME, "Beach", Util.PORT_GAME, connPlayerMap.size(), 1, 5, 4);
+            //send it to outgoing queue
+            GameInformationMessage msg = new GameInformationMessage(serverInfo);
+            try {
+                outgoing.put(msg);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameInformationGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //sleep
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameInformationGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
