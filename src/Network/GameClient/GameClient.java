@@ -65,7 +65,6 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     public void simpleInitApp() {
         setDisplayStatView(false);
         setDisplayFps(false);
-        this.menu.setEnabled(true);
         
         try {
             //Initialize the queue to use to send informations
@@ -88,6 +87,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             this.destroy();
             this.stop();
         }
+        toMenu();
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
@@ -140,6 +140,15 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             ex.printStackTrace();
         }
     }
+    
+    // Go to the menu
+    public void toMenu() {
+        //TODO use gotoscreen, let menu appstate always be enabled
+        menu.setEnabled(true);
+        //Disable game appstate, etc
+    }
+    
+    
     
     @Override
     public void simpleUpdate(float tpf) {
