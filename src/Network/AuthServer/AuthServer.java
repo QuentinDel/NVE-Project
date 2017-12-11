@@ -7,7 +7,7 @@ package Network.AuthServer;
 
 import Network.Util;
 import Network.Util.GameInformationMessage;
-import Network.GameServerLite;
+import Network.Util.GameServerLite;
 import Network.Util.RefreshMessage;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Network;
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -73,5 +75,32 @@ public class AuthServer extends SimpleApplication{
         // add a packet sender that takes messages from the blockingqueue
         new Thread(new AuthMessageSender(outgoing)).start();
     }
+    
+    
+    private class AuthMessageSender implements Runnable {
+
+        private final LinkedBlockingQueue<Callable> outgoing;
+
+        public AuthMessageSender(LinkedBlockingQueue<Callable> outgoing){
+            this.outgoing = outgoing;
+        }
+
+
+
+        @Override
+       public void run() {
+            System.out.println("MesssageSender thread running");
+            try {
+               while (true) {
+                   outgoing.take().call();
+               }
+            }catch (Exception ex) {
+               Logger.getLogger(AuthMessageSender.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
 
 }
+
+    

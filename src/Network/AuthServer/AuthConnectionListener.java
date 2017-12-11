@@ -1,13 +1,14 @@
 package Network.AuthServer;
 
-import Network.GameServerLite;
 import Network.Util;
 import Network.Util.GameServerListsMessage;
+import Network.Util.GameServerLite;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.Filter;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -35,9 +36,13 @@ class AuthConnectionListener implements ConnectionListener {
             outgoing.put(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    Util.MyAbstractMessage msg = new GameServerListsMessage(gamingServerInfos.values());
+                    ArrayList<GameServerLite> serversList = new ArrayList<>();
+                    serversList.addAll(gamingServerInfos.values());
+                    Util.MyAbstractMessage msg = new GameServerListsMessage(serversList);
                     msg.setReliable(true);
                     server.broadcast(Filters.in(c), msg);
+                    //server.broadcast(msg);
+
                     return true;
                 }
             });        

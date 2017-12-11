@@ -5,7 +5,7 @@
  */
 package Network.AuthServer;
 
-import Network.GameServerLite;
+import Network.Util.GameServerLite;
 import Network.Util;
 import Network.Util.GameInformationMessage;
 import com.jme3.math.Vector2f;
@@ -14,6 +14,7 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import com.jme3.network.Server;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -32,6 +33,7 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
     private LinkedBlockingQueue<Callable> outgoing;
     
     public AuthServerListener(Server server, ConcurrentHashMap< String, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
+        this.server = server;
         this.gamingServerInfos = gamingServerInfos;
         this.outgoing = outgoing;
     }
@@ -51,9 +53,11 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
                 outgoing.put(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    Util.MyAbstractMessage msg = new Util.GameServerListsMessage(gamingServerInfos.values());
+                    ArrayList<GameServerLite> serversList = new ArrayList<>();
+                    serversList.addAll(gamingServerInfos.values());
+                    Util.GameServerListsMessage msg = new Util.GameServerListsMessage(serversList);
                     msg.setReliable(true);
-                    server.broadcast(Filters.in(source), msg);
+                    server.broadcast(Filters.equalTo(source), msg);
                     return true;
                 }
             });        

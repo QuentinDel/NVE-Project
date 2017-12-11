@@ -5,7 +5,7 @@
  */
 package Network.GameClient;
 
-import Network.GameServerLite;
+import Network.Util.GameServerLite;
 import Network.Util;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
