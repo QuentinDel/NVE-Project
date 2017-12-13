@@ -31,6 +31,7 @@ public class GameToAuthSender implements Runnable {
             try {
                 Message msg = outgoing.take();
                 this.serverConnection.send(msg);
+                //System.out.println(serverConnection.g);
                 System.out.println("sent gameinfo");
 
             } catch (InterruptedException ex) {
