@@ -54,7 +54,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
             System.out.println("Server started");
 
             /* Connect to auth server */
-            auth = Network.connectToServer(hostnameAuth, port);
+            auth = Network.connectToServer(hostnameAuth, Util.PORT);
             auth.start();
             auth.addClientStateListener(this);
 
