@@ -128,16 +128,34 @@ public class Util {
     
     @Serializable
     public static class JoinGameMessage extends MyAbstractMessage {
-        
+        private String name;
+
         public JoinGameMessage() {
+        }
+
+        public JoinGameMessage(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
         }
         
     }
     
     @Serializable
     public static class JoinAckMessage extends MyAbstractMessage {
-        
+        private int id;
+
         public JoinAckMessage() {
+        }
+
+        public JoinAckMessage(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
         }
         
     }
