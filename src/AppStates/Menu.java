@@ -21,8 +21,13 @@ import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.controls.*;
+import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
+import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
+import de.lessvoid.nifty.controls.listbox.builder.ListBoxBuilder;
+import de.lessvoid.nifty.controls.textfield.builder.TextFieldBuilder;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.SizeValue;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -61,15 +66,10 @@ public class Menu extends BaseAppState implements ScreenController {
                 sapp.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
         //nifty.fromXml("./Interface/scene.xml", "start", this);
-        Screen screen = new ScreenBuilder("start") {{
-            layer(new LayerBuilder("baseLayer") {{
-                childLayoutCenter();
-                panel(new PanelBuilder() {{
-                    height("8px");
-                    backgroundColor("#f00f");
-                }});
-            }});
-        }}.build(nifty);
+        nifty.loadStyleFile("nifty-default-styles.xml");
+        nifty.loadControlFile("nifty-default-controls.xml");
+        
+        Screen start = createStartScreen(this);
         nifty.gotoScreen("start");
 
         // attach the nifty display to the gui view port as a processor
@@ -85,9 +85,9 @@ public class Menu extends BaseAppState implements ScreenController {
         if (listBox != null) {
             listBox.clear();
             listBox.addAllItems(servers);
-            //listBox.addItem(new GameServerLite("127.0.0.1", "Castle",  8000,  4, 0, 2, 3)); //Hardcoded servers for testing
-            //listBox.addItem(new GameServerLite("127.0.0.1", "Beach",   8000,  1, 1, 4, 3));
-            //listBox.addItem(new GameServerLite("127.0.0.1", "Football", 8000, 0, 0, 2, 0));
+            listBox.addItem(new GameServerLite("127.0.0.1", "Castle",  8000,  4, 0, 2, 3)); //Hardcoded servers for testing
+            listBox.addItem(new GameServerLite("127.0.0.1", "Beach",   8000,  1, 1, 4, 3));
+            listBox.addItem(new GameServerLite("127.0.0.1", "Football", 8000, 0, 0, 2, 0));
         }
     }
 
@@ -153,6 +153,99 @@ public class Menu extends BaseAppState implements ScreenController {
 
     public void quit(){
         nifty.gotoScreen("end");
+    }
+    
+    public Screen createStartScreen(final Menu menu) {
+        return new ScreenBuilder("start") {{
+            controller(menu);
+            layer(new LayerBuilder("backgroundr") {{
+                backgroundColor("#000f");
+            }});
+            layer(new LayerBuilder("foreground") {{
+                backgroundColor("#0000");
+                childLayoutVertical();
+                panel(new PanelBuilder() {{
+                    childLayoutCenter();
+                    backgroundColor("#f008");
+                    alignCenter();
+                    height("15%");
+                    width("75%");
+                    style("nifty-panel-red");
+                    control(new LabelBuilder("title", "Supraball ripoff"));
+                }});
+                panel(new PanelBuilder() {{
+                    childLayoutCenter();
+                    backgroundColor("#0f08");
+                    alignCenter();
+                    height("65%");
+                    width("75%");
+                    panel(new PanelBuilder() {{
+                        childLayoutVertical();
+                        alignCenter();
+                        width("75%");
+                        height("80%");
+                        panel(new PanelBuilder() {{
+                            childLayoutCenter();
+                            height("100%");
+                            width("80%");
+                            control(new ListBoxBuilder("serverbrowser") {{
+                                displayItems(15);
+                                width("100%");
+                                height("100%");
+                            }});
+                        }});
+                        panel(new PanelBuilder() {{
+                            childLayoutVertical();
+                            height("20%");
+                            width("100%");
+                            alignCenter();
+                            control(new ButtonBuilder("RefreshButton", "Refresh") {{
+                                interactOnClick("refreshServerBrowser()");
+                            }});
+                            control(new TextFieldBuilder("PlayerName", "PlayerName") {{
+                                maxLength(20);
+                                height("30px");
+                                width("20%");
+                            }});
+                        }});
+                    }});
+                }});
+                panel(new PanelBuilder() {{
+                    childLayoutHorizontal();
+                    backgroundColor("#f008");
+                    alignCenter();
+                    height("20%");
+                    width("75%");
+                    panel(new PanelBuilder() {{
+                        childLayoutCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        style("nifty-panel-red");
+                        control(new ButtonBuilder("JoinButton", "Join Server") {{
+                            valignCenter();
+                            alignCenter();
+                            interactOnClick("joinServer()");
+                        }});
+                    }});
+                    panel(new PanelBuilder() {{
+                        childLayoutCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        style("nifty-panel-red");
+                        control(new ButtonBuilder("QuitButton", "Quit") {{
+                            valignCenter();
+                            alignCenter();
+                            x(SizeValue.px(100));
+                            y(SizeValue.px(100));
+
+                            interactOnClick("quitGame()");
+                        }});
+                    }});
+                }});
+            }});
+        }}.build(nifty);
     }
 
 }
