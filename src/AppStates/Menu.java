@@ -17,6 +17,9 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.builder.LayerBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.controls.*;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -57,7 +60,17 @@ public class Menu extends BaseAppState implements ScreenController {
                 sapp.getAudioRenderer(),
                 sapp.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
-        nifty.fromXml("Interface/scene.xml", "start", this);
+        //nifty.fromXml("./Interface/scene.xml", "start", this);
+        Screen screen = new ScreenBuilder("start") {{
+            layer(new LayerBuilder("baseLayer") {{
+                childLayoutCenter();
+                panel(new PanelBuilder() {{
+                    height("8px");
+                    backgroundColor("#f00f");
+                }});
+            }});
+        }}.build(nifty);
+        nifty.gotoScreen("start");
 
         // attach the nifty display to the gui view port as a processor
         sapp.getGuiViewPort().addProcessor(niftyDisplay);
