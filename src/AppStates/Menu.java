@@ -72,9 +72,9 @@ public class Menu extends BaseAppState implements ScreenController {
         if (listBox != null) {
             listBox.clear();
             listBox.addAllItems(servers);
-            listBox.addItem(new GameServerLite("127.0.0.1", "Castle",  8000,  4, 0, 2, 3)); //Hardcoded servers for testing
-            listBox.addItem(new GameServerLite("127.0.0.1", "Beach",   8000,  1, 1, 4, 3));
-            listBox.addItem(new GameServerLite("127.0.0.1", "Football", 8000, 0, 0, 2, 0));
+            //listBox.addItem(new GameServerLite("127.0.0.1", "Castle",  8000,  4, 0, 2, 3)); //Hardcoded servers for testing
+            //listBox.addItem(new GameServerLite("127.0.0.1", "Beach",   8000,  1, 1, 4, 3));
+            //listBox.addItem(new GameServerLite("127.0.0.1", "Football", 8000, 0, 0, 2, 0));
         }
     }
 
