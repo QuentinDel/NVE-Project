@@ -5,6 +5,7 @@
  */
 package Network.GameClient;
 
+import Game.Game;
 import Network.Util.GameServerLite;
 import Network.Util;
 import com.jme3.app.SimpleApplication;
@@ -14,7 +15,7 @@ import com.jme3.network.Network;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
-import AppStates.Menu;
+import Game.Menu;
 import com.jme3.network.Message;
 import java.util.Collection;
 
@@ -45,6 +46,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     // AppStates
     private Menu menu = new Menu();
+    private Game game = new Game();
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
@@ -54,6 +56,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         this.port = port;
         
         this.stateManager.attach(menu);
+        this.stateManager.attach(game);
     }
     
     public static void main(String[] args) {
@@ -65,7 +68,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     public void simpleInitApp() {
         setDisplayStatView(false);
         setDisplayFps(false);
-        
+        /*
         try {
             //Initialize the queue to use to send informations
             outgoingAuth = new LinkedBlockingQueue<>();
@@ -88,6 +91,9 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             this.stop();
         }
         toMenu();
+        */
+        menu.setEnabled(false);
+        game.setEnabled(true);
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
