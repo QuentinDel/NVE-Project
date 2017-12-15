@@ -43,7 +43,6 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 if (freeID) {
                     Player newPlayer = new Player(i, name);
                     connPlayerMap.put(c.getId(), newPlayer);
-                    
                     JoinAckMessage ackMsg = new JoinAckMessage(i);
                     c.send(ackMsg);
                     assigned = true;
@@ -53,6 +52,19 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (!assigned) {
                 // There was no open spot
                 c.close("Try again later, the game is full");
+            }
+        }
+        if (m instanceof Util.TeamJoinMessage) {
+            final Util.TeamJoinMessage msg = (Util.TeamJoinMessage) m;
+            int team = msg.getTeam();
+
+            if (connPlayerMap.containsKey(c.getId())) {
+                Player player = connPlayerMap.get(c.getId());
+                if (team == 0 || team == 1) {
+                    player.setTeam(team);
+                    //send playermessage
+                }
+
             }
         }
 

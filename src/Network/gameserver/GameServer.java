@@ -80,7 +80,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
 
         /* add message listener */
         server.addMessageListener(new GameServerListener(connPlayerMap),
-                                  Util.JoinGameMessage.class);
+                                  Util.JoinGameMessage.class,
+                                  Util.TeamJoinMessage.class);
     }
 
     @Override
