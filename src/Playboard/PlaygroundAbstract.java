@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AppStates;
+package Playboard;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;

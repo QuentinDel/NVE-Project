@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AppStates;
+package Playboard;
 
-import static AppStates.PlaygroundConstant.BOARD_LENGTH;
-import static AppStates.PlaygroundConstant.BOARD_WIDTH;
-import static AppStates.PlaygroundConstant.GOAL_LINE_LENGTH;
-import static AppStates.PlaygroundConstant.GOAL_LINE_WIDTH;
-import static AppStates.PlaygroundConstant.GOAL_PICKET_HEIGHT;
-import static AppStates.PlaygroundConstant.GOAL_PICKET_THICKNESS;
-import static AppStates.PlaygroundConstant.GOAL_TRANSV;
-import static AppStates.PlaygroundConstant.LINE_HEIGHT;
-import static AppStates.PlaygroundConstant.LINE_LENGTH;
-import static AppStates.PlaygroundConstant.LINE_THICKNESS;
-import static AppStates.PlaygroundConstant.LINE_WIDTH;
-import static AppStates.PlaygroundConstant.MIDDLE_DOT_RADIUS;
-import static AppStates.PlaygroundConstant.POSITION_GOAL_LONG;
-import static AppStates.PlaygroundConstant.POSITION_GOAL_SIDE_LINE;
-import static AppStates.PlaygroundConstant.POSITION_GOAL_SIDE_LINE_WIDTH;
+import static Playboard.PlaygroundConstant.BOARD_LENGTH;
+import static Playboard.PlaygroundConstant.BOARD_WIDTH;
+import static Playboard.PlaygroundConstant.GOAL_LINE_LENGTH;
+import static Playboard.PlaygroundConstant.GOAL_LINE_WIDTH;
+import static Playboard.PlaygroundConstant.GOAL_PICKET_HEIGHT;
+import static Playboard.PlaygroundConstant.GOAL_PICKET_THICKNESS;
+import static Playboard.PlaygroundConstant.GOAL_TRANSV;
+import static Playboard.PlaygroundConstant.LINE_HEIGHT;
+import static Playboard.PlaygroundConstant.LINE_LENGTH;
+import static Playboard.PlaygroundConstant.LINE_THICKNESS;
+import static Playboard.PlaygroundConstant.LINE_WIDTH;
+import static Playboard.PlaygroundConstant.MIDDLE_DOT_RADIUS;
+import static Playboard.PlaygroundConstant.POSITION_GOAL_LONG;
+import static Playboard.PlaygroundConstant.POSITION_GOAL_SIDE_LINE;
+import static Playboard.PlaygroundConstant.POSITION_GOAL_SIDE_LINE_WIDTH;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
