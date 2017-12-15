@@ -5,13 +5,16 @@
  */
 package Game;
 
+import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.asset.TextureKey;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -20,9 +23,16 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.scene.shape.Sphere.TextureMode;
+import com.jme3.texture.Texture;
+import java.util.ArrayList;
 
 /**
  *
@@ -43,10 +53,22 @@ public class Game extends BaseAppState implements ActionListener {
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     
+    private Geometry ball_geo;
+    private ArrayList<Player> playerStore;
+    private int userID;
+    
+    private CapsuleCollisionShape playerShape;
+    private final float stepSize = 1f;
+    private final float playerJumpSpeed = 20;
+    private final float playerFallSpeed = 30;
+    private final float playerGravity = 30;
+    
     @Override
     protected void initialize(Application app) {
         System.out.println("Game: initialize");
         sapp = (SimpleApplication) app;
+        
+        bulletAppState = new BulletAppState();
     }
    
     @Override
@@ -63,46 +85,24 @@ public class Game extends BaseAppState implements ActionListener {
             needCleaning = false;
         }
         
+        playerStore = new ArrayList(); //Do i even need this?
+        
         /** Set up Physics */
-        bulletAppState = new BulletAppState();
         sapp.getStateManager().attach(bulletAppState);
-        //bulletAppState.setDebugEnabled(true);
-
+        bulletAppState.setDebugEnabled(true);
+        
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         sapp.getFlyByCamera().setMoveSpeed(100);
         setUpKeys();
         setUpLight();
 
-        // We load the scene from the zip file and adjust its size.
-        sapp.getAssetManager().registerLocator("town.zip", ZipLocator.class);
-        sceneModel = sapp.getAssetManager().loadModel("main.scene");
-        sceneModel.setLocalScale(2f);
-
-        // We set up collision detection for the scene by creating a
-        // compound collision shape and a static RigidBodyControl with mass zero.
-        CollisionShape sceneShape =
-                CollisionShapeFactory.createMeshShape(sceneModel);
-        landscape = new RigidBodyControl(sceneShape, 0);
-        sceneModel.addControl(landscape);
-
-        // We set up collision detection for the player by creating
-        // a capsule collision shape and a CharacterControl.
-        // The CharacterControl offers extra settings for
-        // size, stepheight, jumping, falling, and gravity.
-        // We also put the player in its starting position.
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        player = new CharacterControl(capsuleShape, 0.05f);
-        player.setJumpSpeed(20);
-        player.setFallSpeed(30);
-        player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(0, 10, 0));
-
-        // We attach the scene and the player to the rootnode and the physics space,
-        // to make them appear in the game world.
-        sapp.getRootNode().attachChild(sceneModel);
-        bulletAppState.getPhysicsSpace().add(landscape);
-        bulletAppState.getPhysicsSpace().add(player);
+        // Load and add physics to the level and players
+        playerShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+        initLevel("town");
+        addLocalPlayer(0, "Bob");
+        addPlayer(1, "John");
+        addBall();
     }
 
     private void setUpLight() {
@@ -125,11 +125,101 @@ public class Game extends BaseAppState implements ActionListener {
         sapp.getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         sapp.getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         sapp.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        sapp.getInputManager().addMapping("test", new KeyTrigger(KeyInput.KEY_K));
         sapp.getInputManager().addListener(this, "Left");
         sapp.getInputManager().addListener(this, "Right");
         sapp.getInputManager().addListener(this, "Up");
         sapp.getInputManager().addListener(this, "Down");
         sapp.getInputManager().addListener(this, "Jump");
+        sapp.getInputManager().addListener(this, "test");
+    }
+    
+    // Loads the level, creates players and adds physics to them.
+    private void initLevel(String level_id) {
+        //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
+        //sceneModel = sapp.getAssetManager().loadModel("Scenes/PlayGround.j3o");
+        //sceneModel.setLocalScale(2f);
+        sceneModel = new GrassPlayground(sapp.getAssetManager()).getNode();
+        
+        // We set up collision detection for the level by creating a
+        // compound collision shape and a static RigidBodyControl with mass zero.
+        CollisionShape sceneShape =
+                CollisionShapeFactory.createMeshShape(sceneModel);
+        landscape = new RigidBodyControl(sceneShape, 0);
+        sceneModel.addControl(landscape);
+        
+        sapp.getRootNode().attachChild(sceneModel);
+        bulletAppState.getPhysicsSpace().add(landscape);
+    }
+    
+    public void addLocalPlayer(int id,  String name) {
+        // Setup the player node
+        Player playerNode = new Player(id, name);
+        this.userID = id;
+        
+        // Setup the geometry for the player
+        Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
+        Material mat_default = new Material(
+            sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
+        teapot.setMaterial(mat_default);
+        playerNode.attachChild(teapot);
+        playerNode.move(new Vector3f(0, 3.5f, 0));
+        
+        // Setup the control for the player
+        player = new CharacterControl(playerShape, stepSize);
+        player.setJumpSpeed(playerJumpSpeed);
+        player.setFallSpeed(playerFallSpeed);
+        player.setGravity(playerGravity);
+        player.setPhysicsLocation(new Vector3f(0, 10, 0));
+        playerNode.addControl(player);
+        bulletAppState.getPhysicsSpace().add(player);
+        sapp.getRootNode().attachChild(playerNode);
+    }
+    
+    public void addPlayer(int id,  String name) {
+        // Setup the player node
+        Player playerNode = new Player(id, name);
+        
+        // Setup the geometry for the player
+        Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
+        Material mat_default = new Material(
+            sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
+        teapot.setMaterial(mat_default);
+        playerNode.attachChild(teapot);
+        playerNode.move(new Vector3f(20, 3.5f, 0));
+        
+        // Setup the control for the player
+        CharacterControl player = new CharacterControl(playerShape, stepSize);
+        player.setJumpSpeed(playerJumpSpeed);
+        player.setFallSpeed(playerFallSpeed);
+        player.setGravity(playerGravity);
+        player.setPhysicsLocation(new Vector3f(0, 10, 0));
+        playerNode.addControl(player);
+        bulletAppState.getPhysicsSpace().add(player);
+        sapp.getRootNode().attachChild(playerNode);
+    }
+    
+    private void addBall() {
+        Sphere sphere = new Sphere(32, 32, 2f, true, false);
+        sphere.setTextureMode(TextureMode.Projected);
+        
+        //Setup the material for the ball
+        Material stone_mat = new Material(sapp.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        TextureKey key = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
+        key.setGenerateMips(true);
+        Texture tex = sapp.getAssetManager().loadTexture(key);
+        stone_mat.setTexture("ColorMap", tex);
+        
+        //Setup the geometry for the ball
+        ball_geo = new Geometry("cannon ball", sphere);
+        ball_geo.setMaterial(stone_mat);
+        sapp.getRootNode().attachChild(ball_geo);
+        ball_geo.move(new Vector3f(-5, 6f, -5));
+        
+        CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
+        RigidBodyControl ball_phy = new RigidBodyControl(ball_shape, 0.1f);
+        ball_geo.addControl(ball_phy);
+        bulletAppState.getPhysicsSpace().add(ball_phy);
     }
 
     /** These are our custom actions triggered by key presses.
@@ -145,7 +235,10 @@ public class Game extends BaseAppState implements ActionListener {
           down = isPressed;
         } else if (binding.equals("Jump")) {
           if (isPressed) { player.jump(); }
-        }
+        } /*else if (binding.equals("test")) {
+            ball_geo.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(-10, 5f, -10));
+            ball_geo.getControl(RigidBodyControl.class).setLinearVelocity(new Vector3f(10, 0, 10));
+        }*/
     }
 
     /**
@@ -179,6 +272,7 @@ public class Game extends BaseAppState implements ActionListener {
     @Override
     public void onDisable() {
         System.out.println("Game: onDisable");
+        sapp.getStateManager().detach(bulletAppState); //will this break anything?
         //Remove player controls
     }
 }
