@@ -33,7 +33,9 @@ public class Util {
             LobbyInformationMessage.class,
             GameInformationMessage.class,
             GameConfigurationMessage.class,
-            TeamJoinMessage.class
+            TeamJoinMessage.class,
+            PlayerMessage.class,
+            PlayerLite.class
         );
     }
     
@@ -248,6 +250,22 @@ public class Util {
 
         public int getTeam() {
             return team;
+        }
+    }
+
+    @Serializable
+    public static class PlayerMessage extends MyAbstractMessage {
+        private PlayerLite player;
+
+        public PlayerMessage() {
+        }
+
+        public PlayerMessage(PlayerLite player) {
+            this.player = player;
+        }
+
+        public PlayerLite getPlayer() {
+            return player;
         }
     }
 
