@@ -17,11 +17,11 @@ import com.jme3.scene.Node;
 public class Player extends Node{
     private int id;
     private String playerName;
-    /*
-    * team 0: no team/spectator
-    * team 1: red
-    * team 2: blue
-    */
+    /**
+     * team 0: no team/spectator
+     * team 1: red
+     * team 2: blue
+     */
     private int team;
     
     public Player(int id, String name) {

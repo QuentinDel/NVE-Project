@@ -46,6 +46,9 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     connPlayerMap.put(c.getId(), newPlayer);
                     JoinAckMessage ackMsg = new JoinAckMessage(i);
                     c.send(ackMsg);
+                    //game->get players
+                    //GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
+                    //c.send(confMsg);
                     assigned = true;
                     break;
                 }
