@@ -5,6 +5,7 @@
  */
 package Network.GameClient;
 
+import Network.Util;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
@@ -37,7 +38,8 @@ public class GameClientListener implements MessageListener<Client>{
     @Override
     public void messageReceived(Client source, Message m) {
         if (m instanceof JoinAckMessage) {
-            //TODO implement
+            final Util.JoinAckMessage msg = (Util.JoinAckMessage) m;
+            int myID = msg.getId();
             
         } else if (m instanceof LobbyInformationMessage) {
             //TODO implement

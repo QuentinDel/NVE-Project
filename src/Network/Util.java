@@ -2,6 +2,7 @@
 package Network;
 
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
@@ -30,7 +31,11 @@ public class Util {
             JoinGameMessage.class,
             JoinAckMessage.class,    
             LobbyInformationMessage.class,
-            GameInformationMessage.class
+            GameInformationMessage.class,
+            GameConfigurationMessage.class,
+            TeamJoinMessage.class,
+            PlayerMessage.class,
+            PlayerLite.class
         );
     }
     
@@ -99,7 +104,40 @@ public class Util {
         }
 
     }
-    
+
+    @Serializable
+    public static class PlayerLite {
+        private int id;
+        private String name;
+        private Vector3f position;
+        private Vector3f velocity;
+
+        public PlayerLite(){
+        }
+
+        public PlayerLite(int id, String name, Vector3f position, Vector3f velocity) {
+            this.id = id;
+            this.name = name;
+            this.position = position;
+            this.velocity = velocity;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Vector3f getPosition() {
+            return position;
+        }
+
+        public Vector3f getVelocity() {
+            return velocity;
+        }
+    }
    
     @Serializable
     public static class GameServerListsMessage extends MyAbstractMessage {
@@ -180,6 +218,54 @@ public class Util {
         
         public GameServerLite getGameServerInfo(){
             return gameServerInfo;
+        }
+    }
+
+    @Serializable
+    public static class GameConfigurationMessage extends MyAbstractMessage {
+        private ArrayList<PlayerLite> players;
+
+        public GameConfigurationMessage(){
+        }
+
+        public GameConfigurationMessage(ArrayList<PlayerLite> players) {
+            this.players = players;
+        }
+
+        public ArrayList<PlayerLite> getPlayers() {
+            return players;
+        }
+    }
+
+    @Serializable
+    public static class TeamJoinMessage extends MyAbstractMessage {
+        private int team;
+
+        public TeamJoinMessage() {
+        }
+
+        public TeamJoinMessage(int team) {
+            this.team = team;
+        }
+
+        public int getTeam() {
+            return team;
+        }
+    }
+
+    @Serializable
+    public static class PlayerMessage extends MyAbstractMessage {
+        private PlayerLite player;
+
+        public PlayerMessage() {
+        }
+
+        public PlayerMessage(PlayerLite player) {
+            this.player = player;
+        }
+
+        public PlayerLite getPlayer() {
+            return player;
         }
     }
 
