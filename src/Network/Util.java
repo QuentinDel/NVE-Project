@@ -1,6 +1,7 @@
 
 package Network;
 
+import Game.Player;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.network.AbstractMessage;
@@ -109,17 +110,27 @@ public class Util {
     public static class PlayerLite {
         private int id;
         private String name;
+        private int team;
         private Vector3f position;
-        private Vector3f velocity;
+        private Vector3f direction;
 
         public PlayerLite(){
         }
 
-        public PlayerLite(int id, String name, Vector3f position, Vector3f velocity) {
+        public PlayerLite(int id, String name, Vector3f position, Vector3f direction, int team) {
             this.id = id;
             this.name = name;
             this.position = position;
-            this.velocity = velocity;
+            this.direction = direction;
+            this.team = team;
+        }
+
+        public PlayerLite(Player player) {
+            this.id = player.getId();
+            this.name = player.getName();
+            this.position = player.getPosition();
+            this.direction = player.getDirection();
+            this.team = player.getTeam();
         }
 
         public int getId() {
@@ -134,8 +145,12 @@ public class Util {
             return position;
         }
 
-        public Vector3f getVelocity() {
-            return velocity;
+        public Vector3f getDirection() {
+            return direction;
+        }
+
+        public int getTeam() {
+            return team;
         }
     }
    

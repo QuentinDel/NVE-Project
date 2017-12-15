@@ -9,6 +9,7 @@ import Game.Player;
 import Network.Util;
 import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
@@ -60,7 +61,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
 
             if (connPlayerMap.containsKey(c.getId())) {
                 Player player = connPlayerMap.get(c.getId());
-                if (team == 0 || team == 1) {
+                if (team == 1 || team == 2) {
                     player.setTeam(team);
                     //send playermessage
                 }
