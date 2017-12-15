@@ -20,10 +20,21 @@ import static Playboard.PlaygroundConstant.MIDDLE_DOT_RADIUS;
 import static Playboard.PlaygroundConstant.POSITION_GOAL_LONG;
 import static Playboard.PlaygroundConstant.POSITION_GOAL_SIDE_LINE;
 import static Playboard.PlaygroundConstant.POSITION_GOAL_SIDE_LINE_WIDTH;
+import static Playboard.PlaygroundConstant.SCORE_ZONE_HEIGHT;
+import static Playboard.PlaygroundConstant.SCORE_ZONE_LENGTH;
+import static Playboard.PlaygroundConstant.SCORE_ZONE_THICKNESS;
+import static Playboard.PlaygroundConstant.WALL_HEIGHT;
+import static Playboard.PlaygroundConstant.WALL_LENGTH;
+import static Playboard.PlaygroundConstant.WALL_THICKNESS;
+import static Playboard.PlaygroundConstant.WALL_WIDTH;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -46,7 +57,7 @@ public class GrassPlayground extends PlaygroundAbstract {
 
   public void initialize() {
   
-     Node playgroundNode = new Node("GrassPG");
+    Node playgroundNode = new Node("GrassPG");
     Spatial playground  = assetManager.loadModel("Scenes/PlayGround.j3o");
     playgroundNode.attachChild(playground);
   
@@ -75,8 +86,20 @@ public class GrassPlayground extends PlaygroundAbstract {
     Box trans = new Box(GOAL_TRANSV, GOAL_PICKET_THICKNESS, GOAL_PICKET_THICKNESS);
     Geometry goalTrans = new Geometry("trans", trans);
     
+    //Geometry for the walls
+    Node walls = new Node("walls");
+    Box wallBoxLength = new Box(WALL_LENGTH, WALL_HEIGHT, WALL_THICKNESS);
+    Geometry wallLengthLeft = new Geometry("wallL", wallBoxLength);
+    Box wallBoxWidth = new Box(WALL_THICKNESS, WALL_HEIGHT, WALL_WIDTH);
+    Geometry wallWidthTop = new Geometry("wallT", wallBoxWidth);
+    
+    //Geometry for the markPoint
+    Node scoreZoneBlue = new Node("markPointBlue");
+    Box goalScoreBox = new Box(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH);
+    Geometry goalScoreBlue = new Geometry("scoreZoneBlue", goalScoreBox);
     
     
+    // PART FOR MATERIALS SETTINGS 
     
     //Material used for the line
     Material matLine = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -89,14 +112,40 @@ public class GrassPlayground extends PlaygroundAbstract {
     goalLong.setMaterial(matLine);
     goalPicket.setMaterial(matLine);
     goalTrans.setMaterial(matLine);
+    
+    //Material used for the walls
+    Material matWalls = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    matWalls.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);  // !
+    matWalls.setTransparent(true);
+    matWalls.setColor("Color", new ColorRGBA(0.8f, 0.8f, 0.8f, 0.2f));
+    
+    wallLengthLeft.setQueueBucket(RenderQueue.Bucket.Transparent);
+    wallWidthTop.setQueueBucket(RenderQueue.Bucket.Transparent);   
+    wallLengthLeft.setMaterial(matWalls);
+    wallWidthTop.setMaterial(matWalls);
    
     
+    //Material for score zone
+    Material matScoreZone = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    matScoreZone.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);  // !
+    matScoreZone.setTransparent(true);
+    matScoreZone.setColor("Color", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f));
+    
+    scoreZoneBlue.attachChild(goalScoreBlue);
+    
+    // CREATION OF OTHER PARTS OF THE BOARD FROM THE ONES ALREADY CREATED
+    
+    //Generate the other
     Geometry rightLine = leftLine.clone(true);
     Geometry bottomLine = topLine.clone(true);
     Geometry middleLine = topLine.clone(true);
     Geometry goalWidthOtherSide = goalWidth.clone(true);
     Geometry otherPicket = goalPicket.clone(true);
-            
+    Geometry wallWidthBottom = wallWidthTop.clone(true);
+    Geometry wallLengthRight = wallLengthLeft.clone(true);
+    
+    
+    //Attach all the nodes
     linesNode.attachChild(leftLine);
     linesNode.attachChild(rightLine);
     linesNode.attachChild(topLine);
@@ -109,6 +158,10 @@ public class GrassPlayground extends PlaygroundAbstract {
     goal.attachChild(goalPicket);
     goal.attachChild(goalTrans);
     goal.attachChild(otherPicket);
+    walls.attachChild(wallWidthTop);
+    walls.attachChild(wallWidthBottom);
+    walls.attachChild(wallLengthLeft);
+    walls.attachChild(wallLengthRight);
 
     
     //Set at the right place
@@ -124,6 +177,11 @@ public class GrassPlayground extends PlaygroundAbstract {
     otherPicket.setLocalTranslation(BOARD_LENGTH, GOAL_PICKET_HEIGHT, -GOAL_TRANSV + GOAL_PICKET_THICKNESS);
     goalTrans.setLocalTranslation(BOARD_LENGTH, 2*GOAL_PICKET_HEIGHT, 0f);
     goalTrans.rotate(0f , 90*FastMath.DEG_TO_RAD, 0f);
+    wallWidthTop.setLocalTranslation(BOARD_LENGTH, WALL_HEIGHT, 0f);
+    wallWidthBottom.setLocalTranslation(-BOARD_LENGTH, WALL_HEIGHT, 0f);
+    wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
+    wallLengthRight.setLocalTranslation(0f, WALL_HEIGHT, BOARD_WIDTH);
+    
     
     Node otherGoalZone = goalZoneNode.clone(true);
     otherGoalZone.rotate(0f , 0f , 180*FastMath.DEG_TO_RAD);
@@ -132,6 +190,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     //otherGoal.getChild("trans").rotate(180*FastMath.DEG_TO_RAD , 0f , 0f);
 
     board = new Node("board");
+    board.attachChild(walls);
     board.attachChild(linesNode);
     board.attachChild(playgroundNode);
     board.attachChild(goalZoneNode);
