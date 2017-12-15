@@ -5,11 +5,13 @@
  */
 package Game;
 
+import com.jme3.scene.Node;
+
 /**
  *
  * @author henpet-1
  */
-public class Player {
+public class Player extends Node{
     private int id;
     private String name;
     
