@@ -31,7 +31,8 @@ public class Util {
             JoinGameMessage.class,
             JoinAckMessage.class,    
             LobbyInformationMessage.class,
-            GameInformationMessage.class
+            GameInformationMessage.class,
+            GameConfigurationMessage.class
         );
     }
     
@@ -214,6 +215,22 @@ public class Util {
         
         public GameServerLite getGameServerInfo(){
             return gameServerInfo;
+        }
+    }
+
+    @Serializable
+    public static class GameConfigurationMessage extends MyAbstractMessage {
+        private ArrayList<PlayerLite> players;
+
+        public GameConfigurationMessage(){
+        }
+
+        public GameConfigurationMessage(ArrayList<PlayerLite> players) {
+            this.players = players;
+        }
+
+        public ArrayList<PlayerLite> getPlayers() {
+            return players;
         }
     }
 
