@@ -129,9 +129,8 @@ public class GrassPlayground extends PlaygroundAbstract {
     Material matScoreZone = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     matScoreZone.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);  // !
     matScoreZone.setTransparent(true);
-    matScoreZone.setColor("Color", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f));
-    
-    scoreZoneBlue.attachChild(goalScoreBlue);
+    matScoreZone.setColor("Color", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f));   
+    goalScoreBlue.setMaterial(matScoreZone);
     
     // CREATION OF OTHER PARTS OF THE BOARD FROM THE ONES ALREADY CREATED
     
@@ -162,6 +161,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     walls.attachChild(wallWidthBottom);
     walls.attachChild(wallLengthLeft);
     walls.attachChild(wallLengthRight);
+    scoreZoneBlue.attachChild(goalScoreBlue);
 
     
     //Set at the right place
@@ -169,7 +169,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     rightLine.setLocalTranslation(0f, 0f, BOARD_WIDTH);
     topLine.setLocalTranslation(BOARD_LENGTH, 0f, 0f);
     bottomLine.setLocalTranslation(-BOARD_LENGTH, 0f, 0f);
-    middleDot.rotate( 90*FastMath.DEG_TO_RAD , 0f,0f);
+    middleDot.rotate( 90*FastMath.DEG_TO_RAD , 0f, 0f);
     goalWidth.setLocalTranslation(POSITION_GOAL_SIDE_LINE, 0f,POSITION_GOAL_SIDE_LINE_WIDTH);
     goalWidthOtherSide.setLocalTranslation(POSITION_GOAL_SIDE_LINE, 0f, -POSITION_GOAL_SIDE_LINE_WIDTH);
     goalLong.setLocalTranslation(POSITION_GOAL_LONG, 0f, 0f);
@@ -181,13 +181,16 @@ public class GrassPlayground extends PlaygroundAbstract {
     wallWidthBottom.setLocalTranslation(-BOARD_LENGTH, WALL_HEIGHT, 0f);
     wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
     wallLengthRight.setLocalTranslation(0f, WALL_HEIGHT, BOARD_WIDTH);
+    goalScoreBlue.setLocalTranslation(BOARD_LENGTH - 0.01f, SCORE_ZONE_HEIGHT, 0f);
     
     
     Node otherGoalZone = goalZoneNode.clone(true);
     otherGoalZone.rotate(0f , 0f , 180*FastMath.DEG_TO_RAD);
     Node otherGoal = goal.clone(true);
     otherGoal.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
-    //otherGoal.getChild("trans").rotate(180*FastMath.DEG_TO_RAD , 0f , 0f);
+    Node scoreZoneRed = scoreZoneBlue.clone(true);
+    scoreZoneRed.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
+
 
     board = new Node("board");
     board.attachChild(walls);
@@ -197,6 +200,8 @@ public class GrassPlayground extends PlaygroundAbstract {
     board.attachChild(otherGoalZone);
     board.attachChild(goal);
     board.attachChild(otherGoal);
+    board.attachChild(scoreZoneBlue);
+    board.attachChild(scoreZoneRed);
     board.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", SkyFactory.EnvMapType.CubeMap));
     
   }

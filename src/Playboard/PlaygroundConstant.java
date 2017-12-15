@@ -40,8 +40,8 @@ public interface PlaygroundConstant {
     static final float WALL_THICKNESS = 1;
     
     //Score zone
-    static final float SCORE_ZONE_LENGTH = GOAL_TRANSV - GOAL_PICKET_THICKNESS;
-    static final float SCORE_ZONE_HEIGHT = GOAL_PICKET_HEIGHT - GOAL_PICKET_THICKNESS;
+    static final float SCORE_ZONE_LENGTH = GOAL_TRANSV - 2 * GOAL_PICKET_THICKNESS;
+    static final float SCORE_ZONE_HEIGHT = GOAL_PICKET_HEIGHT - 0.5f * GOAL_PICKET_THICKNESS;
     static final float SCORE_ZONE_THICKNESS = LINE_THICKNESS;
         
 
