@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Game.Player;
 import Network.Util;
 import Network.Util.GameInformationMessage;
 import com.jme3.network.Message;
@@ -19,9 +20,9 @@ import java.util.logging.Logger;
 public class GameInformationGenerator implements Runnable {
     LinkedBlockingQueue<Message> outgoing;
     Util.GameServerLite serverInfo;
-    private Util.BiMap<Integer,Integer> connPlayerMap;
+    private Util.BiMap<Integer, Player> connPlayerMap;
 
-    public GameInformationGenerator(LinkedBlockingQueue<Message> outgoing, Util.BiMap<Integer,Integer> connPlayerMap) {
+    public GameInformationGenerator(LinkedBlockingQueue<Message> outgoing, Util.BiMap<Integer, Player> connPlayerMap) {
         this.outgoing = outgoing;
         this.connPlayerMap = connPlayerMap;
     }

@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Game.Player;
 import Network.Util;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
@@ -29,7 +30,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     private GameToAuthSender authSender;
     private LinkedBlockingQueue<Message> outgoingAuth;
     private GameInformationGenerator gameInfoGen;
-    private Util.BiMap<Integer,Integer> connPlayerMap;
+    private Util.BiMap<Integer, Player> connPlayerMap;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -78,7 +79,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         server.addConnectionListener(new ClientConnectionListener(connPlayerMap));
 
         /* add message listener */
-        server.addMessageListener(new GameServerListener(),
+        server.addMessageListener(new GameServerListener(connPlayerMap),
                                   Util.JoinGameMessage.class);
     }
 

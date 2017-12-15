@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import Game.Menu;
+import Playboard.GrassPlayground;
 import com.jme3.network.Message;
 import java.util.Collection;
 
@@ -68,7 +69,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     public void simpleInitApp() {
         setDisplayStatView(false);
         setDisplayFps(false);
-        /*
+        
         try {
             //Initialize the queue to use to send informations
             outgoingAuth = new LinkedBlockingQueue<>();
@@ -91,9 +92,9 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             this.stop();
         }
         toMenu();
-        */
-        menu.setEnabled(false);
-        game.setEnabled(true);
+        
+        //menu.setEnabled(false);
+        //game.setEnabled(true);
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
@@ -127,6 +128,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             gameConnection.start();
             new Thread(gameSender).start();
             outgoingAuth.put(new Util.RefreshMessage());
+            outgoingGame.put(new Util.JoinGameMessage(name));
         } catch (IOException ex) {
             ex.printStackTrace();
             this.destroy();
