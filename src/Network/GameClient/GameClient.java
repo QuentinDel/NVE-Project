@@ -18,12 +18,13 @@ import Network.Util.*;
 import Game.Menu;
 import Playboard.GrassPlayground;
 import com.jme3.network.Message;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  *
  * Client simpleApplication for running the game.
- * 
+ *
  * @author Rickard
  */
 
@@ -67,9 +68,9 @@ public class GameClient extends SimpleApplication implements ClientStateListener
 
     @Override
     public void simpleInitApp() {
-        setDisplayStatView(false);
-        setDisplayFps(false);
-        
+        //setDisplayStatView(false);
+        //setDisplayFps(false);
+        /*
         try {
             //Initialize the queue to use to send informations
             outgoingAuth = new LinkedBlockingQueue<>();
@@ -92,9 +93,9 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             this.stop();
         }
         toMenu();
-        
-        //menu.setEnabled(false);
-        //game.setEnabled(true);
+        */
+        menu.setEnabled(false);
+        game.setEnabled(true);
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
@@ -154,9 +155,31 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         //TODO use gotoscreen, let menu appstate always be enabled
         menu.setEnabled(true);
         //Disable game appstate, etc
+        game.setEnabled(false);
     }
     
+    // Go to the game
+    public void toGame() {
+        game.setEnabled(true);
+        menu.setEnabled(false);
+    }
     
+    // Setups the game by adding players, balls, etc.
+    public void putConfig(int userID, ArrayList<PlayerLite> playerList){
+        // Load the level
+        
+        // Add players
+        for (final PlayerLite player : playerList){
+            if(player.getId() != userID) {
+                game.addPlayer(player.getId(), player.getName());
+            } else {
+                game.addLocalPlayer(player.getId(), player.getName());
+            }  
+        }
+        // Add the ball
+        
+        // Set the team scores
+    }
     
     @Override
     public void simpleUpdate(float tpf) {
