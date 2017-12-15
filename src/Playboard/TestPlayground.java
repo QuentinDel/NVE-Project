@@ -49,9 +49,11 @@ import static Playboard.PlaygroundConstant.WALL_HEIGHT;
 import static Playboard.PlaygroundConstant.WALL_LENGTH;
 import static Playboard.PlaygroundConstant.WALL_THICKNESS;
 import static Playboard.PlaygroundConstant.WALL_WIDTH;
+import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.material.RenderState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Quad;
 import com.jme3.util.SkyFactory;
 
 /**
@@ -74,8 +76,15 @@ public class TestPlayground extends SimpleApplication implements PlaygroundConst
     cam.setLocation(new Vector3f(0f, 100f, 0f));
     
     Node playgroundNode = new Node("GrassPG");
-    Spatial playground  = assetManager.loadModel("Scenes/PlayGround.j3o");
+    
+    Quad grassBoard = new Quad(PLAYGROUND_LENGTH, PLAYGROUND_WIDTH);
+    Geometry playground = new Geometry("playboard", grassBoard);
+    Material matPlayground = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    matPlayground.setTexture("ColorMap", assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg"));
+    playground.setMaterial(matPlayground);
     playgroundNode.attachChild(playground);
+    playgroundNode.rotate(-90*FastMath.DEG_TO_RAD , 0f , 0f);
+    playgroundNode.setLocalTranslation(-PLAYGROUND_LENGTH/2, 0f, PLAYGROUND_WIDTH/2);
   
     
     Node linesNode = new Node("lines"); 

@@ -17,6 +17,8 @@ import static Playboard.PlaygroundConstant.LINE_LENGTH;
 import static Playboard.PlaygroundConstant.LINE_THICKNESS;
 import static Playboard.PlaygroundConstant.LINE_WIDTH;
 import static Playboard.PlaygroundConstant.MIDDLE_DOT_RADIUS;
+import static Playboard.PlaygroundConstant.PLAYGROUND_LENGTH;
+import static Playboard.PlaygroundConstant.PLAYGROUND_WIDTH;
 import static Playboard.PlaygroundConstant.POSITION_GOAL_LONG;
 import static Playboard.PlaygroundConstant.POSITION_GOAL_SIDE_LINE;
 import static Playboard.PlaygroundConstant.POSITION_GOAL_SIDE_LINE_WIDTH;
@@ -40,6 +42,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Quad;
 import com.jme3.util.SkyFactory;
 
 
@@ -57,9 +60,16 @@ public class GrassPlayground extends PlaygroundAbstract {
 
   public void initialize() {
   
-    Node playgroundNode = new Node("GrassPG");
-    Spatial playground  = assetManager.loadModel("Scenes/PlayGround.j3o");
+   Node playgroundNode = new Node("GrassPG");
+    
+    Quad grassBoard = new Quad(PLAYGROUND_LENGTH, PLAYGROUND_WIDTH);
+    Geometry playground = new Geometry("playboard", grassBoard);
+    Material matPlayground = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    matPlayground.setTexture("ColorMap", assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg"));
+    playground.setMaterial(matPlayground);
     playgroundNode.attachChild(playground);
+    playgroundNode.rotate(-90*FastMath.DEG_TO_RAD , 0f , 0f);
+    playgroundNode.setLocalTranslation(-PLAYGROUND_LENGTH/2, 0f, PLAYGROUND_WIDTH/2);
   
     
     Node linesNode = new Node("lines"); 
@@ -203,6 +213,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     board.attachChild(scoreZoneBlue);
     board.attachChild(scoreZoneRed);
     board.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", SkyFactory.EnvMapType.CubeMap));
+    
     
   }
 }

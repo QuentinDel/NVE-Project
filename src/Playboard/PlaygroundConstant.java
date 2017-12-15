@@ -11,6 +11,11 @@ package Playboard;
  */
 public interface PlaygroundConstant {
     
+    //Board dimension
+    static final float PLAYGROUND_LENGTH = 500;
+    static final float PLAYGROUND_WIDTH = 500;
+            
+    
     //Limitation playground
     static final float LINE_WIDTH = 75;
     static final float LINE_LENGTH = 125;
