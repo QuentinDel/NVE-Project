@@ -128,7 +128,6 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             gameConnection.addClientStateListener(this);
             gameConnection.start();
             new Thread(gameSender).start();
-            outgoingAuth.put(new Util.RefreshMessage());
             outgoingGame.put(new Util.JoinGameMessage(name));
         } catch (IOException ex) {
             ex.printStackTrace();
