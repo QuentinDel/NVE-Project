@@ -29,7 +29,7 @@ import java.util.Collection;
  */
 
 public class GameClient extends SimpleApplication implements ClientStateListener {
-    
+    // Listeners and senders
     private GameClientAuthListener authListener;
     private GameClientListener gameListener;
     private GameClientSender authSender;
@@ -52,6 +52,10 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
+    
+    //Gameinformation
+    private int myPlayerID;
+    private PlayerLite myPlayerLite;
     
     public GameClient(String hostname, int port) {
         this.hostname = hostname;
@@ -108,6 +112,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         if (gameConnection != null) {
             gameConnection.close();
             //TODO close the old senderThread here
+            //Or do i just refuse to join a new server if im already connected?
         }
         try {           
             System.out.println("Connect to a game server");
@@ -138,6 +143,10 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         }
     }
     
+    public void setPlayerID(int id) {
+        this.myPlayerID = id;
+    }
+    
     public void queueRefreshMessage() {
         System.out.println("Queueing refresh message to auth server");
         try {
@@ -163,13 +172,17 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         menu.setEnabled(false);
     }
     
+    
+    
     // Setups the game by adding players, balls, etc.
-    public void putConfig(int userID, ArrayList<PlayerLite> playerList){
+    public void putConfig(ArrayList<PlayerLite> playerList){
         // Load the level
         
         // Add players
         for (final PlayerLite player : playerList){
-            if(player.getId() != userID) {
+            if(player.getId() != myPlayerID) {
+                myPlayerLite = player;
+                //TODO dont add the local player right now, we still have to choose a team before we can start playing
                 game.addPlayer(player.getId(), player.getName());
             } else {
                 game.addLocalPlayer(player.getId(), player.getName());
