@@ -6,6 +6,7 @@
 package Network.GameClient;
 
 import Network.Util;
+import Network.Util.GameConfigurationMessage;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import Network.Util.JoinAckMessage;
 import Network.Util.LobbyInformationMessage;
+import Network.Util.PlayerLite;
 
 /**
  * Listener for Packets from the Game server
@@ -38,11 +40,26 @@ public class GameClientListener implements MessageListener<Client>{
     @Override
     public void messageReceived(Client source, Message m) {
         if (m instanceof JoinAckMessage) {
-            final Util.JoinAckMessage msg = (Util.JoinAckMessage) m;
-            int myID = msg.getId();
+            final JoinAckMessage msg = (JoinAckMessage) m;
+            final int myID = msg.getId();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.setPlayerID(myID);
+                    return true;
+                }
+            });
             
-        } else if (m instanceof LobbyInformationMessage) {
-            //TODO implement
+        } else if (m instanceof GameConfigurationMessage) {
+            final GameConfigurationMessage msg = (GameConfigurationMessage) m;
+            final ArrayList<PlayerLite> players = msg.getPlayers();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.putConfig(players);
+                    return true;
+                }
+            });
             
         }
     }
