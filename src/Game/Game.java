@@ -89,7 +89,7 @@ public class Game extends BaseAppState implements ActionListener {
         
         /** Set up Physics */
         sapp.getStateManager().attach(bulletAppState);
-        bulletAppState.setDebugEnabled(true);
+        //bulletAppState.setDebugEnabled(true);
         
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -136,10 +136,10 @@ public class Game extends BaseAppState implements ActionListener {
     
     // Loads the level, creates players and adds physics to them.
     private void initLevel(String level_id) {
-        sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
-        sceneModel = sapp.getAssetManager().loadModel("main.scene");
-        sceneModel.setLocalScale(2f);
-        //sceneModel = new GrassPlayground(sapp.getAssetManager()).getNode();
+        //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
+        //sceneModel = sapp.getAssetManager().loadModel("main.scene");
+        //sceneModel.setLocalScale(2f);
+        sceneModel = new GrassPlayground(sapp.getAssetManager()).getNode();
         
         // We set up collision detection for the level by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
@@ -158,11 +158,6 @@ public class Game extends BaseAppState implements ActionListener {
         this.userID = id;
         
         // Setup the geometry for the player
-        Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
-        Material mat_default = new Material(
-            sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
-        teapot.setMaterial(mat_default);
-        playerNode.attachChild(teapot);
         playerNode.move(new Vector3f(0, 3.5f, 0));
         
         // Setup the control for the player
