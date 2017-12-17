@@ -59,9 +59,10 @@ public class Game extends BaseAppState implements ActionListener {
     
     private CapsuleCollisionShape playerShape;
     private final float stepSize = 1f;
-    private final float playerJumpSpeed = 20;
-    private final float playerFallSpeed = 30;
-    private final float playerGravity = 30;
+    private final float playerJumpSpeed = 45;
+    private final float playerFallSpeed = 40;
+    private final float playerGravity = 40;
+    private final float playerMoveSpeed = 1;
     
     @Override
     protected void initialize(Application app) {
@@ -245,9 +246,14 @@ public class Game extends BaseAppState implements ActionListener {
      */
     @Override
     public void update(float tpf) {
-        camDir.set(sapp.getCamera().getDirection()).multLocal(0.6f);
-        camLeft.set(sapp.getCamera().getLeft()).multLocal(0.4f);
+        camDir = sapp.getCamera().getDirection().clone();
+        camLeft = sapp.getCamera().getLeft().clone();
+        camDir.y = 0;
+        camLeft.y = 0;
+        camDir = camDir.normalizeLocal();
+        camLeft = camLeft.normalizeLocal();
         walkDirection.set(0, 0, 0);
+        
         if (left) {
             walkDirection.addLocal(camLeft);
         }
@@ -260,6 +266,7 @@ public class Game extends BaseAppState implements ActionListener {
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
+        walkDirection = walkDirection.multLocal(playerMoveSpeed);
         player.setWalkDirection(walkDirection);
         sapp.getCamera().setLocation(player.getPhysicsLocation());
     }
