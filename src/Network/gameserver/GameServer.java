@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Game.Game;
 import Game.Player;
 import Network.Util;
 import com.jme3.app.SimpleApplication;
@@ -31,6 +32,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     private LinkedBlockingQueue<Message> outgoingAuth;
     private GameInformationGenerator gameInfoGen;
     private Util.BiMap<Integer, Player> connPlayerMap;
+    private Game game;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -42,6 +44,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         this.port = port;
         this.hostnameAuth = hostnameAuth;
         this.connPlayerMap = new Util.BiMap();
+        this.game = new Game();
     }
 
     @Override
@@ -79,9 +82,10 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         server.addConnectionListener(new ClientConnectionListener(connPlayerMap));
 
         /* add message listener */
-        server.addMessageListener(new GameServerListener(connPlayerMap),
+        server.addMessageListener(new GameServerListener(connPlayerMap, game),
                                   Util.JoinGameMessage.class,
                                   Util.TeamJoinMessage.class);
+        game.setEnabled(true);
     }
 
     @Override

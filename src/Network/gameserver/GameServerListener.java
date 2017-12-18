@@ -5,14 +5,19 @@
  */
 package Network.gameserver;
 
+import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.GameConfigurationMessage;
 import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
+import Network.Util.PlayerLite;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  *
@@ -20,9 +25,11 @@ import com.jme3.network.MessageListener;
  */
 public class GameServerListener implements MessageListener<HostedConnection> {
     private Util.BiMap<Integer, Player> connPlayerMap;
+    private Game game;
 
-    public GameServerListener(Util.BiMap<Integer, Player> connPlayerMap) {
+    public GameServerListener(Util.BiMap<Integer, Player> connPlayerMap, Game game) {
         this.connPlayerMap = connPlayerMap;
+        this.game = game;
     }
 
     @Override
@@ -46,9 +53,13 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     connPlayerMap.put(c.getId(), newPlayer);
                     JoinAckMessage ackMsg = new JoinAckMessage(i);
                     c.send(ackMsg);
-                    //game->get players
-                    //GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
-                    //c.send(confMsg);
+                    Enumeration<Player> values = connPlayerMap.values();
+                    ArrayList<PlayerLite> players = new ArrayList<>();
+                    while (values.hasMoreElements()) {
+                        players.add(new PlayerLite(values.nextElement()));
+                    }
+                    GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
+                    c.send(confMsg);
                     assigned = true;
                     break;
                 }
@@ -66,7 +77,9 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 Player player = connPlayerMap.get(c.getId());
                 if (team == 1 || team == 2) {
                     player.setTeam(team);
-                    //send playermessage
+                    game.addPlayer(player);
+                    Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(player));
+                    c.send(pMsg);
                 }
 
             }
