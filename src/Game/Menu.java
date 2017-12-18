@@ -69,7 +69,9 @@ public class Menu extends BaseAppState implements ScreenController {
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
         
-        Screen start = createStartScreen(this);
+        nifty.addScreen("start", createStartScreen(this, "start"));
+        nifty.addScreen("lobby", createLobbyScreen(this, "lobby"));
+        nifty.addScreen("hud", createHudScreen(this, "hud"));
         nifty.gotoScreen("start");
 
         // attach the nifty display to the gui view port as a processor
@@ -120,8 +122,33 @@ public class Menu extends BaseAppState implements ScreenController {
         }
     }
     
+    public void joinTeam(int team) {
+        System.out.println("join team: "+team);
+        sapp.joinTeam(team);
+    }
+    
+    public void joinRed() {
+        joinTeam(1);
+    }
+    
+    public void joinBlue() {
+        joinTeam(2);
+    }
+    
     public void refreshServerbrowser() {
         sapp.queueRefreshMessage();
+    }
+    
+    public void gotoMenu() {
+        nifty.gotoScreen("start");
+    }
+    
+    public void gotoLobby() {
+        nifty.gotoScreen("lobby");
+    }
+    
+    public void gotoHud() {
+        nifty.gotoScreen("hud");
     }
     
     @Override
@@ -155,10 +182,10 @@ public class Menu extends BaseAppState implements ScreenController {
         nifty.gotoScreen("end");
     }
     
-    public Screen createStartScreen(final Menu menu) {
-        return new ScreenBuilder("start") {{
+    public Screen createStartScreen(final Menu menu, String screenID) {
+        return new ScreenBuilder(screenID) {{
             controller(menu);
-            layer(new LayerBuilder("backgroundr") {{
+            layer(new LayerBuilder("background") {{
                 backgroundColor("#000f");
             }});
             layer(new LayerBuilder("foreground") {{
@@ -244,6 +271,62 @@ public class Menu extends BaseAppState implements ScreenController {
                         }});
                     }});
                 }});
+            }});
+        }}.build(nifty);
+    }
+    
+    public Screen createLobbyScreen(final Menu menu, String screenID) {
+        return new ScreenBuilder(screenID) {{
+            controller(menu);
+            layer(new LayerBuilder("foreground") {{
+                childLayoutVertical();
+                panel(new PanelBuilder() {{
+                    alignCenter();
+                    height("30%");
+                }});
+                panel(new PanelBuilder() {{
+                    childLayoutHorizontal();
+                    backgroundColor("#f008");
+                    alignCenter();
+                    height("20%");
+                    width("75%");
+                    panel(new PanelBuilder() {{
+                        childLayoutCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        style("nifty-panel-red");
+                        control(new ButtonBuilder("JoinRed", "Join Red") {{
+                            valignCenter();
+                            alignCenter();
+                            interactOnClick("joinRed()");
+                        }});
+                    }});
+                    panel(new PanelBuilder() {{
+                        childLayoutCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        style("nifty-panel-red");
+                        control(new ButtonBuilder("JoinBlue", "Join Blue") {{
+                            valignCenter();
+                            alignCenter();
+                            x(SizeValue.px(100));
+                            y(SizeValue.px(100));
+
+                            interactOnClick("joinBlue()");
+                        }});
+                    }});
+                }});
+            }});
+        }}.build(nifty);
+    }
+    
+    public Screen createHudScreen(final Menu menu, String screenID) {
+        return new ScreenBuilder(screenID) {{
+            controller(menu);
+            layer(new LayerBuilder("foreground") {{
+                
             }});
         }}.build(nifty);
     }
