@@ -98,8 +98,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         }
         toMenu();
         */
-        menu.setEnabled(false);
-        game.setEnabled(true);
+        //menu.setEnabled(false);
+        //game.setEnabled(true);
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
@@ -109,12 +109,14 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     }
     
     public void joinServer(GameServerLite server, String name) {
+        toLobby();
+        /*
         if (gameConnection != null) {
             gameConnection.close();
             //TODO close the old senderThread here
             //Or do i just refuse to join a new server if im already connected?
         }
-        try {           
+        try {
             System.out.println("Connect to a game server");
             //Initialize the queue to use to send informations
             outgoingGame = new LinkedBlockingQueue<>();
@@ -141,6 +143,15 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+*/
+    }
+    
+    public void joinTeam(int team) {
+        try {
+            outgoingGame.put(new Util.TeamJoinMessage(team));
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public void setPlayerID(int id) {
@@ -160,19 +171,19 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     // Go to the menu
     public void toMenu() {
-        //TODO use gotoscreen, let menu appstate always be enabled
-        menu.setEnabled(true);
-        //Disable game appstate, etc
+        menu.gotoMenu();
         game.setEnabled(false);
+    }
+    
+    public void toLobby() {
+        menu.gotoLobby();
+        game.setEnabled(true);
     }
     
     // Go to the game
     public void toGame() {
-        game.setEnabled(true);
-        menu.setEnabled(false);
+        menu.gotoHud();
     }
-    
-    
     
     // Setups the game by adding players, balls, etc.
     public void putConfig(ArrayList<PlayerLite> playerList){
