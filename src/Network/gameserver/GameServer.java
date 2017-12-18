@@ -45,6 +45,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         this.hostnameAuth = hostnameAuth;
         this.connPlayerMap = new Util.BiMap();
         this.game = new Game();
+
+        this.stateManager.attach(game);
     }
 
     @Override
