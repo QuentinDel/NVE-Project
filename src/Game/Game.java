@@ -15,6 +15,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -46,7 +47,8 @@ public class Game extends BaseAppState implements ActionListener {
     private Spatial sceneModel;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
-    private CharacterControl player;
+    private Player playerNode;
+    private BetterCharacterControl playerControl;
     private Vector3f walkDirection = new Vector3f();
     private boolean left = false, right = false, up = false, down = false;
     
@@ -57,11 +59,12 @@ public class Game extends BaseAppState implements ActionListener {
     private ArrayList<Player> playerStore;
     private int userID;
     
-    private CapsuleCollisionShape playerShape;
-    private final float stepSize = 1f;
-    private final float playerJumpSpeed = 20;
-    private final float playerFallSpeed = 30;
-    private final float playerGravity = 30;
+    private final float playerRadius = 1.5f;
+    private final float playerHeight = 6f;
+    private final float playerMass = 1f;
+    private final float playerJumpSpeed = 22;
+    private final float playerGravity = 50;
+    private final float playerMoveSpeed = 20;
     
     @Override
     protected void initialize(Application app) {
@@ -89,7 +92,7 @@ public class Game extends BaseAppState implements ActionListener {
         
         /** Set up Physics */
         sapp.getStateManager().attach(bulletAppState);
-        //bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
         
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -98,7 +101,6 @@ public class Game extends BaseAppState implements ActionListener {
         setUpLight();
 
         // Load and add physics to the level and players
-        playerShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         initLevel("town");
         addLocalPlayer(0, "Bob");
         addPlayer(1, "John");
@@ -155,20 +157,20 @@ public class Game extends BaseAppState implements ActionListener {
     
     public void addLocalPlayer(int id,  String name) {
         // Setup the player node
-        Player playerNode = new Player(id, name);
+        playerNode = new Player(id, name);
         this.userID = id;
         
         // Setup the geometry for the player
         playerNode.move(new Vector3f(0, 3.5f, 0));
         
         // Setup the control for the player
-        player = new CharacterControl(playerShape, stepSize);
-        player.setJumpSpeed(playerJumpSpeed);
-        player.setFallSpeed(playerFallSpeed);
-        player.setGravity(playerGravity);
-        player.setPhysicsLocation(new Vector3f(0, 10, 0));
-        playerNode.addControl(player);
-        bulletAppState.getPhysicsSpace().add(player);
+        //player = new CharacterControl(playerShape, stepSize);
+        playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
+        playerNode.addControl(playerControl);
+        playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
+        playerControl.setGravity(new Vector3f(0, playerGravity, 0));
+        playerControl.warp(new Vector3f(0, 10, 0));
+        bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
     }
     
@@ -185,13 +187,12 @@ public class Game extends BaseAppState implements ActionListener {
         playerNode.move(new Vector3f(20, 3.5f, 0));
         
         // Setup the control for the player
-        CharacterControl player = new CharacterControl(playerShape, stepSize);
-        player.setJumpSpeed(playerJumpSpeed);
-        player.setFallSpeed(playerFallSpeed);
-        player.setGravity(playerGravity);
-        player.setPhysicsLocation(new Vector3f(0, 10, 0));
-        playerNode.addControl(player);
-        bulletAppState.getPhysicsSpace().add(player);
+        BetterCharacterControl playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
+        playerNode.addControl(playerControl);
+        playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
+        playerControl.setGravity(new Vector3f(0, playerGravity, 0));
+        playerControl.warp(new Vector3f(0, 10, 0));
+        bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
     }
     
@@ -213,7 +214,7 @@ public class Game extends BaseAppState implements ActionListener {
         ball_geo.move(new Vector3f(-5, 6f, -5));
         
         CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
-        RigidBodyControl ball_phy = new RigidBodyControl(ball_shape, 0.1f);
+        RigidBodyControl ball_phy = new RigidBodyControl(ball_shape, 10f);
         ball_geo.addControl(ball_phy);
         bulletAppState.getPhysicsSpace().add(ball_phy);
     }
@@ -230,11 +231,11 @@ public class Game extends BaseAppState implements ActionListener {
         } else if (binding.equals("Down")) {
           down = isPressed;
         } else if (binding.equals("Jump")) {
-          if (isPressed) { player.jump(); }
-        } /*else if (binding.equals("test")) {
+          if (isPressed) { playerControl.jump(); }
+        } else if (binding.equals("test")) {
             ball_geo.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(-10, 5f, -10));
-            ball_geo.getControl(RigidBodyControl.class).setLinearVelocity(new Vector3f(10, 0, 10));
-        }*/
+            ball_geo.getControl(RigidBodyControl.class).setLinearVelocity(new Vector3f(30, 0, 30));
+        }
     }
 
     /**
@@ -246,9 +247,14 @@ public class Game extends BaseAppState implements ActionListener {
      */
     @Override
     public void update(float tpf) {
-        camDir.set(sapp.getCamera().getDirection()).multLocal(0.6f);
-        camLeft.set(sapp.getCamera().getLeft()).multLocal(0.4f);
+        camDir = sapp.getCamera().getDirection().clone();
+        camLeft = sapp.getCamera().getLeft().clone();
+        camDir.y = 0;
+        camLeft.y = 0;
+        camDir = camDir.normalizeLocal();
+        camLeft = camLeft.normalizeLocal();
         walkDirection.set(0, 0, 0);
+        
         if (left) {
             walkDirection.addLocal(camLeft);
         }
@@ -261,8 +267,9 @@ public class Game extends BaseAppState implements ActionListener {
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
-        player.setWalkDirection(walkDirection);
-        sapp.getCamera().setLocation(player.getPhysicsLocation());
+        walkDirection = walkDirection.multLocal(playerMoveSpeed);
+        playerControl.setWalkDirection(walkDirection);
+        sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, playerHeight*0.8f, 0)));
     }
     
     @Override

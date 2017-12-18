@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import Network.Util.JoinAckMessage;
 import Network.Util.LobbyInformationMessage;
 import Network.Util.PlayerLite;
+import Network.Util.PlayerMessage;
 
 /**
  * Listener for Packets from the Game server
@@ -60,7 +61,17 @@ public class GameClientListener implements MessageListener<Client>{
                     return true;
                 }
             });
-            
+        } else if (m instanceof PlayerMessage) {
+            final PlayerMessage msg = (PlayerMessage) m;
+            final PlayerLite myPlayer = msg.getPlayer();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    //gameClient.game.addLocalPlayer(myPlayer);
+                    gameClient.toGame();
+                    return true;
+                }
+            });
         }
     }
 }
