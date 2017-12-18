@@ -130,6 +130,8 @@ public class Util {
             this.name = player.getName();
             this.position = player.getPosition();
             this.direction = player.getDirection();
+            System.out.println("position: "+this.position);
+            System.out.println("direction: "+this.direction);
             this.team = player.getTeam();
         }
 
