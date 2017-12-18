@@ -10,6 +10,7 @@ import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 import Network.Util;
+import Network.Util.JoinAckMessage;
 
 /**
  *

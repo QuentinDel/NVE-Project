@@ -56,14 +56,19 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     Player newPlayer = new Player(i, name);
                     connPlayerMap.put(c.getId(), newPlayer);
                     JoinAckMessage ackMsg = new JoinAckMessage(i);
+                    ackMsg.setReliable(true);
                     //c.send(ackMsg);
                     server.broadcast(Filters.equalTo(c), ackMsg);
                     Enumeration<Player> values = connPlayerMap.values();
                     ArrayList<PlayerLite> players = new ArrayList<>();
                     while (values.hasMoreElements()) {
-                        players.add(new PlayerLite(values.nextElement()));
+                        Player p = values.nextElement();
+                        if (p.getTeam() == 1 || p.getTeam() == 2) {
+                            players.add(new PlayerLite());
+                        }
                     }
                     GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
+                    confMsg.setReliable(true);
                     //c.send(confMsg);
                     server.broadcast(Filters.equalTo(c), confMsg);
                     assigned = true;
@@ -85,7 +90,9 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     player.setTeam(team);
                     game.addPlayer(player);
                     Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(player));
-                    c.send(pMsg);
+                    pMsg.setReliable(true);
+                    //c.send(pMsg);
+                    server.broadcast(Filters.equalTo(c), pMsg);
                 }
 
             }

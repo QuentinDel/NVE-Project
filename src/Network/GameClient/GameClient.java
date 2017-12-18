@@ -48,8 +48,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     private Collection<GameServerLite> servers;
     
     // AppStates
-    private Menu menu = new Menu();
-    private Game game = new Game();
+    protected Menu menu = new Menu();
+    protected Game game = new Game();
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
@@ -75,7 +75,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     public void simpleInitApp() {
         //setDisplayStatView(false);
         //setDisplayFps(false);
-        /*
+        menu.setEnabled(true);
+        
         try {
             //Initialize the queue to use to send informations
             outgoingAuth = new LinkedBlockingQueue<>();
@@ -97,8 +98,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             this.destroy();
             this.stop();
         }
-        toMenu();
-        */
+        
         //menu.setEnabled(false);
         //game.setEnabled(true);
     }
@@ -111,7 +111,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     public void joinServer(GameServerLite server, String name) {
         toLobby();
-        /*
+        //putConfig(new ArrayList());
         if (gameConnection != null) {
             gameConnection.close();
             //TODO close the old senderThread here
@@ -127,14 +127,14 @@ public class GameClient extends SimpleApplication implements ClientStateListener
 
             //Setup the listener for the game server
             gameListener = new GameClientListener(gameConnection, this);
-            gameConnection.addMessageListener(authListener,
+            gameConnection.addMessageListener(gameListener,
                 JoinAckMessage.class,
-                LobbyInformationMessage.class,
-                GameInformationMessage.class);
+                GameConfigurationMessage.class,
+                PlayerMessage.class);
             
             // finally start the communication channel to the server
-            gameConnection.addClientStateListener(this);
             gameConnection.start();
+            gameConnection.addClientStateListener(this);
             new Thread(gameSender).start();
             outgoingGame.put(new Util.JoinGameMessage(name));
         } catch (IOException ex) {
@@ -144,7 +144,6 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
-*/
     }
     
     public void joinTeam(int team) {
@@ -189,18 +188,14 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     // Setups the game by adding players, balls, etc.
     public void putConfig(ArrayList<PlayerLite> playerList){
         // Load the level
+        game.initLevel("town");
         
         // Add players
         for (final PlayerLite player : playerList){
-            if(player.getId() != myPlayerID) {
-                myPlayerLite = player;
-                //TODO dont add the local player right now, we still have to choose a team before we can start playing
-                game.addPlayer(new Player(player));
-            } else {
-                game.addLocalPlayer(player.getId(), player.getName());
-            }  
+            game.addPlayer(new Player(player));
         }
         // Add the ball
+        game.addBall();
         
         // Set the team scores
     }

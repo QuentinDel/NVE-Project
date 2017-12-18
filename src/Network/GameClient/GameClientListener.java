@@ -5,6 +5,7 @@
  */
 package Network.GameClient;
 
+import Game.Player;
 import Network.Util;
 import Network.Util.GameConfigurationMessage;
 import com.jme3.network.Client;
@@ -67,7 +68,7 @@ public class GameClientListener implements MessageListener<Client>{
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    //gameClient.game.addLocalPlayer(myPlayer);
+                    gameClient.game.addLocalPlayer(new Player(myPlayer));
                     gameClient.toGame();
                     return true;
                 }

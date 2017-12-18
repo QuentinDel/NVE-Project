@@ -99,12 +99,6 @@ public class Game extends BaseAppState implements ActionListener {
         sapp.getFlyByCamera().setMoveSpeed(100);
         setUpKeys();
         setUpLight();
-
-        // Load and add physics to the level and players
-        initLevel("town");
-        addLocalPlayer(0, "Bob");
-        //addPlayer(1, "John");
-        addBall();
     }
 
     private void setUpLight() {
@@ -137,7 +131,7 @@ public class Game extends BaseAppState implements ActionListener {
     }
     
     // Loads the level, creates players and adds physics to them.
-    private void initLevel(String level_id) {
+    public void initLevel(String level_id) {
         //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
         //sceneModel = sapp.getAssetManager().loadModel("main.scene");
         //sceneModel.setLocalScale(2f);
@@ -155,10 +149,10 @@ public class Game extends BaseAppState implements ActionListener {
         bulletAppState.getPhysicsSpace().add(landscape);
     }
     
-    public void addLocalPlayer(int id,  String name) {
+    public void addLocalPlayer(Player p) {
         // Setup the player node
-        playerNode = new Player(id, name);
-        this.userID = id;
+        playerNode = p;
+        this.userID = p.getId();
         
         // Setup the geometry for the player
         playerNode.move(new Vector3f(0, 3.5f, 0));
@@ -193,7 +187,7 @@ public class Game extends BaseAppState implements ActionListener {
         sapp.getRootNode().attachChild(p);
     }
     
-    private void addBall() {
+    public void addBall() {
         Sphere sphere = new Sphere(32, 32, 2f, true, false);
         sphere.setTextureMode(TextureMode.Projected);
         
@@ -244,29 +238,31 @@ public class Game extends BaseAppState implements ActionListener {
      */
     @Override
     public void update(float tpf) {
-        camDir = sapp.getCamera().getDirection().clone();
-        camLeft = sapp.getCamera().getLeft().clone();
-        camDir.y = 0;
-        camLeft.y = 0;
-        camDir = camDir.normalizeLocal();
-        camLeft = camLeft.normalizeLocal();
-        walkDirection.set(0, 0, 0);
-        
-        if (left) {
-            walkDirection.addLocal(camLeft);
+        if (playerNode != null && playerControl != null) {
+            camDir = sapp.getCamera().getDirection().clone();
+            camLeft = sapp.getCamera().getLeft().clone();
+            camDir.y = 0;
+            camLeft.y = 0;
+            camDir = camDir.normalizeLocal();
+            camLeft = camLeft.normalizeLocal();
+            walkDirection.set(0, 0, 0);
+
+            if (left) {
+                walkDirection.addLocal(camLeft);
+            }
+            if (right) {
+                walkDirection.addLocal(camLeft.negate());
+            }
+            if (up) {
+                walkDirection.addLocal(camDir);
+            }
+            if (down) {
+                walkDirection.addLocal(camDir.negate());
+            }
+            walkDirection = walkDirection.multLocal(playerMoveSpeed);
+            playerControl.setWalkDirection(walkDirection);
+            sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, playerHeight*0.8f, 0)));
         }
-        if (right) {
-            walkDirection.addLocal(camLeft.negate());
-        }
-        if (up) {
-            walkDirection.addLocal(camDir);
-        }
-        if (down) {
-            walkDirection.addLocal(camDir.negate());
-        }
-        walkDirection = walkDirection.multLocal(playerMoveSpeed);
-        playerControl.setWalkDirection(walkDirection);
-        sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, playerHeight*0.8f, 0)));
     }
     
     @Override
