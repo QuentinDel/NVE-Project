@@ -140,14 +140,17 @@ public class Menu extends BaseAppState implements ScreenController {
     }
     
     public void gotoMenu() {
+        sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("start");
     }
     
     public void gotoLobby() {
+        sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("lobby");
     }
     
     public void gotoHud() {
+        sapp.getInputManager().setCursorVisible(false);
         nifty.gotoScreen("hud");
     }
     
