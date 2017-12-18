@@ -23,4 +23,5 @@ public abstract class PlaygroundAbstract implements PlaygroundConstant{
   public Node getNode(){
       return board;
   } 
+  
 }

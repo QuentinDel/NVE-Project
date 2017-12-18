@@ -52,9 +52,15 @@ import com.jme3.util.SkyFactory;
  */
 
 public class GrassPlayground extends PlaygroundAbstract {
+    
+  private Node playgroundWithoutLine;
+  private Node playgroundLines;
 
   public GrassPlayground(AssetManager assetManager){
       super(assetManager);
+      board = new Node("board");
+      playgroundWithoutLine = new Node("PlaygroundWlines");
+      playgroundLines = new Node("PlaygroundLines");
       initialize();
   } 
 
@@ -204,19 +210,32 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node scoreZoneRed = scoreZoneBlue.clone(true);
     scoreZoneRed.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
 
+    playgroundWithoutLine.attachChild(walls);
+    playgroundWithoutLine.attachChild(playgroundNode);
 
-    board = new Node("board");
-    board.attachChild(walls);
-    board.attachChild(linesNode);
-    board.attachChild(playgroundNode);
-    board.attachChild(goalZoneNode);
-    board.attachChild(otherGoalZone);
-    board.attachChild(goal);
-    board.attachChild(otherGoal);
-    board.attachChild(scoreZoneBlue);
-    board.attachChild(scoreZoneRed);
-    board.attachChild(skybox);
+    playgroundWithoutLine.attachChild(goal);
+    playgroundWithoutLine.attachChild(otherGoal);
+    playgroundWithoutLine.attachChild(scoreZoneBlue);
+    playgroundWithoutLine.attachChild(scoreZoneRed);
+
     
+    playgroundLines.attachChild(skybox);
+    playgroundLines.attachChild(linesNode);
+    playgroundLines.attachChild(goalZoneNode);
+    playgroundLines.attachChild(otherGoalZone);
     
+    board.attachChild(playgroundWithoutLine);
+    board.attachChild(playgroundLines);
+   
+    
+  }
+  
+  
+  public Node getPlayGroundWithoutLine(){
+      return playgroundWithoutLine;
+  }
+  
+  public Node playgroundLines(){
+      return playgroundLines;
   }
 }

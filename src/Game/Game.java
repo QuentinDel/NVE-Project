@@ -141,12 +141,13 @@ public class Game extends BaseAppState implements ActionListener {
         //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
         //sceneModel = sapp.getAssetManager().loadModel("main.scene");
         //sceneModel.setLocalScale(2f);
-        sceneModel = new GrassPlayground(sapp.getAssetManager()).getNode();
+        GrassPlayground playground = new GrassPlayground(sapp.getAssetManager());
+        sceneModel = playground.getNode();
         
         // We set up collision detection for the level by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
         CollisionShape sceneShape =
-                CollisionShapeFactory.createMeshShape(sceneModel);
+                CollisionShapeFactory.createMeshShape(playground.getPlayGroundWithoutLine());
         landscape = new RigidBodyControl(sceneShape, 0);
         sceneModel.addControl(landscape);
         
