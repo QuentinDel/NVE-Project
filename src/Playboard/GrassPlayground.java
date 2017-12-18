@@ -71,6 +71,8 @@ public class GrassPlayground extends PlaygroundAbstract {
     playgroundNode.rotate(-90*FastMath.DEG_TO_RAD , 0f , 0f);
     playgroundNode.setLocalTranslation(-PLAYGROUND_LENGTH/2, 0f, PLAYGROUND_WIDTH/2);
   
+    //Creation of the skybox
+    Spatial skybox = SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", SkyFactory.EnvMapType.CubeMap);
     
     Node linesNode = new Node("lines"); 
     
@@ -79,7 +81,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     Geometry leftLine = new Geometry("line", lengthLine);
     Box widthLine = new Box(LINE_THICKNESS, LINE_HEIGHT, LINE_WIDTH);
     Geometry topLine = new Geometry("line", widthLine);
-    Cylinder cylinderMesh = new Cylinder(32, 32, MIDDLE_DOT_RADIUS, 0.01f, true, false);
+    Cylinder cylinderMesh = new Cylinder(0, 16, MIDDLE_DOT_RADIUS, 0.01f, true, false);
     Geometry middleDot = new Geometry("Cylinder", cylinderMesh);
     
     //Geometry for the goal keeper zone
@@ -192,6 +194,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
     wallLengthRight.setLocalTranslation(0f, WALL_HEIGHT, BOARD_WIDTH);
     goalScoreBlue.setLocalTranslation(BOARD_LENGTH - 0.01f, SCORE_ZONE_HEIGHT, 0f);
+    skybox.setLocalTranslation(0, -50, 0);
     
     
     Node otherGoalZone = goalZoneNode.clone(true);
@@ -212,7 +215,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     board.attachChild(otherGoal);
     board.attachChild(scoreZoneBlue);
     board.attachChild(scoreZoneRed);
-    board.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", SkyFactory.EnvMapType.CubeMap));
+    board.attachChild(skybox);
     
     
   }
