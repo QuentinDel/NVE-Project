@@ -217,8 +217,9 @@ public class GrassPlayground extends PlaygroundAbstract {
     playgroundWithoutLine.attachChild(otherGoal);
     playgroundWithoutLine.attachChild(scoreZoneBlue);
     playgroundWithoutLine.attachChild(scoreZoneRed);
-    playgroundWithoutLine.attachChild(skybox);
+
     
+    playgroundLines.attachChild(skybox);
     playgroundLines.attachChild(linesNode);
     playgroundLines.attachChild(goalZoneNode);
     playgroundLines.attachChild(otherGoalZone);
