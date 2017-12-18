@@ -136,10 +136,10 @@ public class Game extends BaseAppState implements ActionListener {
     
     // Loads the level, creates players and adds physics to them.
     private void initLevel(String level_id) {
-        sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
-        sceneModel = sapp.getAssetManager().loadModel("main.scene");
-        sceneModel.setLocalScale(2f);
-        //sceneModel = new GrassPlayground(sapp.getAssetManager()).getNode();
+        //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
+        //sceneModel = sapp.getAssetManager().loadModel("main.scene");
+        //sceneModel.setLocalScale(2f);
+        sceneModel = new GrassPlayground(sapp.getAssetManager()).getNode();
         
         // We set up collision detection for the level by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
