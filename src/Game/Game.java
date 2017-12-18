@@ -175,7 +175,6 @@ public class Game extends BaseAppState implements ActionListener {
             sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
         teapot.setMaterial(mat_default);
         p.attachChild(teapot);
-        p.move(new Vector3f(20, 3.5f, 0));
         
         // Setup the control for the player
         BetterCharacterControl playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
