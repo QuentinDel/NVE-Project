@@ -60,6 +60,9 @@ public class Player extends Node{
     }
 
     public Vector3f getPosition() {
+        if (this.getControl(CharacterControl.class) == null) {
+            return new Vector3f();
+        }
         return this.getControl(CharacterControl.class).getPhysicsLocation();
     }
 
@@ -68,6 +71,9 @@ public class Player extends Node{
     }
 
     public Vector3f getDirection() {
+        if (this.getControl(CharacterControl.class) == null) {
+            return new Vector3f();
+        }
         return this.getControl(CharacterControl.class).getViewDirection();
     }
 
