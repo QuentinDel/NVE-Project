@@ -103,7 +103,7 @@ public class Game extends BaseAppState implements ActionListener {
         // Load and add physics to the level and players
         initLevel("town");
         addLocalPlayer(0, "Bob");
-        addPlayer(1, "John");
+        //addPlayer(1, "John");
         addBall();
     }
 
@@ -173,26 +173,23 @@ public class Game extends BaseAppState implements ActionListener {
         sapp.getRootNode().attachChild(playerNode);
     }
     
-    public void addPlayer(int id,  String name) {
-        // Setup the player node
-        Player playerNode = new Player(id, name);
-        
+    public void addPlayer(Player p) {
         // Setup the geometry for the player
         Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
         Material mat_default = new Material(
             sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
         teapot.setMaterial(mat_default);
-        playerNode.attachChild(teapot);
-        playerNode.move(new Vector3f(20, 3.5f, 0));
+        p.attachChild(teapot);
+        p.move(new Vector3f(20, 3.5f, 0));
         
         // Setup the control for the player
         BetterCharacterControl playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
-        playerNode.addControl(playerControl);
+        p.addControl(playerControl);
         playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
         playerControl.warp(new Vector3f(0, 10, 0));
         bulletAppState.getPhysicsSpace().add(playerControl);
-        sapp.getRootNode().attachChild(playerNode);
+        sapp.getRootNode().attachChild(p);
     }
     
     private void addBall() {

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import Game.Menu;
+import Game.Player;
 import Playboard.GrassPlayground;
 import com.jme3.network.Message;
 import java.util.ArrayList;
@@ -194,7 +195,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             if(player.getId() != myPlayerID) {
                 myPlayerLite = player;
                 //TODO dont add the local player right now, we still have to choose a team before we can start playing
-                game.addPlayer(player.getId(), player.getName());
+                game.addPlayer(new Player(player));
             } else {
                 game.addLocalPlayer(player.getId(), player.getName());
             }  
