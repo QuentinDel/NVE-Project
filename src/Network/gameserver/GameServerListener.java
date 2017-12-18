@@ -64,7 +64,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     while (values.hasMoreElements()) {
                         Player p = values.nextElement();
                         if (p.getTeam() == 1 || p.getTeam() == 2) {
-                            players.add(new PlayerLite());
+                            players.add(new PlayerLite(p));
                         }
                     }
                     GameConfigurationMessage confMsg = new GameConfigurationMessage(players);

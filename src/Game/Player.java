@@ -6,7 +6,7 @@
 package Game;
 
 import Network.Util.PlayerLite;
-import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -60,25 +60,25 @@ public class Player extends Node{
     }
 
     public Vector3f getPosition() {
-        if (this.getControl(CharacterControl.class) == null) {
+        if (this.getControl(BetterCharacterControl.class) == null) {
             return new Vector3f();
         }
-        return this.getControl(CharacterControl.class).getPhysicsLocation();
+        return this.getWorldTranslation();
     }
 
     public void setPosition(Vector3f position) {
-        this.getControl(CharacterControl.class).setPhysicsLocation(position);
+        this.getControl(BetterCharacterControl.class).warp(position);
     }
 
     public Vector3f getDirection() {
-        if (this.getControl(CharacterControl.class) == null) {
+        if (this.getControl(BetterCharacterControl.class) == null) {
             return new Vector3f();
         }
-        return this.getControl(CharacterControl.class).getViewDirection();
+        return this.getControl(BetterCharacterControl.class).getViewDirection();
     }
 
     public void setDirection(Vector3f direction) {
-        this.getControl(CharacterControl.class).setViewDirection(direction);
+        this.getControl(BetterCharacterControl.class).setViewDirection(direction);
     }
 
     public void updatePlayer(PlayerLite playerData) {

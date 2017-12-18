@@ -192,6 +192,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         
         // Add players
         for (final PlayerLite player : playerList){
+            System.out.println("player pos: "+player.getPosition());
+            System.out.println("player dir: "+player.getDirection());
             game.addPlayer(new Player(player));
         }
         // Add the ball
