@@ -84,7 +84,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         server.addConnectionListener(new ClientConnectionListener(connPlayerMap));
 
         /* add message listener */
-        server.addMessageListener(new GameServerListener(connPlayerMap, game),
+        server.addMessageListener(new GameServerListener(connPlayerMap, game, server),
                                   Util.JoinGameMessage.class,
                                   Util.TeamJoinMessage.class);
         game.setEnabled(true);

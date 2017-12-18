@@ -13,9 +13,11 @@ import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.PlayerLite;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
+import com.jme3.network.Server;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -26,10 +28,12 @@ import java.util.Enumeration;
 public class GameServerListener implements MessageListener<HostedConnection> {
     private Util.BiMap<Integer, Player> connPlayerMap;
     private Game game;
+    private Server server;
 
-    public GameServerListener(Util.BiMap<Integer, Player> connPlayerMap, Game game) {
+    public GameServerListener(Util.BiMap<Integer, Player> connPlayerMap, Game game, Server server) {
         this.connPlayerMap = connPlayerMap;
         this.game = game;
+        this.server = server;
     }
 
     @Override
@@ -52,14 +56,16 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     Player newPlayer = new Player(i, name);
                     connPlayerMap.put(c.getId(), newPlayer);
                     JoinAckMessage ackMsg = new JoinAckMessage(i);
-                    c.send(ackMsg);
+                    //c.send(ackMsg);
+                    server.broadcast(Filters.equalTo(c), ackMsg);
                     Enumeration<Player> values = connPlayerMap.values();
                     ArrayList<PlayerLite> players = new ArrayList<>();
                     while (values.hasMoreElements()) {
                         players.add(new PlayerLite(values.nextElement()));
                     }
                     GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
-                    c.send(confMsg);
+                    //c.send(confMsg);
+                    server.broadcast(Filters.equalTo(c), confMsg);
                     assigned = true;
                     break;
                 }
