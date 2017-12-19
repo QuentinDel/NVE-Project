@@ -36,7 +36,8 @@ public class Util {
             GameConfigurationMessage.class,
             TeamJoinMessage.class,
             PlayerMessage.class,
-            PlayerLite.class
+            PlayerLite.class,
+            PlayerMovement.class
         );
     }
     
@@ -284,6 +285,26 @@ public class Util {
         public PlayerLite getPlayer() {
             return player;
         }
+    }
+    
+    @Serializable
+    public static class PlayerMovement extends MyAbstractMessage{
+        private final Vector3f velocity;
+        private final Vector3f viewDirection;
+        
+        public PlayerMovement(Vector3f velocity, Vector3f viewDirection){
+            this.velocity = velocity;
+            this.viewDirection = viewDirection;
+        }
+        
+        public Vector3f getVelocity(){
+            return velocity;
+        }
+        
+        public Vector3f getViewDirection(){
+            return viewDirection;
+        }
+        
     }
 
     public static class BiMap<K,V> {
