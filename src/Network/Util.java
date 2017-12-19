@@ -39,7 +39,8 @@ public class Util {
             PlayerLite.class,
             PlayerMovement.class,
             PlayerPhysics.class,
-            UpdatePhysics.class
+            UpdatePhysics.class,
+            JumpMessage.class
         );
     }
     
@@ -342,6 +343,23 @@ public class Util {
             return playersPhys;
         }
     }
+    
+    @Serializable
+    public static class JumpMessage extends MyAbstractMessage{
+        private int id;
+        
+        public JumpMessage(){}
+        
+        public JumpMessage(int id){
+            this.id = id;
+        }
+        
+        public int getId(){
+            return id;
+        }
+    }
+    
+    
     
    
 
