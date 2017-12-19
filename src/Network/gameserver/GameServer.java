@@ -16,6 +16,7 @@ import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -32,7 +33,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     private LinkedBlockingQueue<Message> outgoingAuth;
     private GameInformationGenerator gameInfoGen;
     private Util.BiMap<Integer, Player> connPlayerMap;
-    private Game game;
+    private Game game = new Game();
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -44,7 +45,6 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         this.port = port;
         this.hostnameAuth = hostnameAuth;
         this.connPlayerMap = new Util.BiMap();
-        this.game = new Game();
 
         this.stateManager.attach(game);
     }
@@ -88,7 +88,6 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                                   Util.JoinGameMessage.class,
                                   Util.TeamJoinMessage.class);
         game.setEnabled(true);
-        game.initLevel("playground");
     }
 
     @Override

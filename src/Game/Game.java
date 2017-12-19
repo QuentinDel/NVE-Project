@@ -40,32 +40,28 @@ import java.util.ArrayList;
  *
  * @author Rickard
  */
-public class Game extends BaseAppState implements ActionListener {
+public class Game extends BaseAppState {
     
     private SimpleApplication sapp;
     private boolean needCleaning = false;
+    
+    protected PlayerMovement move = new PlayerMovement();
     
     private Spatial sceneModel;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private Player playerNode;
     private BetterCharacterControl playerControl;
-    private Vector3f walkDirection = new Vector3f();
-    private boolean left = false, right = false, up = false, down = false;
-    
-    private Vector3f camDir = new Vector3f();
-    private Vector3f camLeft = new Vector3f();
     
     private Geometry ball_geo;
     private ArrayList<Player> playerStore;
     private int userID;
     
-    private final float playerRadius = 1.5f;
-    private final float playerHeight = 6f;
-    private final float playerMass = 1f;
-    private final float playerJumpSpeed = 22;
-    private final float playerGravity = 50;
-    private final float playerMoveSpeed = 20;
+    protected final float playerRadius = 1.5f;
+    protected final float playerHeight = 6f;
+    protected final float playerMass = 1f;
+    protected final float playerJumpSpeed = 22;
+    protected final float playerGravity = 50;
     
     @Override
     protected void initialize(Application app) {
@@ -73,6 +69,7 @@ public class Game extends BaseAppState implements ActionListener {
         sapp = (SimpleApplication) app;
         
         bulletAppState = new BulletAppState();
+        sapp.getStateManager().attach(move);
     }
    
     @Override
@@ -88,7 +85,7 @@ public class Game extends BaseAppState implements ActionListener {
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
         }
-        
+        move.setEnabled(true);
         playerStore = new ArrayList(); //Do i even need this?
         
         /** Set up Physics */
@@ -98,7 +95,7 @@ public class Game extends BaseAppState implements ActionListener {
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         sapp.getFlyByCamera().setMoveSpeed(100);
-        setUpKeys();
+        //setUpKeys();
         setUpLight();
     }
 
@@ -112,23 +109,6 @@ public class Game extends BaseAppState implements ActionListener {
         dl.setColor(ColorRGBA.White);
         dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         sapp.getRootNode().addLight(dl);
-    }
-
-    /** We over-write some navigational key mappings here, so we can
-     * add physics-controlled walking and jumping: */
-    private void setUpKeys() {
-        sapp.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-        sapp.getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-        sapp.getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-        sapp.getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-        sapp.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-        sapp.getInputManager().addMapping("test", new KeyTrigger(KeyInput.KEY_K));
-        sapp.getInputManager().addListener(this, "Left");
-        sapp.getInputManager().addListener(this, "Right");
-        sapp.getInputManager().addListener(this, "Up");
-        sapp.getInputManager().addListener(this, "Down");
-        sapp.getInputManager().addListener(this, "Jump");
-        sapp.getInputManager().addListener(this, "test");
     }
     
     // Loads the level, creates players and adds physics to them.
@@ -167,6 +147,8 @@ public class Game extends BaseAppState implements ActionListener {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        
+        move.setPlayer(playerNode, playerControl);
     }
     
     public void addPlayer(PlayerLite p) {
@@ -214,59 +196,12 @@ public class Game extends BaseAppState implements ActionListener {
         bulletAppState.getPhysicsSpace().add(ball_phy);
     }
 
-    /** These are our custom actions triggered by key presses.
-     * We do not walk yet, we just keep track of the direction the user pressed. */
-    public void onAction(String binding, boolean isPressed, float tpf) {
-        if (binding.equals("Left")) {
-          left = isPressed;
-        } else if (binding.equals("Right")) {
-          right= isPressed;
-        } else if (binding.equals("Up")) {
-          up = isPressed;
-        } else if (binding.equals("Down")) {
-          down = isPressed;
-        } else if (binding.equals("Jump")) {
-          if (isPressed) { playerControl.jump(); }
-        } else if (binding.equals("test")) {
-            ball_geo.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(-10, 5f, -10));
-            ball_geo.getControl(RigidBodyControl.class).setLinearVelocity(new Vector3f(30, 0, 30));
-        }
-    }
-
     /**
      * This is the main event loop--walking happens here.
-     * We check in which direction the player is walking by interpreting
-     * the camera direction forward (camDir) and to the side (camLeft).
-     * The setWalkDirection() command is what lets a physics-controlled player walk.
-     * We also make sure here that the camera moves with player.
      */
     @Override
     public void update(float tpf) {
-        if (playerNode != null && playerControl != null) {
-            camDir = sapp.getCamera().getDirection().clone();
-            camLeft = sapp.getCamera().getLeft().clone();
-            camDir.y = 0;
-            camLeft.y = 0;
-            camDir = camDir.normalizeLocal();
-            camLeft = camLeft.normalizeLocal();
-            walkDirection.set(0, 0, 0);
-
-            if (left) {
-                walkDirection.addLocal(camLeft);
-            }
-            if (right) {
-                walkDirection.addLocal(camLeft.negate());
-            }
-            if (up) {
-                walkDirection.addLocal(camDir);
-            }
-            if (down) {
-                walkDirection.addLocal(camDir.negate());
-            }
-            walkDirection = walkDirection.multLocal(playerMoveSpeed);
-            playerControl.setWalkDirection(walkDirection);
-            sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, playerHeight*0.8f, 0)));
-        }
+        
     }
     
     @Override
@@ -274,5 +209,6 @@ public class Game extends BaseAppState implements ActionListener {
         System.out.println("Game: onDisable");
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
         //Remove player controls
+        move.setEnabled(false);
     }
 }
