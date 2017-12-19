@@ -8,15 +8,22 @@ package Network.gameserver;
 import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.PlayerPhysics;
+import Network.Util.UpdatePhysics;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
+import com.jme3.network.Filters;
 import com.jme3.network.Message;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -33,7 +40,10 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     private LinkedBlockingQueue<Message> outgoingAuth;
     private GameInformationGenerator gameInfoGen;
     private Util.BiMap<Integer, Player> connPlayerMap;
+    
     private Game game = new Game();
+
+    private static final long PHYSICS_UPDATE_SEND_RATE = 1/30;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -88,6 +98,14 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                                   Util.JoinGameMessage.class,
                                   Util.TeamJoinMessage.class);
         game.setEnabled(true);
+        //game.initLevel("playground");
+        Timer physicsUpdateTimer = new Timer(true);
+        physicsUpdateTimer.scheduleAtFixedRate(
+            new TimerTask() {
+                public void run() {
+                    physicsUpdate();
+                }
+            }, 0, PHYSICS_UPDATE_SEND_RATE);
     }
 
     @Override
@@ -103,6 +121,22 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
         System.out.println(info);
+    }
+
+    public void physicsUpdate() {
+        Enumeration<Player> values = connPlayerMap.values();
+        ArrayList<PlayerPhysics> players = new ArrayList<>();
+        while (values.hasMoreElements()) {
+            Player p = values.nextElement();
+            if (p.getTeam() == 1 || p.getTeam() == 2) {
+                players.add(new PlayerPhysics(p.getId(), p.getDirection(), p.getVelocity()));
+            }
+        }
+        if (!players.isEmpty()) {
+            UpdatePhysics msg = new UpdatePhysics(players);
+            server.broadcast(msg);    
+        }
+
     }
 
 }

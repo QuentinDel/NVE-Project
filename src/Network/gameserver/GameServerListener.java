@@ -12,7 +12,9 @@ import Network.Util.GameConfigurationMessage;
 import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.PlayerLite;
+import Network.Util.PlayerMovement;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.math.Vector3f;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -79,8 +81,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 // There was no open spot
                 c.close("Try again later, the game is full");
             }
-        }
-        if (m instanceof Util.TeamJoinMessage) {
+        } else if (m instanceof Util.TeamJoinMessage) {
             final Util.TeamJoinMessage msg = (Util.TeamJoinMessage) m;
             int team = msg.getTeam();
 
@@ -96,6 +97,14 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 }
 
             }
+        } else if (m instanceof PlayerMovement) {
+            // Some checks needed here maybe?
+            final PlayerMovement msg = (PlayerMovement) m;
+            Vector3f velocity = msg.getVelocity();
+            Vector3f viewDir = msg.getViewDirection();
+            Player player = connPlayerMap.get(c.getId());
+            player.setDirection(viewDir);
+            player.setVelocity(velocity);
         }
 
     }

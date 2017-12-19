@@ -81,6 +81,17 @@ public class Player extends Node{
         this.getControl(BetterCharacterControl.class).setViewDirection(direction);
     }
 
+    public Vector3f getVelocity() {
+        if (this.getControl(BetterCharacterControl.class) == null) {
+            return new Vector3f();
+        }
+        return this.getControl(BetterCharacterControl.class).getWalkDirection();
+    }
+
+    public void setVelocity(Vector3f velocity) {
+        this.getControl(BetterCharacterControl.class).setWalkDirection(velocity);
+    }
+
     public void updatePlayer(PlayerLite playerData) {
         this.id = playerData.getId();
         this.playerName = playerData.getName();
