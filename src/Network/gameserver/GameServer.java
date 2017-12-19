@@ -88,6 +88,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                                   Util.JoinGameMessage.class,
                                   Util.TeamJoinMessage.class);
         game.setEnabled(true);
+        game.initLevel("playground");
     }
 
     @Override
