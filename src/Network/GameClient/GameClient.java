@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import Game.Menu;
-import Game.Player;
-import Playboard.GrassPlayground;
 import com.jme3.network.Message;
 import java.util.ArrayList;
 import java.util.Collection;
