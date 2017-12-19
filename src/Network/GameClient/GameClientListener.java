@@ -68,7 +68,7 @@ public class GameClientListener implements MessageListener<Client>{
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    gameClient.game.addLocalPlayer(new Player(myPlayer));
+                    gameClient.game.addLocalPlayer(myPlayer);
                     gameClient.toGame();
                     return true;
                 }

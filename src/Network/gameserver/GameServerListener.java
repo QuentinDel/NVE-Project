@@ -88,7 +88,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 Player player = connPlayerMap.get(c.getId());
                 if (team == 1 || team == 2) {
                     player.setTeam(team);
-                    game.addPlayer(player);
+                    game.addPlayer(new PlayerLite(player));
                     Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(player));
                     pMsg.setReliable(true);
                     //c.send(pMsg);

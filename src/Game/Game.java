@@ -5,6 +5,7 @@
  */
 package Game;
 
+import Network.Util.PlayerLite;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -149,41 +150,45 @@ public class Game extends BaseAppState implements ActionListener {
         bulletAppState.getPhysicsSpace().add(landscape);
     }
     
-    public void addLocalPlayer(Player p) {
+    public void addLocalPlayer(PlayerLite p) {
         // Setup the player node
-        playerNode = p;
+        playerNode = new Player(p);
         this.userID = p.getId();
         
         // Setup the geometry for the player
         playerNode.move(new Vector3f(0, 3.5f, 0));
         
         // Setup the control for the player
-        //player = new CharacterControl(playerShape, stepSize);
         playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
         playerNode.addControl(playerControl);
         playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
-        playerControl.warp(new Vector3f(0, 10, 0));
+        playerControl.warp(p.getPosition());
+        playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
     }
     
-    public void addPlayer(Player p) {
+    public void addPlayer(PlayerLite p) {
+        // Setup the player node
+        Player playerNode = new Player(p);
+        
         // Setup the geometry for the player
         Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
         Material mat_default = new Material(
             sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
         teapot.setMaterial(mat_default);
-        p.attachChild(teapot);
+        playerNode.attachChild(teapot);
         
         // Setup the control for the player
         BetterCharacterControl playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
-        p.addControl(playerControl);
+        playerNode.addControl(playerControl);
         playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
-        playerControl.warp(new Vector3f(0, 10, 0));
+        playerControl.warp(p.getPosition());
+        playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
-        sapp.getRootNode().attachChild(p);
+        sapp.getRootNode().attachChild(playerNode);
     }
     
     public void addBall() {
