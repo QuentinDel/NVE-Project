@@ -37,7 +37,9 @@ public class Util {
             TeamJoinMessage.class,
             PlayerMessage.class,
             PlayerLite.class,
-            PlayerMovement.class
+            PlayerMovement.class,
+            PlayerPhysics.class,
+            UpdatePhysics.class
         );
     }
     
@@ -106,14 +108,40 @@ public class Util {
         }
 
     }
+    
+    @Serializable
+    public static class PlayerPhysics{
+        protected int id;
+        protected Vector3f direction;
+        protected Vector3f velocity;
+        
+        public PlayerPhysics(){}
+        
+        public PlayerPhysics(int id, Vector3f direction, Vector3f velocity){
+            this.id = id;
+            this.direction = direction;
+            this.velocity = velocity;
+        }
+        
+        public int getId() {
+            return id;
+        }
+        
+        public Vector3f getDirection() {
+            return direction;
+        }
+        
+        public Vector3f getVelocity(){
+            return velocity;
+        }
+        
+    }
 
     @Serializable
-    public static class PlayerLite {
-        private int id;
+    public static class PlayerLite extends PlayerPhysics{
         private String name;
         private int team;
         private Vector3f position;
-        private Vector3f direction;
 
         public PlayerLite(){
         }
@@ -136,20 +164,12 @@ public class Util {
             this.team = player.getTeam();
         }
 
-        public int getId() {
-            return id;
-        }
-
         public String getName() {
             return name;
         }
 
         public Vector3f getPosition() {
             return position;
-        }
-
-        public Vector3f getDirection() {
-            return direction;
         }
 
         public int getTeam() {
@@ -289,8 +309,10 @@ public class Util {
     
     @Serializable
     public static class PlayerMovement extends MyAbstractMessage{
-        private final Vector3f velocity;
-        private final Vector3f viewDirection;
+        private Vector3f velocity;
+        private Vector3f viewDirection;
+        
+        public PlayerMovement(){}
         
         public PlayerMovement(Vector3f velocity, Vector3f viewDirection){
             this.velocity = velocity;
@@ -304,8 +326,24 @@ public class Util {
         public Vector3f getViewDirection(){
             return viewDirection;
         }
-        
     }
+    
+    @Serializable
+    public static class UpdatePhysics extends MyAbstractMessage{
+        ArrayList<PlayerPhysics> playersPhys;
+        
+        public UpdatePhysics(){}
+        
+        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys){
+            this.playersPhys = playersPhys;
+        }
+        
+        public ArrayList<PlayerPhysics> getPlayersPhys(){
+            return playersPhys;
+        }
+    }
+    
+   
 
     public static class BiMap<K,V> {
         ConcurrentHashMap<K,V> map = new ConcurrentHashMap<>();
