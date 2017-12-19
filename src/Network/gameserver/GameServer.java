@@ -8,7 +8,10 @@ package Network.gameserver;
 import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.JoinGameMessage;
+import Network.Util.PlayerMovement;
 import Network.Util.PlayerPhysics;
+import Network.Util.TeamJoinMessage;
 import Network.Util.UpdatePhysics;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
@@ -43,7 +46,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     
     private Game game = new Game();
 
-    private static final long PHYSICS_UPDATE_SEND_RATE = 1/30;
+    private static final long PHYSICS_UPDATE_SEND_RATE = 10;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -95,8 +98,9 @@ public class GameServer extends SimpleApplication implements ClientStateListener
 
         /* add message listener */
         server.addMessageListener(new GameServerListener(connPlayerMap, game, server),
-                                  Util.JoinGameMessage.class,
-                                  Util.TeamJoinMessage.class);
+                                  JoinGameMessage.class,
+                                  TeamJoinMessage.class,
+                                  PlayerMovement.class);
         game.setEnabled(true);
         //game.initLevel("playground");
         Timer physicsUpdateTimer = new Timer(true);
