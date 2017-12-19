@@ -82,6 +82,9 @@ public class Player extends Node{
     }
 
     public Vector3f getVelocity() {
+        if (this.getControl(BetterCharacterControl.class) == null) {
+            return new Vector3f();
+        }
         return this.getControl(BetterCharacterControl.class).getWalkDirection();
     }
 
