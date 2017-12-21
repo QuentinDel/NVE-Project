@@ -48,7 +48,6 @@ public class Game extends BaseAppState {
     private Spatial sceneModel;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
-    private Player playerNode;
     private BetterCharacterControl playerControl;
     
     private Geometry ball_geo;
@@ -131,7 +130,7 @@ public class Game extends BaseAppState {
     //This function also returns the player object
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
-        playerNode = new Player(p);
+        Player playerNode = new Player(p);
         this.userID = p.getId();
         
         // Setup the geometry for the player
@@ -146,6 +145,7 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        playerStore.add(playerNode);
         
         return playerNode;
     }
