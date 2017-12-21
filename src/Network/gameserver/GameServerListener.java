@@ -54,9 +54,11 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 //If there is a free playerID, assign it to the new player
                 boolean freeID = true;
                 for (int j = 0; j < connPlayerMap.size(); j++) {
-                    if (connPlayerMap.get(j).getId() == i) {
-                        freeID = false;
-                    }    
+                    if (connPlayerMap.containsKey(j)) {
+                        if (connPlayerMap.get(j).getId() == i) {
+                            freeID = false;
+                        }    
+                    }
                 }
                 if (freeID) {
                     Player newPlayer = new Player(i, name);
@@ -94,16 +96,21 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 if (team == 1 || team == 2) {
                     player.setTeam(team);
                     Player p = game.addPlayer(new PlayerLite(player));
-                    connPlayerMap.remove(c.getId());
-                    connPlayerMap.put(c.getId(), p);
-                    /** Send a message to the new client with its player info */
-                    Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(p));
-                    pMsg.setReliable(true);
-                    server.broadcast(Filters.equalTo(c), pMsg);
-                    /** Send a message all existing clients about a new player joining */
-                    NewPlayerMessage newPlayerMsg = new NewPlayerMessage(new PlayerLite(p));
-                    newPlayerMsg.setReliable(true);
-                    server.broadcast(Filters.notEqualTo(c), newPlayerMsg);
+                    if (p != null) {
+                        connPlayerMap.remove(c.getId());
+                        connPlayerMap.put(c.getId(), p);
+                        /** Send a message to the new client with its player info */
+                        Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(p));
+                        pMsg.setReliable(true);
+                        server.broadcast(Filters.equalTo(c), pMsg);
+                        /** Send a message all existing clients about a new player joining */
+                        NewPlayerMessage newPlayerMsg = new NewPlayerMessage(new PlayerLite(p));
+                        newPlayerMsg.setReliable(true);
+                        server.broadcast(Filters.notEqualTo(c), newPlayerMsg);    
+                    } else {
+                        c.close("Failed to spawn player");
+                    }
+                    
                 }
 
             }
