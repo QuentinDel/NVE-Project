@@ -17,6 +17,7 @@ import com.jme3.scene.Node;
 public class Player extends Node{
     private int id;
     private String playerName;
+    private boolean hasBall = false;
     /**
      * team 0: no team/spectator
      * team 1: red
@@ -98,5 +99,13 @@ public class Player extends Node{
         this.team = playerData.getTeam();
         setDirection(playerData.getDirection());
         setPosition(playerData.getPosition());
+    }
+
+    public boolean hasBall() {
+        return hasBall;
+    }
+
+    public void setHasBall(boolean value) {
+        hasBall = value;
     }
 }

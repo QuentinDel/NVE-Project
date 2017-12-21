@@ -190,6 +190,10 @@ public class Game extends BaseAppState {
         ball = new Ball(sapp, bulletAppState);
         sapp.getRootNode().attachChild(ball.getGeometry());
     }
+
+    public Ball getBall() {
+        return ball;
+    }
     
     //Returns a Player with id "playerID" from the playerStore
     //Returns null if not found

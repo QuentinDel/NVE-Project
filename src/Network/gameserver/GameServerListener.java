@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Game.Ball;
 import Game.Game;
 import Game.Player;
 import Network.Util;
@@ -132,7 +133,14 @@ public class GameServerListener implements MessageListener<HostedConnection> {
         } else if (m instanceof GrabBallMessage) {
             final GrabBallMessage msg = (GrabBallMessage) m;
             Player player = connPlayerMap.get(c.getId());
-            //if ball not picked up, update player state to holding the ball
+            Ball ball = game.getBall();
+            if (ball.getIsOwned()) {
+                //ball is owned by someone, do nothing
+            } else {
+                //check if ball is in range
+                player.setHasBall(true);
+                ball.setOwned(player.getId());
+            }
         }
 
     }
