@@ -125,9 +125,8 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().add(landscape);
     }
     
-    //Adds a local player to the game
+    //Adds a local player to the game and returns it
     //A local player does not have a geometry
-    //This function also returns the player object
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
@@ -150,6 +149,8 @@ public class Game extends BaseAppState {
         return playerNode;
     }
     
+    //Adds a non-local player to the game and returns it
+    //A non-local player has a geometry
     public Player addPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
@@ -170,6 +171,7 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        playerStore.add(playerNode);
         
         return playerNode;
     }
@@ -196,7 +198,24 @@ public class Game extends BaseAppState {
         ball_geo.addControl(ball_phy);
         bulletAppState.getPhysicsSpace().add(ball_phy);
     }
+    
+    //Returns a Player with id "playerID" from the playerStore
+    //Returns null if not found
+    public Player getPlayer(int playerID) {
+        for (Player p: playerStore) {
+            if (p.getId() == playerID) {
+                return p;
+            }
+        }
+        return null;
+    }
 
+    //Makes the player with the given id jump
+    public void makeJump(int playerID) {
+        Player p = getPlayer(playerID);
+        p.getControl(BetterCharacterControl.class).jump();
+    }
+    
     /**
      * This is the main event loop--walking happens here.
      */
