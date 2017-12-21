@@ -60,6 +60,7 @@ public class Game extends BaseAppState {
     protected final float playerMass = 1f;
     protected final float playerJumpSpeed = 22;
     protected final float playerGravity = 50;
+    private String level_id = "grassPlayGround"; //Default level
     
     @Override
     protected void initialize(Application app) {
@@ -82,7 +83,7 @@ public class Game extends BaseAppState {
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
         }
-        playerStore = new ArrayList(); //Do i even need this?
+        playerStore = new ArrayList();
         
         /** Set up Physics */
         sapp.getStateManager().attach(bulletAppState);
@@ -93,6 +94,7 @@ public class Game extends BaseAppState {
         sapp.getFlyByCamera().setMoveSpeed(100);
         //setUpKeys();
         setUpLight();
+        initLevel();
     }
 
     private void setUpLight() {
@@ -107,8 +109,12 @@ public class Game extends BaseAppState {
         sapp.getRootNode().addLight(dl);
     }
     
+    public void setLevel(String level_id) {
+        this.level_id = level_id;
+    }
+    
     // Loads the level, creates players and adds physics to them.
-    public void initLevel(String level_id) {
+    public void initLevel() {
         //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
         //sceneModel = sapp.getAssetManager().loadModel("main.scene");
         //sceneModel.setLocalScale(2f);
@@ -211,5 +217,6 @@ public class Game extends BaseAppState {
     public void onDisable() {
         System.out.println("Game: onDisable");
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
+        sapp.getRootNode().detachAllChildren();
     }
 }

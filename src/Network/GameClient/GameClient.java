@@ -113,7 +113,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     public void joinServer(GameServerLite server, String name) {
         toLobby();
-        //putConfig(new ArrayList());
+        game.setLevel(server.getIdMap());
         if (gameConnection != null) {
             gameConnection.close();
             //TODO close the old senderThread here
@@ -202,9 +202,6 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     // Setups the game by adding players, balls, etc.
     public void putConfig(ArrayList<PlayerLite> playerList){
-        // Load the level
-        game.initLevel("town");
-        
         // Add players
         for (final PlayerLite player : playerList){
             System.out.println("player pos: "+player.getPosition());
