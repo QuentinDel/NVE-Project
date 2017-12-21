@@ -133,7 +133,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
                 JoinAckMessage.class,
                 GameConfigurationMessage.class,
                 PlayerMessage.class,
-                JumpMessage.class);
+                JumpMessage.class,
+                NewPlayerMessage.class);
             
             // finally start the communication channel to the server
             gameConnection.start();

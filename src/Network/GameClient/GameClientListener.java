@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import Network.Util.JoinAckMessage;
 import Network.Util.JumpMessage;
 import Network.Util.LobbyInformationMessage;
+import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMessage;
 
@@ -82,6 +83,15 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() throws Exception {
                     gameClient.game.makeJump(playerID);
+                    return true;
+                }
+            });
+        } else if (m instanceof NewPlayerMessage) {
+            final NewPlayerMessage msg = (NewPlayerMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.game.addPlayer(msg.getPlayer());
                     return true;
                 }
             });
