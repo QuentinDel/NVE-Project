@@ -61,6 +61,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     public GameClient(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
+        this.setPauseOnLostFocus(false);
         
         this.stateManager.attach(menu);
         this.stateManager.attach(game);
@@ -134,7 +135,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
                 GameConfigurationMessage.class,
                 PlayerMessage.class,
                 JumpMessage.class,
-                NewPlayerMessage.class);
+                NewPlayerMessage.class,
+                UpdatePhysics.class);
             
             // finally start the communication channel to the server
             gameConnection.start();

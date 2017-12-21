@@ -6,6 +6,7 @@
 package Game;
 
 import Network.Util.PlayerLite;
+import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -204,6 +205,16 @@ public class Game extends BaseAppState {
     public void makeJump(int playerID) {
         Player p = getPlayer(playerID);
         p.getControl(BetterCharacterControl.class).jump();
+    }
+    
+    public void updatePlayerPhysics(ArrayList<PlayerPhysics> physics) {
+        for (PlayerPhysics pp: physics) {
+            Player p = getPlayer(pp.getId());
+            if (p != null) {
+                p.setDirection(pp.getDirection());
+                p.setVelocity(pp.getVelocity());
+            }
+        }
     }
     
     /**

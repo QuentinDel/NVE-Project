@@ -19,6 +19,8 @@ import Network.Util.LobbyInformationMessage;
 import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMessage;
+import Network.Util.PlayerPhysics;
+import Network.Util.UpdatePhysics;
 
 /**
  * Listener for Packets from the Game server
@@ -92,6 +94,16 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() throws Exception {
                     gameClient.game.addPlayer(msg.getPlayer());
+                    return true;
+                }
+            });
+        } else if (m instanceof UpdatePhysics) {
+            final UpdatePhysics msg = (UpdatePhysics) m;
+            final ArrayList<PlayerPhysics> physics = msg.getPlayersPhys();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.game.updatePlayerPhysics(physics);
                     return true;
                 }
             });
