@@ -5,6 +5,8 @@
  */
 package Network.GameClient;
 
+import Network.Util.JumpMessage;
+import Network.Util.PlayerMovement;
 import com.jme3.network.Client;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.gameserver.GameToAuthSender;
@@ -32,6 +34,7 @@ public class GameClientSender implements Runnable {
         while(true){
             try {
                 Message msg = outgoing.take();
+                System.out.println("GOT MESSAGE, is it jump?" + (msg instanceof JumpMessage));
                 this.serverConnection.send(msg);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GameToAuthSender.class.getName()).log(Level.SEVERE, null, ex);

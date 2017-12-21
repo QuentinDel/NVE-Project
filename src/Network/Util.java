@@ -329,6 +329,14 @@ public class Util {
         public Vector3f getViewDirection(){
             return viewDirection;
         }
+        
+        public void updateVelocity(Vector3f vel) {
+            this.velocity.add(vel);
+        }
+        
+        public void updateViewDirection(Vector3f dir) {
+            this.viewDirection = dir;
+        }
     }
     
     @Serializable
