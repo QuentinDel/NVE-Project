@@ -30,6 +30,8 @@ public class Player extends Node{
     private GhostControl zoneBallCatch;
     private Geometry catchZone;
     private Node toRotate;
+    private boolean hasBall = false;
+
     /**
      * team 0: no team/spectator
      * team 1: red
@@ -140,5 +142,13 @@ public class Player extends Node{
             
     public Node getNodeCatchZone(){
         return toRotate;
+    }
+
+    public boolean hasBall() {
+        return hasBall;
+    }
+
+    public void setHasBall(boolean value) {
+        hasBall = value;
     }
 }

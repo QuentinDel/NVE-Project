@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Game.Ball;
 import Game.Game;
 import Game.Player;
 import Network.Util;
@@ -15,7 +16,7 @@ import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
 import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
-import Network.Util.PlayerMovement;
+import Network.Util.PlayerMovementMessage;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.math.Vector3f;
@@ -54,9 +55,11 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 //If there is a free playerID, assign it to the new player
                 boolean freeID = true;
                 for (int j = 0; j < connPlayerMap.size(); j++) {
-                    if (connPlayerMap.get(j).getId() == i) {
-                        freeID = false;
-                    }    
+                    if (connPlayerMap.containsKey(j)) {
+                        if (connPlayerMap.get(j).getId() == i) {
+                            freeID = false;
+                        }    
+                    }
                 }
                 if (freeID) {
                     Player newPlayer = new Player(i, name);
@@ -94,22 +97,27 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 if (team == 1 || team == 2) {
                     player.setTeam(team);
                     Player p = game.addPlayer(new PlayerLite(player));
-                    connPlayerMap.remove(c.getId());
-                    connPlayerMap.put(c.getId(), p);
-                    /** Send a message to the new client with its player info */
-                    Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(p));
-                    pMsg.setReliable(true);
-                    server.broadcast(Filters.equalTo(c), pMsg);
-                    /** Send a message all existing clients about a new player joining */
-                    NewPlayerMessage newPlayerMsg = new NewPlayerMessage(new PlayerLite(p));
-                    newPlayerMsg.setReliable(true);
-                    server.broadcast(Filters.notEqualTo(c), newPlayerMsg);
+                    if (p != null) {
+                        connPlayerMap.remove(c.getId());
+                        connPlayerMap.put(c.getId(), p);
+                        /** Send a message to the new client with its player info */
+                        Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(p));
+                        pMsg.setReliable(true);
+                        server.broadcast(Filters.equalTo(c), pMsg);
+                        /** Send a message all existing clients about a new player joining */
+                        NewPlayerMessage newPlayerMsg = new NewPlayerMessage(new PlayerLite(p));
+                        newPlayerMsg.setReliable(true);
+                        server.broadcast(Filters.notEqualTo(c), newPlayerMsg);    
+                    } else {
+                        c.close("Failed to spawn player");
+                    }
+                    
                 }
 
             }
-        } else if (m instanceof PlayerMovement) {
+        } else if (m instanceof PlayerMovementMessage) {
             // Some checks needed here maybe?
-            final PlayerMovement msg = (PlayerMovement) m;
+            final PlayerMovementMessage msg = (PlayerMovementMessage) m;
             Vector3f velocity = msg.getVelocity();
             Vector3f viewDir = msg.getViewDirection();
             Player player = connPlayerMap.get(c.getId());
@@ -125,7 +133,14 @@ public class GameServerListener implements MessageListener<HostedConnection> {
         } else if (m instanceof GrabBallMessage) {
             final GrabBallMessage msg = (GrabBallMessage) m;
             Player player = connPlayerMap.get(c.getId());
-            //if ball not picked up, update player state to holding the ball
+            Ball ball = game.getBall();
+            if (ball.getIsOwned()) {
+                //ball is owned by someone, do nothing
+            } else {
+                //check if ball is in range
+                player.setHasBall(true);
+                ball.setOwned(player.getId());
+            }
         }
 
     }

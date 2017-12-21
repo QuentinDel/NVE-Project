@@ -6,6 +6,7 @@
 package Game;
 
 import Network.Util.PlayerLite;
+import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -60,6 +61,7 @@ public class Game extends BaseAppState {
     protected final float playerMass = 1f;
     protected final float playerJumpSpeed = 22;
     protected final float playerGravity = 50;
+    protected final float cameraHeight = playerHeight*0.8f;
     private String level_id = "grassPlayGround"; //Default level
     
     @Override
@@ -178,6 +180,7 @@ public class Game extends BaseAppState {
         playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
         playerControl.warp(p.getPosition());
+        System.out.println("playerposition: "+p.getPosition());
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
@@ -189,6 +192,10 @@ public class Game extends BaseAppState {
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);
         sapp.getRootNode().attachChild(ball.getGeometry());
+    }
+
+    public Ball getBall() {
+        return ball;
     }
     
     //Returns a Player with id "playerID" from the playerStore
@@ -206,6 +213,19 @@ public class Game extends BaseAppState {
     public void makeJump(int playerID) {
         Player p = getPlayer(playerID);
         p.getControl(BetterCharacterControl.class).jump();
+    }
+    
+    public void updatePlayerPhysics(ArrayList<PlayerPhysics> physics) {
+        for (PlayerPhysics pp: physics) {
+            Player p = getPlayer(pp.getId());
+            if (p != null) {
+                p.setDirection(pp.getDirection());
+                p.setVelocity(pp.getVelocity());
+                if (p.getId() == this.userID) {
+                    sapp.getCamera().setLocation(p.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+                }
+            }
+        }
     }
     
     /**

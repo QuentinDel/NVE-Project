@@ -30,8 +30,8 @@ public class ClientConnectionListener implements ConnectionListener {
 
     @Override
     public void connectionRemoved(Server server, HostedConnection c) {
-        if (connPlayerMap.get(c.getId()) != null) {
-            connPlayerMap.remove(c.getId());
+        if (connPlayerMap.containsKey(c.getId())) {
+            connPlayerMap.remove(c.getId());    
         }
         System.out.println("Client #"+c.getId() + " has disconnected from the server");
     }
