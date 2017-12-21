@@ -11,8 +11,10 @@ import Network.Util;
 import Network.Util.GameConfigurationMessage;
 import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
+import Network.Util.JumpMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMovement;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Filters;
@@ -105,6 +107,11 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Player player = connPlayerMap.get(c.getId());
             player.setDirection(viewDir);
             player.setVelocity(velocity);
+        } else if (m instanceof JumpMessage) {
+            final JumpMessage msg = (JumpMessage) m;
+            Player player = connPlayerMap.get(c.getId());
+            player.getControl(BetterCharacterControl.class).jump();
+            server.broadcast(msg);
         }
 
     }

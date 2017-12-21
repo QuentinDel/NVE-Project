@@ -100,7 +100,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         server.addMessageListener(new GameServerListener(connPlayerMap, game, server),
                                   JoinGameMessage.class,
                                   TeamJoinMessage.class,
-                                  PlayerMovement.class);
+                                  PlayerMovement.class,
+                                  JumpMessage.class);
         game.setEnabled(true);
         //game.initLevel("playground");
         Timer physicsUpdateTimer = new Timer(true);
@@ -138,7 +139,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         }
         if (!players.isEmpty()) {
             UpdatePhysics msg = new UpdatePhysics(players);
-            server.broadcast(msg);    
+            server.broadcast(msg);
         }
 
     }
