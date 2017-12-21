@@ -13,6 +13,7 @@ import Network.Util.GrabBallMessage;
 import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
+import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMovement;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -95,10 +96,14 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     Player p = game.addPlayer(new PlayerLite(player));
                     connPlayerMap.remove(c.getId());
                     connPlayerMap.put(c.getId(), p);
+                    /** Send a message to the new client with its player info */
                     Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(p));
                     pMsg.setReliable(true);
-                    //c.send(pMsg);
                     server.broadcast(Filters.equalTo(c), pMsg);
+                    /** Send a message all existing clients about a new player joining */
+                    NewPlayerMessage newPlayerMsg = new NewPlayerMessage(new PlayerLite(p));
+                    newPlayerMsg.setReliable(true);
+                    server.broadcast(Filters.notEqualTo(c), newPlayerMsg);
                 }
 
             }
