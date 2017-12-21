@@ -6,6 +6,7 @@
 package Game;
 
 import Network.GameClient.GameClient;
+import Network.Util.InternalMovementMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
 import com.jme3.app.Application;
@@ -32,8 +33,10 @@ public class PlayerMovement extends BaseAppState {
     
     
     private Vector3f walkDirection = new Vector3f();
+    private Vector3f lastWalkDirection = walkDirection;
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
+    private Vector3f lastCamDir = camDir;
     
     //Booleans for character movement directions
     private boolean left = false, right = false, up = false, down = false;
@@ -122,12 +125,30 @@ public class PlayerMovement extends BaseAppState {
                 walkDirection.addLocal(camDir.negate());
             }
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
+            /*
+            if (walkDirection.equals(new Vector3f()) && !lastWalkDirection.equals(walkDirection)) {
+                sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
+                float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
+
+                playerControl.setWalkDirection(walkDirection);
+                playerControl.setViewDirection(camDir);
+                sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+                lastCamDir = camDir;
+                lastWalkDirection = walkDirection;
+            }
+            if (walkDirection.equals(new Vector3f()) && lastCamDir.equals(camDir)) {
+                return;
+            }*/
+            
             sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
+            //sapp.queueGameServerMessage(new InternalMovementMessage(walkDirection, camDir, tpf));
             float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
             
             playerControl.setWalkDirection(walkDirection);
             playerControl.setViewDirection(camDir);
             sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+            lastCamDir = camDir;
+            lastWalkDirection = walkDirection;
         }
     }
     
