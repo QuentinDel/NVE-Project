@@ -23,9 +23,9 @@ import com.jme3.texture.Texture;
  */
 public class Ball {
     
-    private Application sapp;
+    private final Application sapp;
     private Geometry ball_geo;
-    private BulletAppState bulletAppState;
+    private final BulletAppState bulletAppState;
     private boolean isOwned;
     private int ownedBy;
 
