@@ -332,11 +332,28 @@ public class Util {
         }
         
         public void updateVelocity(Vector3f vel) {
-            this.velocity.add(vel);
+            this.velocity = this.velocity.add(vel);
         }
         
         public void updateViewDirection(Vector3f dir) {
             this.viewDirection = dir;
+        }
+    }
+    
+    //Do not serialize and send this message
+    //It is used internally within the GameClient to pass tpf for aggregation
+    public static class InternalMovementMessage extends PlayerMovementMessage {
+        private float tpf;
+        
+        public InternalMovementMessage(){}
+        
+        public InternalMovementMessage(Vector3f velocity, Vector3f viewDirection, float tpf) {
+            super(velocity, viewDirection);
+            this.tpf = tpf;
+        }
+        
+        public float getTpf() {
+            return tpf;
         }
     }
     
