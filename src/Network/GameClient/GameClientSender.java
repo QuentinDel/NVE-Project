@@ -6,7 +6,7 @@
 package Network.GameClient;
 
 import Network.Util.JumpMessage;
-import Network.Util.PlayerMovement;
+import Network.Util.PlayerMovementMessage;
 import com.jme3.network.Client;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.gameserver.GameToAuthSender;

@@ -7,6 +7,7 @@ package Game;
 
 import Network.GameClient.GameClient;
 import Network.Util.JumpMessage;
+import Network.Util.PlayerMovementMessage;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
@@ -121,9 +122,11 @@ public class PlayerMovement extends BaseAppState {
                 walkDirection.addLocal(camDir.negate());
             }
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
-            float cameraHeight = sapp.getStateManager().getState(Game.class).playerHeight*0.8f;
+            sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
+            float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
             
             playerControl.setWalkDirection(walkDirection);
+            playerControl.setViewDirection(camDir);
             sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
         }
     }

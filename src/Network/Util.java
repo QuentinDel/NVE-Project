@@ -37,7 +37,7 @@ public class Util {
             TeamJoinMessage.class,
             PlayerMessage.class,
             PlayerLite.class,
-            PlayerMovement.class,
+            PlayerMovementMessage.class,
             PlayerPhysics.class,
             UpdatePhysics.class,
             JumpMessage.class,
@@ -312,13 +312,13 @@ public class Util {
     }
     
     @Serializable
-    public static class PlayerMovement extends MyAbstractMessage{
+    public static class PlayerMovementMessage extends MyAbstractMessage{
         private Vector3f velocity;
         private Vector3f viewDirection;
         
-        public PlayerMovement(){}
+        public PlayerMovementMessage(){}
         
-        public PlayerMovement(Vector3f velocity, Vector3f viewDirection){
+        public PlayerMovementMessage(Vector3f velocity, Vector3f viewDirection){
             this.velocity = velocity;
             this.viewDirection = viewDirection;
         }
