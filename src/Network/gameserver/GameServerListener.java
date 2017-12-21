@@ -111,7 +111,8 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             final JumpMessage msg = (JumpMessage) m;
             Player player = connPlayerMap.get(c.getId());
             player.getControl(BetterCharacterControl.class).jump();
-            server.broadcast(msg);
+            JumpMessage jMsg = new JumpMessage(player.getId());
+            server.broadcast(jMsg);
         }
 
     }
