@@ -41,7 +41,8 @@ public class Util {
             PlayerPhysics.class,
             UpdatePhysics.class,
             JumpMessage.class,
-            GrabBallMessage.class
+            GrabBallMessage.class,
+            NewPlayerMessage.class
         );
     }
     
@@ -375,6 +376,22 @@ public class Util {
         public GrabBallMessage() {
         }
 
+    }
+
+    @Serializable
+    public static class NewPlayerMessage extends MyAbstractMessage {
+        private PlayerLite player;
+
+        public NewPlayerMessage() {
+        }
+
+        public NewPlayerMessage(PlayerLite player) {
+            this.player = player;
+        }
+
+        public PlayerLite getPlayer() {
+            return player;
+        }
     }
     
     
