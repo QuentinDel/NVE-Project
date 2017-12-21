@@ -13,8 +13,10 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import java.util.concurrent.Callable;
 
@@ -54,6 +56,7 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         sapp.getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         sapp.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        sapp.getInputManager().addMapping("Catch", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump");
     }
     
@@ -93,7 +96,10 @@ public class PlayerMovement extends BaseAppState {
                     playerControl.jump();
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
-            } 
+            } else if (binding.equals("Catch")){
+                
+            }
+               
         }
     };
     
@@ -120,6 +126,13 @@ public class PlayerMovement extends BaseAppState {
             if (down) {
                 walkDirection.addLocal(camDir.negate());
             }
+            
+      
+
+            playerNode.getNodeCatchZone().rotate(sapp.getCamera().getRotation());
+            //System.out.println(playerNode.getNodeCatchZone().getChild(0).getLocalTranslation());
+            //System.out.println(playerNode.getNodeCatchZone().getLocalTranslation());
+            
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
             float cameraHeight = sapp.getStateManager().getState(Game.class).playerHeight*0.8f;
             

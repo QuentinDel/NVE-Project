@@ -6,9 +6,18 @@
 package Game;
 
 import Network.Util.PlayerLite;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Box;
+import com.jme3.system.AppSettings;
 
 /**
  *
@@ -17,6 +26,10 @@ import com.jme3.scene.Node;
 public class Player extends Node{
     private int id;
     private String playerName;
+    private BoxCollisionShape boxCollisionShape;
+    private GhostControl zoneBallCatch;
+    private Geometry catchZone;
+    private Node toRotate;
     /**
      * team 0: no team/spectator
      * team 1: red
@@ -40,6 +53,27 @@ public class Player extends Node{
         this.id = playerData.getId();
         this.playerName = playerData.getName();
         this.team = playerData.getTeam();
+    }
+    
+    public void initZoneBallCatch(AssetManager assetManager, Vector3f cameraDirection, AppSettings settings, float playerHeight){
+        Box collisionShape = new Box(1f, 1f, 1f);
+        catchZone = new Geometry("collis", collisionShape);
+        Material matLine = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        matLine.setColor("Color", ColorRGBA.White);
+        catchZone.setMaterial(matLine);
+        
+        boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 2f, 1f));
+        zoneBallCatch = new GhostControl(boxCollisionShape);
+        zoneBallCatch.setSpatial(catchZone);
+        catchZone.setLocalTranslation(cameraDirection.mult(5));
+        catchZone.move(0f, playerHeight*0.4f, 0f);
+        
+        //catchZone.move(this.getControl(BetterCharacterControl.class).getViewDirection());
+        //System.out.println(cameraDirection);
+
+        toRotate = new Node("toRotate");
+        toRotate.attachChild(catchZone);
+        this.attachChild(toRotate);
     }
 
     public int getId() {
@@ -98,5 +132,13 @@ public class Player extends Node{
         this.team = playerData.getTeam();
         setDirection(playerData.getDirection());
         setPosition(playerData.getPosition());
+    }
+    
+    public GhostControl getGoshtControl(){
+        return zoneBallCatch;
+    }
+            
+    public Node getNodeCatchZone(){
+        return toRotate;
     }
 }

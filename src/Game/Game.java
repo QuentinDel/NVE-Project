@@ -137,6 +137,7 @@ public class Game extends BaseAppState {
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
+        playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera().getDirection(), sapp.getContext().getSettings(), playerHeight);
         this.userID = p.getId();
         
         // Setup the geometry for the player
@@ -152,8 +153,9 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
         playerStore.add(playerNode);
-        
+        System.out.println("addLocalPlayer");
         return playerNode;
+        
     }
     
     //Adds a non-local player to the game and returns it
@@ -161,6 +163,7 @@ public class Game extends BaseAppState {
     public Player addPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
+        //playerNode.initZoneBallCatch(sapp.getAssetManager());
         
         // Setup the geometry for the player
         Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
