@@ -9,6 +9,7 @@ import Game.Game;
 import Game.Player;
 import Network.Util;
 import Network.Util.GameConfigurationMessage;
+import Network.Util.GrabBallMessage;
 import Network.Util.JoinAckMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
@@ -91,8 +92,10 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 Player player = connPlayerMap.get(c.getId());
                 if (team == 1 || team == 2) {
                     player.setTeam(team);
-                    game.addPlayer(new PlayerLite(player));
-                    Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(player));
+                    Player p = game.addPlayer(new PlayerLite(player));
+                    connPlayerMap.remove(c.getId());
+                    connPlayerMap.put(c.getId(), p);
+                    Util.PlayerMessage pMsg = new Util.PlayerMessage(new PlayerLite(p));
                     pMsg.setReliable(true);
                     //c.send(pMsg);
                     server.broadcast(Filters.equalTo(c), pMsg);
@@ -107,12 +110,17 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Player player = connPlayerMap.get(c.getId());
             player.setDirection(viewDir);
             player.setVelocity(velocity);
+
         } else if (m instanceof JumpMessage) {
             final JumpMessage msg = (JumpMessage) m;
             Player player = connPlayerMap.get(c.getId());
             player.getControl(BetterCharacterControl.class).jump();
             JumpMessage jMsg = new JumpMessage(player.getId());
             server.broadcast(jMsg);
+        } else if (m instanceof GrabBallMessage) {
+            final GrabBallMessage msg = (GrabBallMessage) m;
+            Player player = connPlayerMap.get(c.getId());
+            //if ball not picked up, update player state to holding the ball
         }
 
     }

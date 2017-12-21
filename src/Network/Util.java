@@ -40,7 +40,8 @@ public class Util {
             PlayerMovement.class,
             PlayerPhysics.class,
             UpdatePhysics.class,
-            JumpMessage.class
+            JumpMessage.class,
+            GrabBallMessage.class
         );
     }
     
@@ -367,7 +368,14 @@ public class Util {
             return id;
         }
     }
-    
+
+    @Serializable
+    public static class GrabBallMessage extends MyAbstractMessage {
+
+        public GrabBallMessage() {
+        }
+
+    }
     
     
    
