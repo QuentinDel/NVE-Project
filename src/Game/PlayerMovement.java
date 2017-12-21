@@ -5,6 +5,8 @@
  */
 package Game;
 
+import Network.GameClient.GameClient;
+import Network.Util.JumpMessage;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
@@ -14,6 +16,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector3f;
+import java.util.concurrent.Callable;
 
 /**
  *
@@ -21,7 +24,7 @@ import com.jme3.math.Vector3f;
  */
 public class PlayerMovement extends BaseAppState {
     
-    private SimpleApplication sapp;
+    private GameClient sapp;
     private Player playerNode;
     private BetterCharacterControl playerControl;
     private boolean playerInitialized = false;
@@ -38,7 +41,7 @@ public class PlayerMovement extends BaseAppState {
     
     @Override
     public void initialize(Application app) {
-        sapp = (SimpleApplication) app;
+        sapp = (GameClient) app;
         
     }
     
@@ -67,9 +70,9 @@ public class PlayerMovement extends BaseAppState {
     
     //Sets which player should be moved by keyboard inputs
     //Preferably this is set to the Player that the client is supposed to move
-    public void setPlayer(Player p, BetterCharacterControl pC) {
+    public void setPlayer(Player p) {
         this.playerNode = p;
-        this.playerControl = pC;
+        this.playerControl = p.getControl(BetterCharacterControl.class);
         this.playerInitialized = true;
     }
     
@@ -78,15 +81,18 @@ public class PlayerMovement extends BaseAppState {
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String binding, boolean isPressed, float tpf) {
             if (binding.equals("Left")) {
-              left = isPressed;
+                left = isPressed;
             } else if (binding.equals("Right")) {
-              right= isPressed;
+                right= isPressed;
             } else if (binding.equals("Up")) {
-              up = isPressed;
+                up = isPressed;
             } else if (binding.equals("Down")) {
-              down = isPressed;
+                down = isPressed;
             } else if (binding.equals("Jump")) {
-              if (isPressed) { playerControl.jump(); }
+                if (isPressed) { 
+                    playerControl.jump();
+                    sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
+                }
             } 
         }
     };

@@ -6,6 +6,7 @@
 package Network.GameClient;
 
 import Game.Game;
+import Game.PlayerMovement;
 import Network.Util.GameServerLite;
 import Network.Util;
 import com.jme3.app.SimpleApplication;
@@ -48,6 +49,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     // AppStates
     protected Menu menu = new Menu();
     protected Game game = new Game();
+    protected PlayerMovement move = new PlayerMovement();
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
@@ -62,6 +64,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         
         this.stateManager.attach(menu);
         this.stateManager.attach(game);
+        this.stateManager.attach(move);
     }
     
     public static void main(String[] args) {
@@ -74,6 +77,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         //setDisplayStatView(false);
         //setDisplayFps(false);
         menu.setEnabled(true);
+        move.setEnabled(true);
         
         try {
             //Initialize the queue to use to send informations
@@ -154,6 +158,19 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     public void setPlayerID(int id) {
         this.myPlayerID = id;
+    }
+    
+    public int getPlayerID() {
+        return myPlayerID;
+    }
+    
+    public void queueGameServerMessage(MyAbstractMessage msg) {
+        try {
+            this.outgoingGame.put(msg);
+        }
+        catch(InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public void queueRefreshMessage() {

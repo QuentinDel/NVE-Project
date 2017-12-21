@@ -9,6 +9,7 @@ import Game.Game;
 import Game.Player;
 import Network.Util;
 import Network.Util.JoinGameMessage;
+import Network.Util.JumpMessage;
 import Network.Util.PlayerMovement;
 import Network.Util.PlayerPhysics;
 import Network.Util.TeamJoinMessage;

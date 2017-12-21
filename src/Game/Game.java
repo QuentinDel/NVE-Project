@@ -45,8 +45,6 @@ public class Game extends BaseAppState {
     private SimpleApplication sapp;
     private boolean needCleaning = false;
     
-    protected PlayerMovement move = new PlayerMovement();
-    
     private Spatial sceneModel;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
@@ -69,7 +67,6 @@ public class Game extends BaseAppState {
         sapp = (SimpleApplication) app;
         
         bulletAppState = new BulletAppState();
-        sapp.getStateManager().attach(move);
     }
    
     @Override
@@ -85,7 +82,6 @@ public class Game extends BaseAppState {
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
         }
-        move.setEnabled(true);
         playerStore = new ArrayList(); //Do i even need this?
         
         /** Set up Physics */
@@ -130,7 +126,10 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().add(landscape);
     }
     
-    public void addLocalPlayer(PlayerLite p) {
+    //Adds a local player to the game
+    //A local player does not have a geometry
+    //This function also returns the player object
+    public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
         playerNode = new Player(p);
         this.userID = p.getId();
@@ -148,10 +147,10 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
         
-        move.setPlayer(playerNode, playerControl);
+        return playerNode;
     }
     
-    public void addPlayer(PlayerLite p) {
+    public Player addPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
         
@@ -171,6 +170,8 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        
+        return playerNode;
     }
     
     public void addBall() {
@@ -208,7 +209,5 @@ public class Game extends BaseAppState {
     public void onDisable() {
         System.out.println("Game: onDisable");
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
-        //Remove player controls
-        move.setEnabled(false);
     }
 }
