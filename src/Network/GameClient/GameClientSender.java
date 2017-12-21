@@ -34,7 +34,6 @@ public class GameClientSender implements Runnable {
         while(true){
             try {
                 Message msg = outgoing.take();
-                System.out.println("GOT MESSAGE, is it jump?" + (msg instanceof JumpMessage));
                 this.serverConnection.send(msg);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GameToAuthSender.class.getName()).log(Level.SEVERE, null, ex);

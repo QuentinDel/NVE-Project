@@ -48,7 +48,6 @@ public class Game extends BaseAppState {
     private Spatial sceneModel;
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
-    private Player playerNode;
     private BetterCharacterControl playerControl;
     
    
@@ -61,6 +60,7 @@ public class Game extends BaseAppState {
     protected final float playerMass = 1f;
     protected final float playerJumpSpeed = 22;
     protected final float playerGravity = 50;
+    private String level_id = "grassPlayGround"; //Default level
     
     @Override
     protected void initialize(Application app) {
@@ -83,7 +83,7 @@ public class Game extends BaseAppState {
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
         }
-        playerStore = new ArrayList(); //Do i even need this?
+        playerStore = new ArrayList();
         
         /** Set up Physics */
         sapp.getStateManager().attach(bulletAppState);
@@ -94,6 +94,7 @@ public class Game extends BaseAppState {
         sapp.getFlyByCamera().setMoveSpeed(100);
         //setUpKeys();
         setUpLight();
+        initLevel();
     }
 
     private void setUpLight() {
@@ -108,8 +109,12 @@ public class Game extends BaseAppState {
         sapp.getRootNode().addLight(dl);
     }
     
+    public void setLevel(String level_id) {
+        this.level_id = level_id;
+    }
+    
     // Loads the level, creates players and adds physics to them.
-    public void initLevel(String level_id) {
+    public void initLevel() {
         //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
         //sceneModel = sapp.getAssetManager().loadModel("main.scene");
         //sceneModel.setLocalScale(2f);
@@ -127,12 +132,11 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().add(landscape);
     }
     
-    //Adds a local player to the game
+    //Adds a local player to the game and returns it
     //A local player does not have a geometry
-    //This function also returns the player object
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
-        playerNode = new Player(p);
+        Player playerNode = new Player(p);
         this.userID = p.getId();
         
         // Setup the geometry for the player
@@ -147,10 +151,13 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        playerStore.add(playerNode);
         
         return playerNode;
     }
     
+    //Adds a non-local player to the game and returns it
+    //A non-local player has a geometry
     public Player addPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
@@ -171,6 +178,7 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        playerStore.add(playerNode);
         
         return playerNode;
     }
@@ -179,7 +187,24 @@ public class Game extends BaseAppState {
         ball = new Ball(sapp, bulletAppState);
         sapp.getRootNode().attachChild(ball.getGeometry());
     }
+    
+    //Returns a Player with id "playerID" from the playerStore
+    //Returns null if not found
+    public Player getPlayer(int playerID) {
+        for (Player p: playerStore) {
+            if (p.getId() == playerID) {
+                return p;
+            }
+        }
+        return null;
+    }
 
+    //Makes the player with the given id jump
+    public void makeJump(int playerID) {
+        Player p = getPlayer(playerID);
+        p.getControl(BetterCharacterControl.class).jump();
+    }
+    
     /**
      * This is the main event loop--walking happens here.
      */
@@ -192,5 +217,6 @@ public class Game extends BaseAppState {
     public void onDisable() {
         System.out.println("Game: onDisable");
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
+        sapp.getRootNode().detachAllChildren();
     }
 }

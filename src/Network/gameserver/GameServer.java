@@ -105,8 +105,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                                   PlayerMovement.class,
                                   JumpMessage.class,
                                   GrabBallMessage.class);
+        game.setLevel("playground");
         game.setEnabled(true);
-        //game.initLevel("playground");
         Timer physicsUpdateTimer = new Timer(true);
         physicsUpdateTimer.scheduleAtFixedRate(
             new TimerTask() {

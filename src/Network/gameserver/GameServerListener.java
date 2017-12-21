@@ -121,7 +121,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Player player = connPlayerMap.get(c.getId());
             player.getControl(BetterCharacterControl.class).jump();
             JumpMessage jMsg = new JumpMessage(player.getId());
-            server.broadcast(jMsg);
+            server.broadcast(Filters.notEqualTo(c), jMsg);
         } else if (m instanceof GrabBallMessage) {
             final GrabBallMessage msg = (GrabBallMessage) m;
             Player player = connPlayerMap.get(c.getId());

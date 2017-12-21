@@ -14,6 +14,7 @@ import com.jme3.network.MessageListener;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import Network.Util.JoinAckMessage;
+import Network.Util.JumpMessage;
 import Network.Util.LobbyInformationMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMessage;
@@ -71,6 +72,16 @@ public class GameClientListener implements MessageListener<Client>{
                     Player myPlayerNode = gameClient.game.addLocalPlayer(myPlayer);
                     gameClient.toGame();
                     gameClient.move.setPlayer(myPlayerNode);
+                    return true;
+                }
+            });
+        } else if (m instanceof JumpMessage) {
+            final JumpMessage msg = (JumpMessage) m;
+            final int playerID = msg.getId();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.game.makeJump(playerID);
                     return true;
                 }
             });
