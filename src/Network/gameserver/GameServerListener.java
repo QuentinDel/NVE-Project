@@ -15,7 +15,7 @@ import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
 import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
-import Network.Util.PlayerMovement;
+import Network.Util.PlayerMovementMessage;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.math.Vector3f;
@@ -107,9 +107,9 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 }
 
             }
-        } else if (m instanceof PlayerMovement) {
+        } else if (m instanceof PlayerMovementMessage) {
             // Some checks needed here maybe?
-            final PlayerMovement msg = (PlayerMovement) m;
+            final PlayerMovementMessage msg = (PlayerMovementMessage) m;
             Vector3f velocity = msg.getVelocity();
             Vector3f viewDir = msg.getViewDirection();
             Player player = connPlayerMap.get(c.getId());

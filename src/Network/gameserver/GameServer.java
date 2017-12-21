@@ -11,7 +11,7 @@ import Network.Util;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
-import Network.Util.PlayerMovement;
+import Network.Util.PlayerMovementMessage;
 import Network.Util.PlayerPhysics;
 import Network.Util.TeamJoinMessage;
 import Network.Util.UpdatePhysics;
@@ -102,7 +102,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         server.addMessageListener(new GameServerListener(connPlayerMap, game, server),
                                   JoinGameMessage.class,
                                   TeamJoinMessage.class,
-                                  PlayerMovement.class,
+                                  PlayerMovementMessage.class,
                                   JumpMessage.class,
                                   GrabBallMessage.class);
         game.setLevel("playground");

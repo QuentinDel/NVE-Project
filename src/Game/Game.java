@@ -175,6 +175,7 @@ public class Game extends BaseAppState {
         playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
         playerControl.warp(p.getPosition());
+        System.out.println("playerposition: "+p.getPosition());
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
