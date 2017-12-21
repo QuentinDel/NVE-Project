@@ -61,6 +61,7 @@ public class Game extends BaseAppState {
     protected final float playerMass = 1f;
     protected final float playerJumpSpeed = 22;
     protected final float playerGravity = 50;
+    protected final float cameraHeight = playerHeight*0.8f;
     private String level_id = "grassPlayGround"; //Default level
     
     @Override
@@ -213,6 +214,9 @@ public class Game extends BaseAppState {
             if (p != null) {
                 p.setDirection(pp.getDirection());
                 p.setVelocity(pp.getVelocity());
+                if (p.getId() == this.userID) {
+                    sapp.getCamera().setLocation(p.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+                }
             }
         }
     }

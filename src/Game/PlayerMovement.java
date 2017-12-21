@@ -123,7 +123,7 @@ public class PlayerMovement extends BaseAppState {
             }
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
             sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
-            float cameraHeight = sapp.getStateManager().getState(Game.class).playerHeight*0.8f;
+            float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
             
             playerControl.setWalkDirection(walkDirection);
             playerControl.setViewDirection(camDir);
