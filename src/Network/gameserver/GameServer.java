@@ -8,6 +8,7 @@ package Network.gameserver;
 import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.GrabBallMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovement;
@@ -102,7 +103,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                                   JoinGameMessage.class,
                                   TeamJoinMessage.class,
                                   PlayerMovement.class,
-                                  JumpMessage.class);
+                                  JumpMessage.class,
+                                  GrabBallMessage.class);
         game.setEnabled(true);
         //game.initLevel("playground");
         Timer physicsUpdateTimer = new Timer(true);
