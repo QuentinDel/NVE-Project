@@ -51,10 +51,11 @@ public class Game extends BaseAppState {
     private Player playerNode;
     private BetterCharacterControl playerControl;
     
-    private Geometry ball_geo;
+   
     private ArrayList<Player> playerStore;
     private int userID;
-    
+    private Ball ball;
+            
     protected final float playerRadius = 1.5f;
     protected final float playerHeight = 6f;
     protected final float playerMass = 1f;
@@ -175,26 +176,8 @@ public class Game extends BaseAppState {
     }
     
     public void addBall() {
-        Sphere sphere = new Sphere(32, 32, 2f, true, false);
-        sphere.setTextureMode(TextureMode.Projected);
-        
-        //Setup the material for the ball
-        Material stone_mat = new Material(sapp.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
-        key.setGenerateMips(true);
-        Texture tex = sapp.getAssetManager().loadTexture(key);
-        stone_mat.setTexture("ColorMap", tex);
-        
-        //Setup the geometry for the ball
-        ball_geo = new Geometry("cannon ball", sphere);
-        ball_geo.setMaterial(stone_mat);
-        sapp.getRootNode().attachChild(ball_geo);
-        ball_geo.move(new Vector3f(-5, 6f, -5));
-        
-        CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
-        RigidBodyControl ball_phy = new RigidBodyControl(ball_shape, 10f);
-        ball_geo.addControl(ball_phy);
-        bulletAppState.getPhysicsSpace().add(ball_phy);
+        ball = new Ball(sapp, bulletAppState);
+        sapp.getRootNode().attachChild(ball.getGeometry());
     }
 
     /**
