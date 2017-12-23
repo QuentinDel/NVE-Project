@@ -129,10 +129,9 @@ public class PlayerMovement extends BaseAppState {
             }
             
       
-
-            playerNode.getNodeCatchZone().rotate(sapp.getCamera().getRotation());
-            //System.out.println(playerNode.getNodeCatchZone().getChild(0).getLocalTranslation());
-            //System.out.println(playerNode.getNodeCatchZone().getLocalTranslation());
+            //playerNode.getNodeCatchZone().getChild(0).move(sapp.getCamera().getDirection().mult(5));
+            //playerNode.getNodeCatchZone().setLocalRotation(sapp.getCamera().getRotation());
+            
             
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
             sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
@@ -141,6 +140,11 @@ public class PlayerMovement extends BaseAppState {
             playerControl.setWalkDirection(walkDirection);
             playerControl.setViewDirection(camDir);
             sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+            
+            playerNode.getNodeCatchZone().set(sapp.getCamera().getLocation());
+            System.out.println(playerNode.getNodeCatchZone().getWorldTransform());
+            System.out.println( sapp.getCamera().getLocation());
+
         }
     }
     

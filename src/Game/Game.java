@@ -139,7 +139,7 @@ public class Game extends BaseAppState {
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
-        playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera().getDirection(), sapp.getContext().getSettings(), playerHeight);
+        playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera(), sapp.getContext().getSettings(), playerHeight);
         this.userID = p.getId();
         
         // Setup the geometry for the player

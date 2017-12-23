@@ -49,7 +49,10 @@ import static Playboard.PlaygroundConstant.WALL_HEIGHT;
 import static Playboard.PlaygroundConstant.WALL_LENGTH;
 import static Playboard.PlaygroundConstant.WALL_THICKNESS;
 import static Playboard.PlaygroundConstant.WALL_WIDTH;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
 import com.jme3.asset.plugins.HttpZipLocator;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.RenderState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.shape.Cylinder;
@@ -64,6 +67,8 @@ import com.jme3.util.SkyFactory;
 public class TestPlayground extends SimpleApplication implements PlaygroundConstant {
 
   private Node board;
+  private AnimChannel channel;
+  private AnimControl control;
 
   public static void main(String[] args) {
     TestPlayground app = new TestPlayground();
@@ -76,6 +81,22 @@ public class TestPlayground extends SimpleApplication implements PlaygroundConst
     cam.setLocation(new Vector3f(0f, 100f, 0f));
     
     Node playgroundNode = new Node("GrassPG");
+    
+    //Add light
+    DirectionalLight dl = new DirectionalLight();
+    dl.setDirection(new Vector3f(-0.1f, -1f, -1).normalizeLocal());
+    rootNode.addLight(dl);
+    
+    //Creation of a robot
+    Node player = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
+    player.setLocalScale(0.5f);
+    rootNode.attachChild(player);
+    control = player.getControl(AnimControl.class);
+    //control.addListener(this);
+    channel = control.createChannel();
+    channel.setAnim("Walk");
+    
+
     
     Quad grassBoard = new Quad(PLAYGROUND_LENGTH, PLAYGROUND_WIDTH);
     Geometry playground = new Geometry("playboard", grassBoard);
@@ -228,7 +249,6 @@ public class TestPlayground extends SimpleApplication implements PlaygroundConst
     board.attachChild(scoreZoneBlue);
     board.attachChild(scoreZoneRed);
     board.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", SkyFactory.EnvMapType.CubeMap));
-    
     
     rootNode.attachChild(board);
   }

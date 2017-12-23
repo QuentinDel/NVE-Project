@@ -14,6 +14,7 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -57,23 +58,24 @@ public class Player extends Node{
         this.team = playerData.getTeam();
     }
     
-    public void initZoneBallCatch(AssetManager assetManager, Vector3f cameraDirection, AppSettings settings, float playerHeight){
+    public void initZoneBallCatch(AssetManager assetManager, Camera camera, AppSettings settings, float playerHeight){
         Box collisionShape = new Box(1f, 1f, 1f);
         catchZone = new Geometry("collis", collisionShape);
         Material matLine = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         matLine.setColor("Color", ColorRGBA.White);
         catchZone.setMaterial(matLine);
         
-        boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 2f, 1f));
+        boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
         zoneBallCatch = new GhostControl(boxCollisionShape);
         zoneBallCatch.setSpatial(catchZone);
-        catchZone.setLocalTranslation(cameraDirection.mult(5));
-        catchZone.move(0f, playerHeight*0.4f, 0f);
+       
+        //catchZone.setLocalTranslation(camera.getDirection().mult(5));
         
         //catchZone.move(this.getControl(BetterCharacterControl.class).getViewDirection());
         //System.out.println(cameraDirection);
 
         toRotate = new Node("toRotate");
+        toRotate.setLocalTranslation(camera.getLocation());
         toRotate.attachChild(catchZone);
         this.attachChild(toRotate);
     }
