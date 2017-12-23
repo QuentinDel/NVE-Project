@@ -154,6 +154,7 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
+        sapp.getRootNode().attachChild(playerNode.getNodeCatchZone());
         playerStore.add(playerNode);
         System.out.println("addLocalPlayer");
         return playerNode;

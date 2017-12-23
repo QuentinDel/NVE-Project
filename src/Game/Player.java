@@ -69,7 +69,7 @@ public class Player extends Node{
         zoneBallCatch = new GhostControl(boxCollisionShape);
         zoneBallCatch.setSpatial(catchZone);
        
-        //catchZone.setLocalTranslation(camera.getDirection().mult(5));
+        //catchZone.setLocalTranslation(camera.getDirection().mult(3));
         
         //catchZone.move(this.getControl(BetterCharacterControl.class).getViewDirection());
         //System.out.println(cameraDirection);
@@ -77,7 +77,6 @@ public class Player extends Node{
         toRotate = new Node("toRotate");
         toRotate.setLocalTranslation(camera.getLocation());
         toRotate.attachChild(catchZone);
-        this.attachChild(toRotate);
     }
 
     public int getId() {

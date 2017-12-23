@@ -156,13 +156,14 @@ public class PlayerMovement extends BaseAppState {
             //sapp.queueGameServerMessage(new InternalMovementMessage(walkDirection, camDir, tpf));
             float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
             
-            playerControl.setWalkDirection(walkDirection);
+            /*playerControl.setWalkDirection(walkDirection);
             playerControl.setViewDirection(camDir);
-            sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+            */sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
             
-            //playerNode.getNodeCatchZone().set(sapp.getCamera().getLocation());
-            System.out.println(playerNode.getNodeCatchZone().getWorldTransform());
-            System.out.println( sapp.getCamera().getLocation());
+            playerNode.getNodeCatchZone().setLocalTranslation(sapp.getCamera().getLocation());
+            playerNode.getNodeCatchZone().getChild(0).setLocalTranslation(sapp.getCamera().getDirection().multLocal(3));
+            //System.out.println(playerNode.getNodeCatchZone().getWorldTransform());
+            //System.out.println( sapp.getCamera().getLocation());
 
             lastCamDir = camDir;
             lastWalkDirection = walkDirection;
