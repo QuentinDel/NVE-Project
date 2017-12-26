@@ -163,8 +163,6 @@ public class Util {
             this.position = player.getPosition();
             this.direction = player.getDirection();
             this.velocity = player.getVelocity();
-            System.out.println("position: "+this.position);
-            System.out.println("direction: "+this.direction);
             this.team = player.getTeam();
         }
 
@@ -337,6 +335,10 @@ public class Util {
         
         public void updateViewDirection(Vector3f dir) {
             this.viewDirection = dir;
+        }
+        
+        public void scaleVelocity(float scale) {
+            this.velocity = this.velocity.mult(scale);
         }
     }
     

@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * @author Rickard
  */
 public class GameClientSender implements Runnable {
-    private static final float CLIENT_SEND_RATE = 30f;
+    private static final float CLIENT_SEND_RATE = 60f;
     private static float timer = 0f;
     private PlayerMovementMessage aggregatedMovement;
     
@@ -40,27 +40,26 @@ public class GameClientSender implements Runnable {
         while(true){
             try {
                 Message msg = outgoing.take();
-                /*
+                
                 if(msg instanceof InternalMovementMessage) {
                     InternalMovementMessage internalMsg = (InternalMovementMessage) msg;
                     float tpf = internalMsg.getTpf();
-                    System.out.println("aggregate this"+internalMsg.getVelocity());
-                    System.out.println("before"+aggregatedMovement.getVelocity());
+                    //Scale the velocity of each individual packet with tpf
                     aggregatedMovement.updateVelocity(internalMsg.getVelocity().mult(tpf));
-                    System.out.println("after"+aggregatedMovement.getVelocity());
                     aggregatedMovement.updateViewDirection(internalMsg.getViewDirection());
                     
                     timer += tpf;
                     if (timer >= 1/CLIENT_SEND_RATE) {
-                        System.out.println("Do we sent the aggregated message?");
-                        System.out.println(aggregatedMovement.getVelocity());
+                        //Scale the velocity of the aggregated packet back to the original magnitude/size.
+                        //Each of the non-aggregated packets now contribute according to the tpf value
+                        aggregatedMovement.scaleVelocity(1/timer);
                         this.serverConnection.send(aggregatedMovement);
                         aggregatedMovement = new PlayerMovementMessage(new Vector3f(), new Vector3f());
                         timer = 0f;
                     }
-                } else {*/
+                } else {
                     this.serverConnection.send(msg);
-                //}
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(GameToAuthSender.class.getName()).log(Level.SEVERE, null, ex);
             }
