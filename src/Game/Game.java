@@ -64,6 +64,7 @@ public class Game extends BaseAppState {
     protected final float playerGravity = 50;
     protected final float cameraHeight = playerHeight*0.8f;
     private String level_id = "grassPlayGround"; //Default level
+    public static final int MAX_PLAYER_COUNT = 8;
     
     @Override
     protected void initialize(Application app) {

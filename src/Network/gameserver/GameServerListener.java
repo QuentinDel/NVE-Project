@@ -48,46 +48,32 @@ public class GameServerListener implements MessageListener<HostedConnection> {
         if (m instanceof JoinGameMessage) {
             final JoinGameMessage msg = (JoinGameMessage) m;
             String name = msg.getName();
-            
-            //Assign playerID
-            boolean assigned = false;
-            for (int i = 1; i<8; i++) {
-                //If there is a free playerID, assign it to the new player
-                boolean freeID = true;
-                for (int j = 0; j < connPlayerMap.size(); j++) {
-                    if (connPlayerMap.containsKey(j)) {
-                        if (connPlayerMap.get(j).getId() == i) {
-                            freeID = false;
-                        }    
-                    }
-                }
-                if (freeID) {
-                    Player newPlayer = new Player(i, name);
-                    connPlayerMap.put(c.getId(), newPlayer);
-                    JoinAckMessage ackMsg = new JoinAckMessage(i);
-                    ackMsg.setReliable(true);
-                    //c.send(ackMsg);
-                    server.broadcast(Filters.equalTo(c), ackMsg);
-                    Enumeration<Player> values = connPlayerMap.values();
-                    ArrayList<PlayerLite> players = new ArrayList<>();
-                    while (values.hasMoreElements()) {
-                        Player p = values.nextElement();
-                        if (p.getTeam() == 1 || p.getTeam() == 2) {
-                            players.add(new PlayerLite(p));
-                        }
-                    }
-                    GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
-                    confMsg.setReliable(true);
-                    //c.send(confMsg);
-                    server.broadcast(Filters.equalTo(c), confMsg);
-                    assigned = true;
-                    break;
-                }
-            }
-            if (!assigned) {
-                // There was no open spot
+
+            if (connPlayerMap.size() > Game.MAX_PLAYER_COUNT) {
                 c.close("Try again later, the game is full");
+                return;
             }
+            //Assign playerID
+            Player newPlayer = new Player(c.getId(), name);
+            connPlayerMap.put(c.getId(), newPlayer);
+            JoinAckMessage ackMsg = new JoinAckMessage(c.getId());
+            ackMsg.setReliable(true);
+            server.broadcast(Filters.equalTo(c), ackMsg);
+
+            //Send GameConfigurationMessage to new client
+            Enumeration<Player> values = connPlayerMap.values();
+            ArrayList<PlayerLite> players = new ArrayList<>();
+
+            while (values.hasMoreElements()) {
+                Player p = values.nextElement();
+                if (p.getTeam() == 1 || p.getTeam() == 2) {
+                    players.add(new PlayerLite(p));
+                }
+            }
+            GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
+            confMsg.setReliable(true);
+            server.broadcast(Filters.equalTo(c), confMsg);
+
         } else if (m instanceof Util.TeamJoinMessage) {
             final Util.TeamJoinMessage msg = (Util.TeamJoinMessage) m;
             int team = msg.getTeam();
