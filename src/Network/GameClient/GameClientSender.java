@@ -47,7 +47,7 @@ public class GameClientSender implements Runnable {
                     //Scale the velocity of each individual packet with tpf
                     aggregatedMovement.updateVelocity(internalMsg.getVelocity().mult(tpf));
                     aggregatedMovement.updateViewDirection(internalMsg.getViewDirection());
-                    
+
                     timer += tpf;
                     if (timer >= 1/CLIENT_SEND_RATE) {
                         //Scale the velocity of the aggregated packet back to the original magnitude/size.
@@ -57,6 +57,15 @@ public class GameClientSender implements Runnable {
                         aggregatedMovement = new PlayerMovementMessage(new Vector3f(), new Vector3f());
                         timer = 0f;
                     }
+                } else if (msg instanceof PlayerMovementMessage) {
+                    PlayerMovementMessage movementMsg = (PlayerMovementMessage) msg;
+                    movementMsg.setReliable(true);
+
+                    //First send any built-up aggregation
+                    this.serverConnection.send(aggregatedMovement);
+                    this.serverConnection.send(movementMsg);
+                    aggregatedMovement = new PlayerMovementMessage(new Vector3f(), new Vector3f());
+                    timer = 0f;
                 } else {
                     this.serverConnection.send(msg);
                 }
