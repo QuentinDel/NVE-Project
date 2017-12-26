@@ -7,6 +7,7 @@ package Network.GameClient;
 
 import Game.Player;
 import Network.Util;
+import Network.Util.BallPhysics;
 import Network.Util.GameConfigurationMessage;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
@@ -100,10 +101,12 @@ public class GameClientListener implements MessageListener<Client>{
         } else if (m instanceof UpdatePhysics) {
             final UpdatePhysics msg = (UpdatePhysics) m;
             final ArrayList<PlayerPhysics> physics = msg.getPlayersPhys();
+            final BallPhysics ball_physics = msg.getBallPhys();
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     gameClient.game.updatePlayerPhysics(physics);
+                    gameClient.game.updateBallPhysics(ball_physics);
                     return true;
                 }
             });

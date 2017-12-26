@@ -5,9 +5,11 @@
  */
 package Network.gameserver;
 
+import Game.Ball;
 import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.BallPhysics;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
@@ -140,9 +142,16 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                 players.add(new PlayerPhysics(p.getId(), p.getDirection(), p.getVelocity()));
             }
         }
+        Ball ball = game.getBall();
         if (!players.isEmpty()) {
-            UpdatePhysics msg = new UpdatePhysics(players);
-            server.broadcast(msg);
+            if (ball != null) {
+                BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity());
+                UpdatePhysics msg = new UpdatePhysics(players, ball_phy);
+                server.broadcast(msg);
+            } else {
+                UpdatePhysics msg = new UpdatePhysics(players);
+                server.broadcast(msg);
+            }
         }
 
     }

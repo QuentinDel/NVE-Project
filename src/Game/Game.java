@@ -5,6 +5,7 @@
  */
 package Game;
 
+import Network.Util.BallPhysics;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
@@ -97,6 +98,7 @@ public class Game extends BaseAppState {
         //setUpKeys();
         setUpLight();
         initLevel();
+        addBall();
     }
 
     private void setUpLight() {
@@ -228,6 +230,11 @@ public class Game extends BaseAppState {
                 }
             }
         }
+    }
+    
+    public void updateBallPhysics(BallPhysics physics) {
+        ball.setPosition(physics.getPosition());
+        ball.setVelocity(physics.getVelocity());
     }
     
     /**
