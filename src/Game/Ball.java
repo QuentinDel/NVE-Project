@@ -14,6 +14,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 
@@ -21,7 +22,7 @@ import com.jme3.texture.Texture;
  *
  * @author Quentin
  */
-public class Ball {
+public class Ball extends Node {
     
     private final Application sapp;
     private Geometry ball_geo;
@@ -54,6 +55,7 @@ public class Ball {
         ball_geo = new Geometry("cannon ball", sphere);
         ball_geo.setMaterial(stone_mat);
         ball_geo.move(new Vector3f(-5, 6f, -5));
+        this.attachChild(ball_geo);
         
         CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
         RigidBodyControl ball_phy = new RigidBodyControl(ball_shape, 10f);

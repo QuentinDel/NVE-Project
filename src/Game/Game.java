@@ -193,7 +193,7 @@ public class Game extends BaseAppState {
     
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);
-        sapp.getRootNode().attachChild(ball.getGeometry());
+        sapp.getRootNode().attachChild(ball);
     }
 
     public Ball getBall() {
