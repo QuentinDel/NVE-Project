@@ -185,14 +185,14 @@ public class Util {
     public static class BallPhysics{
         protected Vector3f position;
         protected Vector3f velocity;
-        protected Quaternion rotation;
+        protected Vector3f angularVelocity;
         
         public BallPhysics(){}
         
-        public BallPhysics(Vector3f position, Vector3f velocity, Quaternion rotation){
+        public BallPhysics(Vector3f position, Vector3f velocity, Vector3f angularVelocity){
             this.position = position;
             this.velocity = velocity;
-            this.rotation = rotation;
+            this.angularVelocity = angularVelocity;
         }
         
         public Vector3f getPosition() {
@@ -203,8 +203,8 @@ public class Util {
             return velocity;
         }
         
-        public Quaternion getRotation() {
-            return rotation;
+        public Vector3f getAngularVelocity() {
+            return angularVelocity;
         }
         
     }

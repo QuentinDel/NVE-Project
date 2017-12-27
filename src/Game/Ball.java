@@ -93,12 +93,12 @@ public class Ball extends Node {
         this.ball_phy.setPhysicsLocation(position);
     }
 
-    public Quaternion getRotation() {
-        return this.ball_phy.getPhysicsRotation();
+    public Vector3f getAngularVelocity() {
+        return this.ball_phy.getAngularVelocity();
     }
 
-    public void setRotation(Quaternion rotation) {
-        this.ball_phy.setPhysicsRotation(rotation);
+    public void setAngularVelocity(Vector3f angularVelocity) {
+        this.ball_phy.setAngularVelocity(angularVelocity);
     }
 
     public Vector3f getVelocity() {

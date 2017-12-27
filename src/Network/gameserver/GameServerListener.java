@@ -72,7 +72,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 }
             }
             Ball ball = game.getBall();
-            BallPhysics ball_phys = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getRotation());
+            BallPhysics ball_phys = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
             GameConfigurationMessage confMsg = new GameConfigurationMessage(players, ball_phys);
             confMsg.setReliable(true);
             server.broadcast(Filters.equalTo(c), confMsg);

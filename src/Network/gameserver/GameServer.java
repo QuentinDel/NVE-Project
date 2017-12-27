@@ -50,7 +50,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     
     private Game game = new Game();
 
-    private static final long PHYSICS_UPDATE_SEND_RATE = 10;
+    private static final long PHYSICS_UPDATE_SEND_RATE = 30;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -145,7 +145,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         Ball ball = game.getBall();
         if (!players.isEmpty()) {
             if (ball != null) {
-                BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getRotation());
+                BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
                 UpdatePhysics msg = new UpdatePhysics(players, ball_phy);
                 server.broadcast(msg);
             } else {
