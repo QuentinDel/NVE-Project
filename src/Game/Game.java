@@ -238,6 +238,7 @@ public class Game extends BaseAppState {
     public void updateBallPhysics(BallPhysics physics) {
         ball.setPosition(physics.getPosition());
         ball.setVelocity(physics.getVelocity());
+        ball.setRotation(physics.getRotation());
     }
     
     /**

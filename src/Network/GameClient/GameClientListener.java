@@ -60,10 +60,11 @@ public class GameClientListener implements MessageListener<Client>{
         } else if (m instanceof GameConfigurationMessage) {
             final GameConfigurationMessage msg = (GameConfigurationMessage) m;
             final ArrayList<PlayerLite> players = msg.getPlayers();
+            final BallPhysics ball = msg.getBall();
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    gameClient.putConfig(players);
+                    gameClient.putConfig(players, ball);
                     return true;
                 }
             });

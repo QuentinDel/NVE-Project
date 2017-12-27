@@ -9,6 +9,7 @@ import Game.Ball;
 import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.BallPhysics;
 import Network.Util.GameConfigurationMessage;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinAckMessage;
@@ -70,7 +71,9 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                     players.add(new PlayerLite(p));
                 }
             }
-            GameConfigurationMessage confMsg = new GameConfigurationMessage(players);
+            Ball ball = game.getBall();
+            BallPhysics ball_phys = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getRotation());
+            GameConfigurationMessage confMsg = new GameConfigurationMessage(players, ball_phys);
             confMsg.setReliable(true);
             server.broadcast(Filters.equalTo(c), confMsg);
 

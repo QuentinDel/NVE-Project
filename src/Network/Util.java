@@ -2,6 +2,7 @@
 package Network;
 
 import Game.Player;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.network.AbstractMessage;
@@ -184,13 +185,14 @@ public class Util {
     public static class BallPhysics{
         protected Vector3f position;
         protected Vector3f velocity;
-        //Currently does not send rotation of the ball, since it might be unneccesary?
+        protected Quaternion rotation;
         
         public BallPhysics(){}
         
-        public BallPhysics(Vector3f position, Vector3f velocity){
+        public BallPhysics(Vector3f position, Vector3f velocity, Quaternion rotation){
             this.position = position;
             this.velocity = velocity;
+            this.rotation = rotation;
         }
         
         public Vector3f getPosition() {
@@ -199,6 +201,10 @@ public class Util {
         
         public Vector3f getVelocity(){
             return velocity;
+        }
+        
+        public Quaternion getRotation() {
+            return rotation;
         }
         
     }
@@ -288,16 +294,22 @@ public class Util {
     @Serializable
     public static class GameConfigurationMessage extends MyAbstractMessage {
         private ArrayList<PlayerLite> players;
+        private BallPhysics ball;
 
         public GameConfigurationMessage(){
         }
 
-        public GameConfigurationMessage(ArrayList<PlayerLite> players) {
+        public GameConfigurationMessage(ArrayList<PlayerLite> players, BallPhysics ball) {
             this.players = players;
+            this.ball = ball;
         }
 
         public ArrayList<PlayerLite> getPlayers() {
             return players;
+        }
+        
+        public BallPhysics getBall(){
+            return ball;
         }
     }
 

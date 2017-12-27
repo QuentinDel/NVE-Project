@@ -205,15 +205,15 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     }
     
     // Setups the game by adding players, balls, etc.
-    public void putConfig(ArrayList<PlayerLite> playerList){
+    public void putConfig(ArrayList<PlayerLite> playerList, BallPhysics ball){
         // Add players
         for (final PlayerLite player : playerList){
             System.out.println("player pos: "+player.getPosition());
             System.out.println("player dir: "+player.getDirection());
             game.addPlayer(player);
         }
-        // Add the ball
-        //game.addBall();
+        // Update the ball
+        game.updateBallPhysics(ball);
         
         // Set the team scores
     }

@@ -145,7 +145,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         Ball ball = game.getBall();
         if (!players.isEmpty()) {
             if (ball != null) {
-                BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity());
+                BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getRotation());
                 UpdatePhysics msg = new UpdatePhysics(players, ball_phy);
                 server.broadcast(msg);
             } else {
