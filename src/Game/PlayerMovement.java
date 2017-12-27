@@ -12,6 +12,7 @@ import Network.Util.PlayerMovementMessage;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
@@ -62,8 +63,8 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         sapp.getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         sapp.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-        sapp.getInputManager().addMapping("Catch", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump");
+        sapp.getInputManager().addMapping("Catch", new KeyTrigger(KeyInput.KEY_R));
+        sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump", "Catch");
     }
     
     @Override
@@ -104,6 +105,16 @@ public class PlayerMovement extends BaseAppState {
                 }
             } else if (binding.equals("Catch")){
                 //if(playerNode.getGoshtControl().getOverlappingObjects()){
+                for (PhysicsCollisionObject collObj : playerNode.getGoshtControl().getOverlappingObjects()){
+                    if(collObj.getUserObject() instanceof Ball){
+                        Ball ballCatch = (Ball) collObj.getUserObject();
+                        if(!ballCatch.getIsOwned()){
+                            System.out.println("Try to catch the ball");
+                            playerNode.attachChild(ballCatch);
+                        }
+                    }
+                    
+                }
                     
                 //}
                 
@@ -134,11 +145,7 @@ public class PlayerMovement extends BaseAppState {
             }
             if (down) {
                 walkDirection.addLocal(camDir.negate());
-            }
-      
-            //playerNode.getNodeCatchZone().getChild(0).move(sapp.getCamera().getDirection().mult(5));
-            //playerNode.getNodeCatchZone().setLocalRotation(sapp.getCamera().getRotation());
-            
+            }      
             
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
             if (walkDirection.equals(new Vector3f()) && !lastWalkDirection.equals(walkDirection)) {
@@ -168,7 +175,6 @@ public class PlayerMovement extends BaseAppState {
             //Catch zone movement
             playerNode.getNodeCatchZone().setLocalTranslation(sapp.getCamera().getLocation());
             playerNode.getNodeCatchZone().getChild(0).setLocalTranslation(sapp.getCamera().getDirection().multLocal(7));
-            playerNode.getGoshtControl().setPhysicsLocation(playerNode.getNodeCatchZone().getChild(0).getWorldTranslation());
 
             lastCamDir = camDir;
             lastWalkDirection = walkDirection.clone();
