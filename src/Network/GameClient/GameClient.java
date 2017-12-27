@@ -136,7 +136,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
                 PlayerMessage.class,
                 JumpMessage.class,
                 NewPlayerMessage.class,
-                UpdatePhysics.class);
+                UpdatePhysics.class,
+                UpdateBallPhysics.class);
             
             // finally start the communication channel to the server
             gameConnection.start();

@@ -16,6 +16,7 @@ import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
 import Network.Util.PlayerPhysics;
 import Network.Util.TeamJoinMessage;
+import Network.Util.UpdateBallPhysics;
 import Network.Util.UpdatePhysics;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
@@ -50,7 +51,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
     
     private Game game = new Game();
 
-    private static final long PHYSICS_UPDATE_SEND_RATE = 30;
+    private static final long PHYSICS_UPDATE_SEND_RATE = 10;
+    private static final long BALL_UPDATE_SEND_RATE = 30;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -116,6 +118,13 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                     physicsUpdate();
                 }
             }, 0, PHYSICS_UPDATE_SEND_RATE);
+        Timer ballUpdateTimer = new Timer(true);
+        ballUpdateTimer.scheduleAtFixedRate(
+            new TimerTask() {
+                public void run() {
+                    ballUpdate();
+                }
+            }, 0, BALL_UPDATE_SEND_RATE);
     }
 
     @Override
@@ -142,18 +151,20 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                 players.add(new PlayerPhysics(p.getId(), p.getDirection(), p.getVelocity()));
             }
         }
-        Ball ball = game.getBall();
         if (!players.isEmpty()) {
-            if (ball != null) {
-                BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
-                UpdatePhysics msg = new UpdatePhysics(players, ball_phy);
-                server.broadcast(msg);
-            } else {
-                UpdatePhysics msg = new UpdatePhysics(players);
-                server.broadcast(msg);
-            }
+            UpdatePhysics msg = new UpdatePhysics(players);
+            server.broadcast(msg);
         }
 
+    }
+    
+    public void ballUpdate() {
+        Ball ball = game.getBall();
+        if (ball != null) {
+            BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
+            UpdateBallPhysics msg = new UpdateBallPhysics(ball_phy);
+            server.broadcast(msg);
+        }
     }
 
 }

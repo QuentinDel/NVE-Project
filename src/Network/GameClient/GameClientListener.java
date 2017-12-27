@@ -21,6 +21,7 @@ import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMessage;
 import Network.Util.PlayerPhysics;
+import Network.Util.UpdateBallPhysics;
 import Network.Util.UpdatePhysics;
 
 /**
@@ -102,12 +103,20 @@ public class GameClientListener implements MessageListener<Client>{
         } else if (m instanceof UpdatePhysics) {
             final UpdatePhysics msg = (UpdatePhysics) m;
             final ArrayList<PlayerPhysics> physics = msg.getPlayersPhys();
-            final BallPhysics ball_physics = msg.getBallPhys();
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     gameClient.game.updatePlayerPhysics(physics);
-                    gameClient.game.updateBallPhysics(ball_physics);
+                    return true;
+                }
+            });
+        } else if (m instanceof UpdateBallPhysics) {
+            final UpdateBallPhysics msg = (UpdateBallPhysics) m;
+            final BallPhysics ball_phy = msg.getBallPhys();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.game.updateBallPhysics(ball_phy);
                     return true;
                 }
             });

@@ -42,6 +42,7 @@ public class Util {
             PlayerPhysics.class,
             BallPhysics.class,
             UpdatePhysics.class,
+            UpdateBallPhysics.class,
             JumpMessage.class,
             GrabBallMessage.class,
             NewPlayerMessage.class
@@ -398,22 +399,26 @@ public class Util {
     @Serializable
     public static class UpdatePhysics extends MyAbstractMessage{
         ArrayList<PlayerPhysics> playersPhys;
-        BallPhysics ball;
         
         public UpdatePhysics(){}
         
-        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys) {
+        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys){
             this.playersPhys = playersPhys;
-            this.ball = new BallPhysics();
-        }
-        
-        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys, BallPhysics ball){
-            this.playersPhys = playersPhys;
-            this.ball = ball;
         }
         
         public ArrayList<PlayerPhysics> getPlayersPhys(){
             return playersPhys;
+        }
+    }
+    
+    @Serializable
+    public static class UpdateBallPhysics extends MyAbstractMessage{
+        BallPhysics ball;
+        
+        public UpdateBallPhysics(){}
+        
+        public UpdateBallPhysics(BallPhysics ball){
+            this.ball = ball;
         }
         
         public BallPhysics getBallPhys() {
