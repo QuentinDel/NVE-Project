@@ -30,11 +30,14 @@ import static Playboard.PlaygroundConstant.WALL_LENGTH;
 import static Playboard.PlaygroundConstant.WALL_THICKNESS;
 import static Playboard.PlaygroundConstant.WALL_WIDTH;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -115,6 +118,8 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node scoreZoneBlue = new Node("markPointBlue");
     Box goalScoreBox = new Box(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH);
     Geometry goalScoreBlue = new Geometry("scoreZoneBlue", goalScoreBox);
+    GhostControl zoneScore = new GhostControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)));
+
     
     
     // PART FOR MATERIALS SETTINGS 
@@ -200,6 +205,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
     wallLengthRight.setLocalTranslation(0f, WALL_HEIGHT, BOARD_WIDTH);
     goalScoreBlue.setLocalTranslation(BOARD_LENGTH - 0.01f, SCORE_ZONE_HEIGHT, 0f);
+    goalScoreBlue.addControl(zoneScore);
     skybox.setLocalTranslation(0, -50, 0);
     
     

@@ -104,7 +104,6 @@ public class PlayerMovement extends BaseAppState {
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
             } else if (binding.equals("Catch")){
-                //if(playerNode.getGoshtControl().getOverlappingObjects()){
                 for (PhysicsCollisionObject collObj : playerNode.getGoshtControl().getOverlappingObjects()){
                     if(collObj.getUserObject() instanceof Ball){
                         Ball ballCatch = (Ball) collObj.getUserObject();
