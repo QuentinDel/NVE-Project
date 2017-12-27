@@ -14,6 +14,7 @@ import Network.GameClient.GameClient;
 import Network.Util.GameServerLite;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
@@ -25,6 +26,8 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
 import de.lessvoid.nifty.controls.listbox.builder.ListBoxBuilder;
 import de.lessvoid.nifty.controls.textfield.builder.TextFieldBuilder;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -154,6 +157,34 @@ public class Menu extends BaseAppState implements ScreenController {
         nifty.gotoScreen("hud");
     }
     
+    public void setHealth(int newHealth) {
+        Element niftyElement = nifty.getCurrentScreen().findElementByName("health");
+        if (niftyElement != null) {
+            niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newHealth));
+        }
+    }
+    
+    public void setRedScore(int newScore) {
+        Element niftyElement = nifty.getCurrentScreen().findElementByName("redscore");
+        if (niftyElement != null) {
+            niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newScore));
+        }
+    }
+    
+    public void setBlueScore(int newScore) {
+        Element niftyElement = nifty.getCurrentScreen().findElementByName("bluescore");
+        if (niftyElement != null) {
+            niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newScore));
+        }
+    }
+    
+    public void setTimer(int newTime) {
+        Element niftyElement = nifty.getCurrentScreen().findElementByName("time");
+        if (niftyElement != null) {
+            niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newTime));
+        }
+    }
+    
     @Override
     protected void onDisable() {
         System.out.println("Menu: onDisable");
@@ -269,7 +300,6 @@ public class Menu extends BaseAppState implements ScreenController {
                             alignCenter();
                             x(SizeValue.px(100));
                             y(SizeValue.px(100));
-
                             interactOnClick("quitGame()");
                         }});
                     }});
@@ -329,6 +359,56 @@ public class Menu extends BaseAppState implements ScreenController {
         return new ScreenBuilder(screenID) {{
             controller(menu);
             layer(new LayerBuilder("foreground") {{
+                    childLayoutVertical();
+                panel(new PanelBuilder() {{
+                    childLayoutHorizontal();
+                    alignCenter();
+                    height("8%");
+                    panel(new PanelBuilder() {{ //Empty space
+                        alignCenter();
+                        width("35%");
+                    }});
+                    panel(new PanelBuilder() {{ //Red score
+                        childLayoutCenter();
+                        alignCenter();
+                        backgroundColor("#f009");
+                        width("10%");
+                        height("100%");
+                        control(new LabelBuilder("redscore", "4"));
+                    }});
+                    panel(new PanelBuilder() {{ //Time
+                        childLayoutCenter();
+                        alignCenter();
+                        backgroundColor("#000c");
+                        width("10%");
+                        height("100%");
+                        control(new LabelBuilder("time", "01:31"));
+                    }});
+                    panel(new PanelBuilder() {{ //Blue score
+                        childLayoutCenter();
+                        alignCenter();
+                        backgroundColor("#00f9");
+                        width("10%");
+                        height("100%");
+                        control(new LabelBuilder("bluescore", "3"));
+                    }});
+                }});
+                panel(new PanelBuilder() {{//Empty space
+                    alignCenter();
+                    height("84%");
+                }});
+                panel(new PanelBuilder() {{ //Bar at bottom of screen
+                    childLayoutCenter();
+                    height("8%");
+                    panel(new PanelBuilder() {{ //Health
+                        childLayoutCenter();
+                        alignCenter();
+                        backgroundColor("#0f09");
+                        width("10%");
+                        height("100%");
+                        control(new LabelBuilder("health", "100"));
+                    }});
+                }});
                 
             }});
         }}.build(nifty);
