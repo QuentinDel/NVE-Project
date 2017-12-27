@@ -6,6 +6,7 @@
 package Game;
 
 import Network.GameClient.GameClient;
+import Network.Util;
 import Network.Util.InternalMovementMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
@@ -43,7 +44,7 @@ public class PlayerMovement extends BaseAppState {
     private Vector3f lastCamDir = new Vector3f();
     
     //Booleans for character movement directions
-    private boolean left = false, right = false, up = false, down = false;
+    private boolean left = false, right = false, up = false, down = false, grapBall = false;
     
     private final float playerMoveSpeed = 20;
     
@@ -103,13 +104,12 @@ public class PlayerMovement extends BaseAppState {
                     playerControl.jump();
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
-            } else if (binding.equals("Catch") && isPressed){
+            } else if (binding.equals("Catch") && !isPressed){
                 for (PhysicsCollisionObject collObj : playerNode.getGoshtControl().getOverlappingObjects()){
                     if(collObj.getUserObject() instanceof Ball){
                         Ball ballCatch = (Ball) collObj.getUserObject();
                         if(!ballCatch.getIsOwned()){
-                            System.out.println("Try to catch the ball");
-                            playerNode.attachChild(ballCatch);
+                            grapBall = true;
                         }
                     }
                     
@@ -144,7 +144,12 @@ public class PlayerMovement extends BaseAppState {
             }
             if (down) {
                 walkDirection.addLocal(camDir.negate());
-            }      
+            } 
+            if (grapBall){
+                System.out.println("Try to catch the ball sent");
+                grapBall = false;
+                sapp.queueGameServerMessage(new Util.GrabBallMessage());
+            }
             
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
             if (walkDirection.equals(new Vector3f()) && !lastWalkDirection.equals(walkDirection)) {

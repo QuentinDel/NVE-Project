@@ -120,6 +120,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             final GrabBallMessage msg = (GrabBallMessage) m;
             Player player = connPlayerMap.get(c.getId());
             Ball ball = game.getBall();
+            System.out.println("Ball Grabbed");
             if (ball.getIsOwned()) {
                 //ball is owned by someone, do nothing
             } else {
