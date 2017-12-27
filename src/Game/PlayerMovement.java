@@ -30,6 +30,7 @@ public class PlayerMovement extends BaseAppState {
     
     private GameClient sapp;
     private Player playerNode;
+    private Ball ball;
     private BetterCharacterControl playerControl;
     private boolean playerInitialized = false;
     
@@ -44,6 +45,7 @@ public class PlayerMovement extends BaseAppState {
     private boolean left = false, right = false, up = false, down = false;
     
     private final float playerMoveSpeed = 20;
+    
     
     @Override
     public void initialize(Application app) {
@@ -101,6 +103,9 @@ public class PlayerMovement extends BaseAppState {
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
             } else if (binding.equals("Catch")){
+                //if(playerNode.getGoshtControl().getOverlappingObjects()){
+                    
+                //}
                 
             }
                
@@ -168,6 +173,10 @@ public class PlayerMovement extends BaseAppState {
             lastCamDir = camDir;
             lastWalkDirection = walkDirection;
         }
+    }
+    
+    public void setBall(Ball ball){
+        this.ball = ball;
     }
     
     @Override

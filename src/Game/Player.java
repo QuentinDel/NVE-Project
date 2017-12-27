@@ -12,9 +12,11 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -61,9 +63,12 @@ public class Player extends Node{
     public void initZoneBallCatch(AssetManager assetManager, Camera camera, AppSettings settings, float playerHeight){
         Box collisionShape = new Box(1f, 1f, 1f);
         catchZone = new Geometry("collis", collisionShape);
-        Material matLine = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        matLine.setColor("Color", ColorRGBA.White);
-        catchZone.setMaterial(matLine);
+        Material matCube = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        matCube.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);  // !
+        matCube.setTransparent(true);
+        matCube.setColor("Color", new ColorRGBA(0.8f, 0.8f, 0.8f, 0.1f));
+        catchZone.setQueueBucket(RenderQueue.Bucket.Transparent);
+        catchZone.setMaterial(matCube);
         
         boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
         zoneBallCatch = new GhostControl(boxCollisionShape);

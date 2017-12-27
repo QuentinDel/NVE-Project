@@ -19,6 +19,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
@@ -153,6 +154,7 @@ public class Game extends BaseAppState {
         playerControl.warp(p.getPosition());
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
+        bulletAppState.getPhysicsSpace().addCollisionObject(playerNode.getGoshtControl());
         sapp.getRootNode().attachChild(playerNode);
         sapp.getRootNode().attachChild(playerNode.getNodeCatchZone());
         playerStore.add(playerNode);
