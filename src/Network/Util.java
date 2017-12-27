@@ -39,6 +39,7 @@ public class Util {
             PlayerLite.class,
             PlayerMovementMessage.class,
             PlayerPhysics.class,
+            BallPhysics.class,
             UpdatePhysics.class,
             JumpMessage.class,
             GrabBallMessage.class,
@@ -163,8 +164,6 @@ public class Util {
             this.position = player.getPosition();
             this.direction = player.getDirection();
             this.velocity = player.getVelocity();
-            System.out.println("position: "+this.position);
-            System.out.println("direction: "+this.direction);
             this.team = player.getTeam();
         }
 
@@ -179,6 +178,29 @@ public class Util {
         public int getTeam() {
             return team;
         }
+    }
+    
+    @Serializable
+    public static class BallPhysics{
+        protected Vector3f position;
+        protected Vector3f velocity;
+        //Currently does not send rotation of the ball, since it might be unneccesary?
+        
+        public BallPhysics(){}
+        
+        public BallPhysics(Vector3f position, Vector3f velocity){
+            this.position = position;
+            this.velocity = velocity;
+        }
+        
+        public Vector3f getPosition() {
+            return position;
+        }
+        
+        public Vector3f getVelocity(){
+            return velocity;
+        }
+        
     }
    
     @Serializable
@@ -338,6 +360,10 @@ public class Util {
         public void updateViewDirection(Vector3f dir) {
             this.viewDirection = dir;
         }
+        
+        public void scaleVelocity(float scale) {
+            this.velocity = this.velocity.mult(scale);
+        }
     }
     
     //Do not serialize and send this message
@@ -360,15 +386,26 @@ public class Util {
     @Serializable
     public static class UpdatePhysics extends MyAbstractMessage{
         ArrayList<PlayerPhysics> playersPhys;
+        BallPhysics ball;
         
         public UpdatePhysics(){}
         
-        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys){
+        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys) {
             this.playersPhys = playersPhys;
+            this.ball = new BallPhysics();
+        }
+        
+        public UpdatePhysics(ArrayList<PlayerPhysics> playersPhys, BallPhysics ball){
+            this.playersPhys = playersPhys;
+            this.ball = ball;
         }
         
         public ArrayList<PlayerPhysics> getPlayersPhys(){
             return playersPhys;
+        }
+        
+        public BallPhysics getBallPhys() {
+            return ball;
         }
     }
     

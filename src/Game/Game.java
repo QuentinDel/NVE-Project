@@ -5,6 +5,7 @@
  */
 package Game;
 
+import Network.Util.BallPhysics;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
@@ -64,6 +65,7 @@ public class Game extends BaseAppState {
     protected final float playerGravity = 50;
     protected final float cameraHeight = playerHeight*0.8f;
     private String level_id = "grassPlayGround"; //Default level
+    public static final int MAX_PLAYER_COUNT = 8;
     
     @Override
     protected void initialize(Application app) {
@@ -98,6 +100,7 @@ public class Game extends BaseAppState {
         //setUpKeys();
         setUpLight();
         initLevel();
+        addBall();
     }
 
     private void setUpLight() {
@@ -184,7 +187,8 @@ public class Game extends BaseAppState {
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
         playerControl.warp(p.getPosition());
         System.out.println("playerposition: "+p.getPosition());
-        playerControl.setViewDirection(p.getDirection());
+        //playerControl.setViewDirection(p.getDirection());
+        playerControl.setViewDirection(new Vector3f(1,1,1));
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
         playerStore.add(playerNode);
@@ -194,7 +198,7 @@ public class Game extends BaseAppState {
     
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);
-        sapp.getRootNode().attachChild(ball.getGeometry());
+        sapp.getRootNode().attachChild(ball);
     }
 
     public Ball getBall() {
@@ -229,6 +233,11 @@ public class Game extends BaseAppState {
                 }
             }
         }
+    }
+    
+    public void updateBallPhysics(BallPhysics physics) {
+        ball.setPosition(physics.getPosition());
+        ball.setVelocity(physics.getVelocity());
     }
     
     /**

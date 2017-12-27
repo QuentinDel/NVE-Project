@@ -213,8 +213,7 @@ public class GameClient extends SimpleApplication implements ClientStateListener
             game.addPlayer(player);
         }
         // Add the ball
-        game.addBall();
-        move.setBall(game.getBall());
+        //game.addBall();
         
         // Set the team scores
     }

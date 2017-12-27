@@ -36,10 +36,10 @@ public class PlayerMovement extends BaseAppState {
     
     
     private Vector3f walkDirection = new Vector3f();
-    private Vector3f lastWalkDirection = walkDirection;
+    private Vector3f lastWalkDirection = new Vector3f();
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
-    private Vector3f lastCamDir = camDir;
+    private Vector3f lastCamDir = new Vector3f();
     
     //Booleans for character movement directions
     private boolean left = false, right = false, up = false, down = false;
@@ -135,15 +135,14 @@ public class PlayerMovement extends BaseAppState {
             if (down) {
                 walkDirection.addLocal(camDir.negate());
             }
-            
       
             //playerNode.getNodeCatchZone().getChild(0).move(sapp.getCamera().getDirection().mult(5));
             //playerNode.getNodeCatchZone().setLocalRotation(sapp.getCamera().getRotation());
             
             
             walkDirection = walkDirection.multLocal(playerMoveSpeed);
-            /*
             if (walkDirection.equals(new Vector3f()) && !lastWalkDirection.equals(walkDirection)) {
+                //If we stopped moving, send a final playermovementmessage to indicate that we are now standing still
                 sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
                 float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
 
@@ -151,27 +150,28 @@ public class PlayerMovement extends BaseAppState {
                 playerControl.setViewDirection(camDir);
                 sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
                 lastCamDir = camDir;
-                lastWalkDirection = walkDirection;
+                lastWalkDirection = walkDirection.clone();
+                return;
             }
             if (walkDirection.equals(new Vector3f()) && lastCamDir.equals(camDir)) {
+                //If we are not moving or turning, do nothing
                 return;
-            }*/
+            }
             
-            sapp.queueGameServerMessage(new PlayerMovementMessage(walkDirection, camDir));
-            //sapp.queueGameServerMessage(new InternalMovementMessage(walkDirection, camDir, tpf));
+            sapp.queueGameServerMessage(new InternalMovementMessage(walkDirection, camDir, tpf));
             float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
             
-            /*playerControl.setWalkDirection(walkDirection);
+            playerControl.setWalkDirection(walkDirection);
             playerControl.setViewDirection(camDir);
-            */sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
+            sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
             
+            //Catch zone movement
             playerNode.getNodeCatchZone().setLocalTranslation(sapp.getCamera().getLocation());
-            playerNode.getNodeCatchZone().getChild(0).setLocalTranslation(sapp.getCamera().getDirection().multLocal(3));
-            //System.out.println(playerNode.getNodeCatchZone().getWorldTransform());
-            //System.out.println( sapp.getCamera().getLocation());
+            playerNode.getNodeCatchZone().getChild(0).setLocalTranslation(sapp.getCamera().getDirection().multLocal(7));
+            playerNode.getGoshtControl().setPhysicsLocation(playerNode.getNodeCatchZone().getChild(0).getWorldTranslation());
 
             lastCamDir = camDir;
-            lastWalkDirection = walkDirection;
+            lastWalkDirection = walkDirection.clone();
         }
     }
     

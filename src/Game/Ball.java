@@ -12,8 +12,10 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 
@@ -21,10 +23,11 @@ import com.jme3.texture.Texture;
  *
  * @author Quentin
  */
-public class Ball {
+public class Ball extends Node {
     
     private final Application sapp;
     private Geometry ball_geo;
+    private RigidBodyControl ball_phy;
     private final BulletAppState bulletAppState;
     private boolean isOwned;
     private int ownedBy;
@@ -53,12 +56,16 @@ public class Ball {
         //Setup the geometry for the ball
         ball_geo = new Geometry("cannon ball", sphere);
         ball_geo.setMaterial(stone_mat);
-        ball_geo.move(new Vector3f(-5, 6f, -5));
+        this.attachChild(ball_geo);
         
+        //Setup the physics controller
         CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
-        RigidBodyControl ball_phy = new RigidBodyControl(ball_shape, 10f);
-        ball_geo.addControl(ball_phy);
+        ball_phy = new RigidBodyControl(ball_shape, 10f);
+        this.addControl(ball_phy);
         bulletAppState.getPhysicsSpace().add(ball_phy);
+
+        //Move the ball to the initial position
+        ball_phy.setPhysicsLocation(new Vector3f(-5, 6f, -5));
     }
     
     public Geometry getGeometry(){
@@ -78,4 +85,27 @@ public class Ball {
         isOwned = false;
     }
     
+    public Vector3f getPosition() {
+        return this.ball_phy.getPhysicsLocation();
+    }
+
+    public void setPosition(Vector3f position) {
+        this.ball_phy.setPhysicsLocation(position);
+    }
+
+    public Quaternion getRotation() {
+        return this.ball_phy.getPhysicsRotation();
+    }
+
+    public void setRotation(Quaternion rotation) {
+        this.ball_phy.setPhysicsRotation(rotation);
+    }
+
+    public Vector3f getVelocity() {
+        return this.ball_phy.getLinearVelocity();
+    }
+
+    public void setVelocity(Vector3f velocity) {
+        this.ball_phy.setLinearVelocity(velocity);
+    }
 }

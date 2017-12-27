@@ -72,7 +72,6 @@ public class Player extends Node{
         
         boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
         zoneBallCatch = new GhostControl(boxCollisionShape);
-        zoneBallCatch.setSpatial(catchZone);
        
         //catchZone.setLocalTranslation(camera.getDirection().mult(3));
         
@@ -82,6 +81,10 @@ public class Player extends Node{
         toRotate = new Node("toRotate");
         toRotate.setLocalTranslation(camera.getLocation());
         toRotate.attachChild(catchZone);
+        zoneBallCatch.setPhysicsLocation(toRotate.getLocalTranslation());
+        //zoneBallCatch.setSpatial(toRotate);
+
+
     }
 
     public int getId() {
