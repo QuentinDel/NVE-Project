@@ -45,7 +45,8 @@ public class Util {
             UpdateBallPhysics.class,
             JumpMessage.class,
             GrabBallMessage.class,
-            NewPlayerMessage.class
+            NewPlayerMessage.class,
+            ShootBallMessage.class
         );
     }
     
@@ -443,10 +444,18 @@ public class Util {
 
     @Serializable
     public static class GrabBallMessage extends MyAbstractMessage {
-
+        private int id;
+        
         public GrabBallMessage() {
         }
-
+        
+        public GrabBallMessage(int id){
+            this.id = id;
+        }
+        
+        public int getId(){
+            return id;
+        }
     }
 
     @Serializable
@@ -462,6 +471,34 @@ public class Util {
 
         public PlayerLite getPlayer() {
             return player;
+        }
+    }
+    
+    @Serializable
+    public static class ShootBallMessage extends MyAbstractMessage {
+        private int playerId;
+        private Vector3f direction;
+        private float power;
+
+        public ShootBallMessage() {
+        }
+
+        public ShootBallMessage(int playerId, Vector3f direction, float power) {
+            this.playerId = playerId;
+            this.direction = direction;
+            this.power = power;
+        }
+        
+        public int getPlayerId(){
+            return playerId;
+        }
+        
+        public Vector3f getDirection(){
+            return direction;
+        }
+        
+        public float getPower(){
+            return power;
         }
     }
     

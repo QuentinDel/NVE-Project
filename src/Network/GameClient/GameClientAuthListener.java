@@ -5,11 +5,14 @@
  */
 package Network.GameClient;
 
+import Game.Game;
+import Network.Util;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.concurrent.Callable;
 import Network.Util.GameServerListsMessage;
+import Network.Util.GrabBallMessage;
 import Network.Util.RefreshMessage;
 import Network.Util.GameServerLite;
 import java.util.ArrayList;
@@ -29,10 +32,12 @@ public class GameClientAuthListener implements MessageListener<Client>{
     
     private Client serverConnection;
     private GameClient gameClient;
+    private Game game;
     
     public GameClientAuthListener(Client serverConn, GameClient gameClient) {
         serverConnection = serverConn;
         this.gameClient = gameClient;
+        this.game = gameClient.game;
                 
     }     
 
@@ -51,6 +56,6 @@ public class GameClientAuthListener implements MessageListener<Client>{
                     return true;
                 }
             });
-        }
+        } 
     }
 }

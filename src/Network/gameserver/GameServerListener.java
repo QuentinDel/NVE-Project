@@ -119,18 +119,23 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             player.getControl(BetterCharacterControl.class).jump();
             JumpMessage jMsg = new JumpMessage(player.getId());
             server.broadcast(Filters.notEqualTo(c), jMsg);
+            
         } else if (m instanceof GrabBallMessage) {
             final GrabBallMessage msg = (GrabBallMessage) m;
             Player player = connPlayerMap.get(c.getId());
             Ball ball = game.getBall();
-            System.out.println("Ball Grabbed");
             if (ball.getIsOwned()) {
                 //ball is owned by someone, do nothing
             } else {
                 //check if ball is in range
-                player.setHasBall(true);
-                ball.setOwned(player.getId());
+                System.out.println("Ball Grabbed");
+                game.setBallToPlayer(msg.getId());
+                server.broadcast(new GrabBallMessage(player.getId()));
             }
+        } else if (m instanceof Util.ShootBallMessage) {
+            Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
+            game.removeBallToPlayer(msg.getPlayerId());
+            server.broadcast(msg);
         }
 
     }

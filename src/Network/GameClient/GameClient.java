@@ -48,8 +48,8 @@ public class GameClient extends SimpleApplication implements ClientStateListener
     
     // AppStates
     protected Menu menu = new Menu();
-    protected Game game = new Game();
     protected PlayerMovement move = new PlayerMovement();
+    protected Game game = new Game();
     
     private final String hostname; // where the authentication server can be found
     private final int port; // the port att the server that we use
@@ -137,7 +137,9 @@ public class GameClient extends SimpleApplication implements ClientStateListener
                 JumpMessage.class,
                 NewPlayerMessage.class,
                 UpdatePhysics.class,
-                UpdateBallPhysics.class);
+                UpdateBallPhysics.class,
+                GrabBallMessage.class,
+                ShootBallMessage.class);
             
             // finally start the communication channel to the server
             gameConnection.start();

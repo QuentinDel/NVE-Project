@@ -109,6 +109,9 @@ public class PlayerMovement extends BaseAppState {
                     if(collObj.getUserObject() instanceof Ball){
                         Ball ballCatch = (Ball) collObj.getUserObject();
                         if(!ballCatch.getIsOwned()){
+                            //
+                            //ballCatch.setOwned(playerNode.getId());
+                            //playerNode.attachChild(ballCatch);
                             grapBall = true;
                         }
                     }

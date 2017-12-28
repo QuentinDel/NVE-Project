@@ -54,24 +54,25 @@ public class Ball extends Node {
         stone_mat.setTexture("ColorMap", tex);
         
         //Setup the geometry for the ball
-        ball_geo = new Geometry("cannon ball", sphere);
+        ball_geo = new Geometry("ball", sphere);
         ball_geo.setMaterial(stone_mat);
-        this.attachChild(ball_geo);
+        super.attachChild(ball_geo);
         
         //Setup the physics controller
         CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
         ball_phy = new RigidBodyControl(ball_shape, 10f);
-        this.addControl(ball_phy);
-        bulletAppState.getPhysicsSpace().add(ball_phy);
+        super.addControl(ball_phy);
+        this.addPhysic();
+       
 
         //Move the ball to the initial position
-        ball_phy.setPhysicsLocation(new Vector3f(-5, 6f, -5));
+        //ball_phy.setPhysicsLocation(new Vector3f(-5, 6f, -5));
     }
     
     public Geometry getGeometry(){
         return ball_geo;
     }
-    
+        
     public boolean getIsOwned(){
         return isOwned;
     }
@@ -107,5 +108,13 @@ public class Ball extends Node {
 
     public void setVelocity(Vector3f velocity) {
         this.ball_phy.setLinearVelocity(velocity);
+    }
+    
+    public void addPhysic(){
+        bulletAppState.getPhysicsSpace().add(ball_phy);
+    }
+    
+    public void removePhysic(){
+        bulletAppState.getPhysicsSpace().remove(ball_phy);
     }
 }

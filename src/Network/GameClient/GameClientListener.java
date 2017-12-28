@@ -120,6 +120,24 @@ public class GameClientListener implements MessageListener<Client>{
                     return true;
                 }
             });
+        } else if (m instanceof Util.GrabBallMessage){
+            final Util.GrabBallMessage msg = (Util.GrabBallMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.game.setBallToPlayer(msg.getId());
+                    return true;
+                }
+            });
+        } else if (m instanceof Util.ShootBallMessage) {
+            final Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.game.removeBallToPlayer(msg.getPlayerId());
+                    return true;
+                }
+            });
         }
     }
 }

@@ -5,9 +5,12 @@
  */
 package Game;
 
+import Network.GameClient.GameClient;
+import Network.Util;
 import Network.Util.BallPhysics;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerPhysics;
+import Network.gameserver.GameServer;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -24,8 +27,11 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -52,11 +58,14 @@ public class Game extends BaseAppState {
     private BulletAppState bulletAppState;
     private RigidBodyControl landscape;
     private BetterCharacterControl playerControl;
+    private PlayerMovement playerMovement;
     
    
     private ArrayList<Player> playerStore;
     private int userID;
     private Ball ball;
+    private float powerShoot = 0;
+    private final float MAXPOWERSHOOT = 100f;
             
     protected final float playerRadius = 1.5f;
     protected final float playerHeight = 6f;
@@ -199,10 +208,34 @@ public class Game extends BaseAppState {
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);   
         sapp.getRootNode().attachChild(ball);
+        ball.setPosition(new Vector3f(-5, 6f, -5));
     }
 
     public Ball getBall() {
         return ball;
+    }
+    
+    public void setBallToPlayer(int id){
+        Player player = playerStore.get(id);
+        player.attachChild(ball);
+        ball.setPosition(player.getPosition().add(new Vector3f(0, 2*cameraHeight, 0)));
+        ball.removePhysic();
+        ball.setOwned(id);
+        
+        if(id == userID && sapp instanceof GameClient){
+            insertLoadBar();
+        }
+    }
+    
+    public void removeBallToPlayer(int id){
+        Player player = playerStore.get(id);
+        player.detachChild(ball);
+        Vector3f position = player.getPosition();
+        sapp.getRootNode().attachChild(ball);
+        ball.addPhysic();
+        ball.notOwnedAnymore();
+        ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
+        removeLoadBar();
     }
     
     //Returns a Player with id "playerID" from the playerStore
@@ -236,9 +269,11 @@ public class Game extends BaseAppState {
     }
     
     public void updateBallPhysics(BallPhysics physics) {
-        ball.setPosition(physics.getPosition());
-        ball.setVelocity(physics.getVelocity());
-        ball.setAngularVelocity(physics.getAngularVelocity());
+        if(!ball.getIsOwned()){
+            ball.setPosition(physics.getPosition());
+            ball.setVelocity(physics.getVelocity());
+            ball.setAngularVelocity(physics.getAngularVelocity());
+        }  
     }
     
     /**
@@ -254,5 +289,30 @@ public class Game extends BaseAppState {
         System.out.println("Game: onDisable");
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
         sapp.getRootNode().detachAllChildren();
+    }
+
+    private void insertLoadBar() {
+        sapp.getInputManager().addMapping("LoadFire", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        sapp.getInputManager().addListener(actionListener, "LoadFire");
+    }
+    
+    private final ActionListener actionListener = new ActionListener() {
+        @Override
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            if (name.equals("LoadFire") && keyPressed) {
+                if(powerShoot < MAXPOWERSHOOT){
+                    powerShoot += MAXPOWERSHOOT * 0.001;
+                }
+            }
+            if (name.equals("LoadFire") && !keyPressed) {
+                System.out.println("Shoot");
+                ((GameClient)sapp).queueGameServerMessage(new Util.ShootBallMessage(userID, sapp.getCamera().getDirection(), powerShoot));
+            }
+
+        }
+    };
+
+    private void removeLoadBar() {
+        sapp.getInputManager().removeListener(actionListener);
     }
 }
