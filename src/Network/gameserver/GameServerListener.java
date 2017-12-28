@@ -135,6 +135,8 @@ public class GameServerListener implements MessageListener<HostedConnection> {
         } else if (m instanceof Util.ShootBallMessage) {
             Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
             game.removeBallToPlayer(msg.getPlayerId());
+            Ball ball = game.getBall();
+            ball.setVelocity(msg.getDirection().mult(msg.getPower()));
             server.broadcast(msg);
         }
 

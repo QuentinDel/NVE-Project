@@ -294,25 +294,34 @@ public class Game extends BaseAppState {
     private void insertLoadBar() {
         sapp.getInputManager().addMapping("LoadFire", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         sapp.getInputManager().addListener(actionListener, "LoadFire");
+        sapp.getInputManager().addListener(analogListener, "LoadFire");
     }
     
     private final ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            if (name.equals("LoadFire") && keyPressed) {
-                if(powerShoot < MAXPOWERSHOOT){
-                    powerShoot += MAXPOWERSHOOT * 0.001;
-                }
-            }
             if (name.equals("LoadFire") && !keyPressed) {
-                System.out.println("Shoot");
-                ((GameClient)sapp).queueGameServerMessage(new Util.ShootBallMessage(userID, sapp.getCamera().getDirection(), powerShoot));
+                System.out.println("Shoot " + powerShoot);
+                ((GameClient)sapp).queueGameServerMessage(new Util.ShootBallMessage(userID, sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
+                powerShoot = 0;
             }
 
+        }
+    };
+    
+    private final AnalogListener analogListener = new AnalogListener() {
+        @Override
+        public void onAnalog(String name, float value, float tpf) {
+             if (name.equals("LoadFire") && powerShoot < 1) {
+               powerShoot += tpf;
+            }
+            
         }
     };
 
     private void removeLoadBar() {
         sapp.getInputManager().removeListener(actionListener);
+        sapp.getInputManager().removeListener(analogListener);
+
     }
 }
