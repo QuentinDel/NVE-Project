@@ -261,6 +261,7 @@ public class Game extends BaseAppState {
             if (p != null) {
                 p.setDirection(pp.getDirection());
                 p.setVelocity(pp.getVelocity());
+                p.setPosition(pp.getPosition());
                 if (p.getId() == this.userID) {
                     sapp.getCamera().setLocation(p.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
                 }

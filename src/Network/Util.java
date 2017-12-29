@@ -121,13 +121,15 @@ public class Util {
         protected int id;
         protected Vector3f direction;
         protected Vector3f velocity;
+        protected Vector3f position;
         
         public PlayerPhysics(){}
         
-        public PlayerPhysics(int id, Vector3f direction, Vector3f velocity){
+        public PlayerPhysics(int id, Vector3f direction, Vector3f velocity, Vector3f position){
             this.id = id;
             this.direction = direction;
             this.velocity = velocity;
+            this.position = position;
         }
         
         public int getId() {
@@ -142,13 +144,16 @@ public class Util {
             return velocity;
         }
         
+        public Vector3f getPosition() {
+            return position;
+        }
+        
     }
 
     @Serializable
     public static class PlayerLite extends PlayerPhysics{
         private String name;
         private int team;
-        private Vector3f position;
 
         public PlayerLite(){
         }
@@ -172,10 +177,6 @@ public class Util {
 
         public String getName() {
             return name;
-        }
-
-        public Vector3f getPosition() {
-            return position;
         }
 
         public int getTeam() {

@@ -150,7 +150,7 @@ public class GameServer extends SimpleApplication implements ClientStateListener
         while (values.hasMoreElements()) {
             Player p = values.nextElement();
             if (p.getTeam() == 1 || p.getTeam() == 2) {
-                players.add(new PlayerPhysics(p.getId(), p.getDirection(), p.getVelocity()));
+                players.add(new PlayerPhysics(p.getId(), p.getDirection(), p.getVelocity(), p.getPosition()));
             }
         }
         if (!players.isEmpty()) {
