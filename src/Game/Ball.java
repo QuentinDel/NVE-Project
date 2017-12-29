@@ -43,7 +43,7 @@ public class Ball extends Node {
     }
     
     private void initGeometry(){
-        Sphere sphere = new Sphere(32, 32, 2f, true, false);
+        Sphere sphere = new Sphere(64, 64, 2f, true, false);
         sphere.setTextureMode(Sphere.TextureMode.Projected);
         
         //Setup the material for the ball
@@ -61,6 +61,7 @@ public class Ball extends Node {
         //Setup the physics controller
         CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
         ball_phy = new RigidBodyControl(ball_shape, 10f);
+        ball_phy.setRestitution(0.8f);
         super.addControl(ball_phy);
         this.addPhysic();
        

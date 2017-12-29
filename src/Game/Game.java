@@ -56,9 +56,7 @@ public class Game extends BaseAppState {
     
     private Spatial sceneModel;
     private BulletAppState bulletAppState;
-    private RigidBodyControl landscape;
     private BetterCharacterControl playerControl;
-    private PlayerMovement playerMovement;
     
    
     private ArrayList<Player> playerStore;
@@ -69,9 +67,9 @@ public class Game extends BaseAppState {
             
     protected final float playerRadius = 1.5f;
     protected final float playerHeight = 6f;
-    protected final float playerMass = 1f;
-    protected final float playerJumpSpeed = 22;
-    protected final float playerGravity = 50;
+    protected final float playerMass = 2f;
+    protected final float playerJumpSpeed = 30;
+    protected final float playerGravity = 80;
     protected final float cameraHeight = playerHeight*0.8f;
     private String level_id = "grassPlayGround"; //Default level
     public static final int MAX_PLAYER_COUNT = 8;
@@ -138,13 +136,24 @@ public class Game extends BaseAppState {
         
         // We set up collision detection for the level by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
+        // First setup the floor of the level
+        CollisionShape floorShape =
+                CollisionShapeFactory.createMeshShape(playground.getPlayGroundFloor());
+        RigidBodyControl landscape = new RigidBodyControl(floorShape, 0);
+        landscape.setRestitution(0.5f);
+        sceneModel.addControl(landscape);
+        
+        // Setup collision with walls/goals/etc
         CollisionShape sceneShape =
                 CollisionShapeFactory.createMeshShape(playground.getPlayGroundWithoutLine());
-        landscape = new RigidBodyControl(sceneShape, 0);
-        sceneModel.addControl(landscape);
+        RigidBodyControl scene = new RigidBodyControl(sceneShape, 0);
+        scene.setRestitution(0.5f);
+        scene.setFriction(0.0f);
+        sceneModel.addControl(scene);
         
         sapp.getRootNode().attachChild(sceneModel);
         bulletAppState.getPhysicsSpace().add(landscape);
+        bulletAppState.getPhysicsSpace().add(scene);
     }
     
     //Adds a local player to the game and returns it

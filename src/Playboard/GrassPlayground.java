@@ -55,21 +55,23 @@ import com.jme3.util.SkyFactory;
  */
 
 public class GrassPlayground extends PlaygroundAbstract {
-    
+  
+  private Node playgroundFloor;
   private Node playgroundWithoutLine;
   private Node playgroundLines;
 
   public GrassPlayground(AssetManager assetManager){
       super(assetManager);
       board = new Node("board");
+      playgroundFloor = new Node("GrassPG");
       playgroundWithoutLine = new Node("PlaygroundWlines");
       playgroundLines = new Node("PlaygroundLines");
       initialize();
   } 
 
   public void initialize() {
-  
-   Node playgroundNode = new Node("GrassPG");
+    
+    Node playgroundNode = new Node("GrassPG");
     
     Quad grassBoard = new Quad(PLAYGROUND_LENGTH, PLAYGROUND_WIDTH);
     Geometry playground = new Geometry("playboard", grassBoard);
@@ -79,6 +81,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     playgroundNode.attachChild(playground);
     playgroundNode.rotate(-90*FastMath.DEG_TO_RAD , 0f , 0f);
     playgroundNode.setLocalTranslation(-PLAYGROUND_LENGTH/2, 0f, PLAYGROUND_WIDTH/2);
+    playgroundFloor.attachChild(playgroundNode);
   
     //Creation of the skybox
     Spatial skybox = SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", SkyFactory.EnvMapType.CubeMap);
@@ -217,7 +220,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     scoreZoneRed.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
 
     playgroundWithoutLine.attachChild(walls);
-    playgroundWithoutLine.attachChild(playgroundNode);
+    //playgroundWithoutLine.attachChild(playgroundFloor);
 
     playgroundWithoutLine.attachChild(goal);
     playgroundWithoutLine.attachChild(otherGoal);
@@ -230,12 +233,16 @@ public class GrassPlayground extends PlaygroundAbstract {
     playgroundLines.attachChild(goalZoneNode);
     playgroundLines.attachChild(otherGoalZone);
     
+    board.attachChild(playgroundFloor);
     board.attachChild(playgroundWithoutLine);
     board.attachChild(playgroundLines);
    
     
   }
   
+  public Node getPlayGroundFloor(){
+      return playgroundFloor;
+  }
   
   public Node getPlayGroundWithoutLine(){
       return playgroundWithoutLine;
