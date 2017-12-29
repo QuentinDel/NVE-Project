@@ -15,6 +15,7 @@ import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
 import Network.Util.PlayerPhysics;
+import Network.Util.ShootBallMessage;
 import Network.Util.TeamJoinMessage;
 import Network.Util.UpdateBallPhysics;
 import Network.Util.UpdatePhysics;
@@ -108,7 +109,8 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                                   TeamJoinMessage.class,
                                   PlayerMovementMessage.class,
                                   JumpMessage.class,
-                                  GrabBallMessage.class);
+                                  GrabBallMessage.class,
+                                  ShootBallMessage.class);
         game.setLevel("playground");
         game.setEnabled(true);
         Timer physicsUpdateTimer = new Timer(true);
