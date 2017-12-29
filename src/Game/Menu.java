@@ -358,8 +358,14 @@ public class Menu extends BaseAppState implements ScreenController {
     public Screen createHudScreen(final Menu menu, String screenID) {
         return new ScreenBuilder(screenID) {{
             controller(menu);
+            layer(new LayerBuilder("crosshair") {{
+                childLayoutCenter();
+                alignCenter();
+                valignCenter();
+                control(new LabelBuilder("crosshair_symbol", "+"));
+            }});
             layer(new LayerBuilder("foreground") {{
-                    childLayoutVertical();
+                childLayoutVertical();
                 panel(new PanelBuilder() {{
                     childLayoutHorizontal();
                     alignCenter();
