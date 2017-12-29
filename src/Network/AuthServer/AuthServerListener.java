@@ -43,7 +43,6 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
     public void messageReceived(final HostedConnection source, Message m) {
         
         if (m instanceof Network.Util.GameInformationMessage){
-            System.out.println("Receive message");
             GameInformationMessage msg = (GameInformationMessage) m;
             gamingServerInfos.put(msg.getGameServerInfo().getAddress(), msg.getGameServerInfo());
         }
