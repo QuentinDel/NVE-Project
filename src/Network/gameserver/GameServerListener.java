@@ -83,6 +83,11 @@ public class GameServerListener implements MessageListener<HostedConnection> {
 
             if (connPlayerMap.containsKey(c.getId())) {
                 Player player = connPlayerMap.get(c.getId());
+                if (player.getTeam() != 0) {
+                    //The player has already joined a team, do nothing.
+                    //If we wanted to allow players to switch teams, we would need to remove the current player from the game, and spawn a new one
+                    return;
+                }
                 if (team == 1 || team == 2) {
                     player.setTeam(team);
                     Player p = game.addPlayer(new PlayerLite(player));
