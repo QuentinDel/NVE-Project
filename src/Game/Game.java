@@ -18,6 +18,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.TextureKey;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -73,6 +74,8 @@ public class Game extends BaseAppState {
     protected final float cameraHeight = playerHeight*0.8f;
     private String level_id = "grassPlayGround"; //Default level
     public static final int MAX_PLAYER_COUNT = 8;
+    
+    private GrassPlayground playground;
     
     @Override
     protected void initialize(Application app) {
@@ -131,7 +134,7 @@ public class Game extends BaseAppState {
         //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
         //sceneModel = sapp.getAssetManager().loadModel("main.scene");
         //sceneModel.setLocalScale(2f);
-        GrassPlayground playground = new GrassPlayground(sapp.getAssetManager());
+        playground = new GrassPlayground(sapp.getAssetManager(), this);
         sceneModel = playground.getNode();
         
         // We set up collision detection for the level by creating a
@@ -151,9 +154,28 @@ public class Game extends BaseAppState {
         scene.setFriction(0.0f);
         sceneModel.addControl(scene);
         
+        //Get collisionlisteners for the scorezones
+        ScoreControl blue = playground.getBlueScoreControl();
+        ScoreControl red = playground.getRedScoreControl();
+        
+        //Setup collisiongroups
+        landscape.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        scene.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        blue.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        red.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        
+        landscape.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
+        scene.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
+        blue.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
+        red.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
+        
         sapp.getRootNode().attachChild(sceneModel);
+        bulletAppState.getPhysicsSpace().addCollisionListener(blue);
+        bulletAppState.getPhysicsSpace().addCollisionListener(red);
         bulletAppState.getPhysicsSpace().add(landscape);
         bulletAppState.getPhysicsSpace().add(scene);
+        bulletAppState.getPhysicsSpace().add(blue);
+        bulletAppState.getPhysicsSpace().add(red);
     }
     
     //Adds a local player to the game and returns it
@@ -217,7 +239,13 @@ public class Game extends BaseAppState {
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);   
         sapp.getRootNode().attachChild(ball);
-        ball.setPosition(new Vector3f(-5, 6f, -5));
+        ball.setPosition(new Vector3f(-20, 6f, -5));
+    }
+    
+    public void resetBall() {
+        ball.setPosition(new Vector3f(0, 30f, 0));
+        ball.setAngularVelocity(new Vector3f(0, 30f, 0));
+        ball.setVelocity(new Vector3f(0, 30f, 0));
     }
 
     public Ball getBall() {
@@ -286,9 +314,7 @@ public class Game extends BaseAppState {
         }  
     }
     
-    /**
-     * This is the main event loop--walking happens here.
-     */
+
     @Override
     public void update(float tpf) {
         

@@ -8,11 +8,11 @@ package Game;
 import com.jme3.app.Application;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -62,6 +62,8 @@ public class Ball extends Node {
         CollisionShape ball_shape = new SphereCollisionShape(sphere.getRadius());
         ball_phy = new RigidBodyControl(ball_shape, 10f);
         ball_phy.setRestitution(0.8f);
+        ball_phy.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        ball_phy.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         super.addControl(ball_phy);
         this.addPhysic();
        

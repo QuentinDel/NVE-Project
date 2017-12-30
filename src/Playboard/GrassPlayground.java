@@ -5,6 +5,8 @@
  */
 package Playboard;
 
+import Game.Game;
+import Game.ScoreControl;
 import static Playboard.PlaygroundConstant.BOARD_LENGTH;
 import static Playboard.PlaygroundConstant.BOARD_WIDTH;
 import static Playboard.PlaygroundConstant.GOAL_LINE_LENGTH;
@@ -56,12 +58,18 @@ import com.jme3.util.SkyFactory;
 
 public class GrassPlayground extends PlaygroundAbstract {
   
+  private Game game;
+  
   private Node playgroundFloor;
   private Node playgroundWithoutLine;
   private Node playgroundLines;
+  
+  private ScoreControl blueScoreControl;
+  private ScoreControl redScoreControl;
 
-  public GrassPlayground(AssetManager assetManager){
+  public GrassPlayground(AssetManager assetManager, Game game){
       super(assetManager);
+      this.game = game;
       board = new Node("board");
       playgroundFloor = new Node("GrassPG");
       playgroundWithoutLine = new Node("PlaygroundWlines");
@@ -121,10 +129,15 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node scoreZoneBlue = new Node("markPointBlue");
     Box goalScoreBox = new Box(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH);
     Geometry goalScoreBlue = new Geometry("scoreZoneBlue", goalScoreBox);
-    GhostControl zoneScore = new GhostControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)));
+    blueScoreControl = new ScoreControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
+    goalScoreBlue.addControl(blueScoreControl);
+    
+    Node scoreZoneRed = new Node("markPointRed");
+    Geometry goalScoreRed = new Geometry("scoreZoneRed", goalScoreBox.clone());
+    redScoreControl = new ScoreControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
+    goalScoreRed.addControl(redScoreControl);
+    
 
-    
-    
     // PART FOR MATERIALS SETTINGS 
     
     //Material used for the line
@@ -155,8 +168,9 @@ public class GrassPlayground extends PlaygroundAbstract {
     Material matScoreZone = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     matScoreZone.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);  // !
     matScoreZone.setTransparent(true);
-    matScoreZone.setColor("Color", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f));   
+    matScoreZone.setColor("Color", new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f));
     goalScoreBlue.setMaterial(matScoreZone);
+    goalScoreRed.setMaterial(matScoreZone);
     
     // CREATION OF OTHER PARTS OF THE BOARD FROM THE ONES ALREADY CREATED
     
@@ -188,6 +202,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     walls.attachChild(wallLengthLeft);
     walls.attachChild(wallLengthRight);
     scoreZoneBlue.attachChild(goalScoreBlue);
+    scoreZoneRed.attachChild(goalScoreRed);
 
     
     //Set at the right place
@@ -208,7 +223,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
     wallLengthRight.setLocalTranslation(0f, WALL_HEIGHT, BOARD_WIDTH);
     goalScoreBlue.setLocalTranslation(BOARD_LENGTH - 0.01f, SCORE_ZONE_HEIGHT, 0f);
-    goalScoreBlue.addControl(zoneScore);
+    goalScoreRed.setLocalTranslation(-BOARD_LENGTH + 0.1f, SCORE_ZONE_HEIGHT, 0f);
     skybox.setLocalTranslation(0, -50, 0);
     
     
@@ -216,27 +231,23 @@ public class GrassPlayground extends PlaygroundAbstract {
     otherGoalZone.rotate(0f , 0f , 180*FastMath.DEG_TO_RAD);
     Node otherGoal = goal.clone(true);
     otherGoal.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
-    Node scoreZoneRed = scoreZoneBlue.clone(true);
-    scoreZoneRed.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
-
+    
     playgroundWithoutLine.attachChild(walls);
     //playgroundWithoutLine.attachChild(playgroundFloor);
 
     playgroundWithoutLine.attachChild(goal);
     playgroundWithoutLine.attachChild(otherGoal);
-    playgroundWithoutLine.attachChild(scoreZoneBlue);
-    playgroundWithoutLine.attachChild(scoreZoneRed);
-
     
     playgroundLines.attachChild(skybox);
     playgroundLines.attachChild(linesNode);
     playgroundLines.attachChild(goalZoneNode);
     playgroundLines.attachChild(otherGoalZone);
     
+    board.attachChild(scoreZoneBlue);
+    board.attachChild(scoreZoneRed);
     board.attachChild(playgroundFloor);
     board.attachChild(playgroundWithoutLine);
     board.attachChild(playgroundLines);
-   
     
   }
   
@@ -250,5 +261,13 @@ public class GrassPlayground extends PlaygroundAbstract {
   
   public Node playgroundLines(){
       return playgroundLines;
+  }
+  
+  public ScoreControl getBlueScoreControl() {
+      return blueScoreControl;
+  }
+  
+  public ScoreControl getRedScoreControl() {
+      return redScoreControl;
   }
 }
