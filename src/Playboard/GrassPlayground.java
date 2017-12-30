@@ -33,7 +33,6 @@ import static Playboard.PlaygroundConstant.WALL_THICKNESS;
 import static Playboard.PlaygroundConstant.WALL_WIDTH;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
