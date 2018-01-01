@@ -16,6 +16,7 @@ import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
 import Network.Util.PlayerPhysics;
+import Network.Util.ScoreUpdateMessage;
 import Network.Util.ShootBallMessage;
 import Network.Util.TeamJoinMessage;
 import Network.Util.UpdateBallPhysics;
@@ -54,6 +55,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
 
     private static final long PHYSICS_UPDATE_SEND_RATE = 10;
     private static final long BALL_UPDATE_SEND_RATE = 30;
+    private static final long SCORE_UPDATE_SEND_RATE = 1;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -127,12 +129,20 @@ public class GameServer extends GameApplication implements ClientStateListener{
                     ballUpdate();
                 }
             }, 0, BALL_UPDATE_SEND_RATE);
+        Timer scoreUpdateTimer = new Timer(true);
+        scoreUpdateTimer.scheduleAtFixedRate(
+            new TimerTask() {
+                public void run() {
+                    ballUpdate();
+                }
+            }, 0, SCORE_UPDATE_SEND_RATE);
     }
     
     @Override
     public void onGoal(int teamID) {
         game.resetBall();
         game.incrementScore(teamID);
+        scoreUpdate();
     }
 
     @Override
@@ -173,6 +183,13 @@ public class GameServer extends GameApplication implements ClientStateListener{
             UpdateBallPhysics msg = new UpdateBallPhysics(ball_phy);
             server.broadcast(msg);
         }
+    }
+    
+    public void scoreUpdate() {
+        int blueScore = game.getScore(Util.BLUE_TEAM_ID);
+        int redScore = game.getScore(Util.RED_TEAM_ID);
+        ScoreUpdateMessage msg = new ScoreUpdateMessage(blueScore, redScore);
+        server.broadcast(msg);
     }
 
 }

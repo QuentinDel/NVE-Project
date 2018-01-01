@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import Network.Util.JoinAckMessage;
 import Network.Util.JumpMessage;
-import Network.Util.LobbyInformationMessage;
 import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMessage;
 import Network.Util.PlayerPhysics;
+import Network.Util.ScoreUpdateMessage;
 import Network.Util.UpdateBallPhysics;
 import Network.Util.UpdatePhysics;
 
@@ -60,12 +60,10 @@ public class GameClientListener implements MessageListener<Client>{
             
         } else if (m instanceof GameConfigurationMessage) {
             final GameConfigurationMessage msg = (GameConfigurationMessage) m;
-            final ArrayList<PlayerLite> players = msg.getPlayers();
-            final BallPhysics ball = msg.getBall();
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    gameClient.putConfig(players, ball);
+                    gameClient.putConfig(msg);
                     return true;
                 }
             });
@@ -117,6 +115,17 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() throws Exception {
                     gameClient.game.updateBallPhysics(ball_phy);
+                    return true;
+                }
+            });
+        } else if (m instanceof ScoreUpdateMessage) {
+            final ScoreUpdateMessage msg = (ScoreUpdateMessage) m;
+            final int blueScore = msg.getBlueScore();
+            final int redScore = msg.getRedScore();
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.updateScores(blueScore, redScore);
                     return true;
                 }
             });

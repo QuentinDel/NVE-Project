@@ -138,6 +138,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
                 NewPlayerMessage.class,
                 UpdatePhysics.class,
                 UpdateBallPhysics.class,
+                ScoreUpdateMessage.class,
                 GrabBallMessage.class,
                 ShootBallMessage.class);
             
@@ -208,17 +209,29 @@ public class GameClient extends GameApplication implements ClientStateListener {
     }
     
     // Setups the game by adding players, balls, etc.
-    public void putConfig(ArrayList<PlayerLite> playerList, BallPhysics ball){
+    public void putConfig(GameConfigurationMessage msg){
         // Add players
+        ArrayList<PlayerLite> playerList = msg.getPlayers();
         for (final PlayerLite player : playerList){
             System.out.println("player pos: "+player.getPosition());
             System.out.println("player dir: "+player.getDirection());
             game.addPlayer(player);
         }
         // Update the ball
+        BallPhysics ball = msg.getBall();
         game.updateBallPhysics(ball);
         
         // Set the team scores
+        int blueScore = msg.getBlueScore();
+        int redScore = msg.getRedScore();
+        updateScores(blueScore, redScore);
+    }
+    
+    public void updateScores(int blueScore, int redScore) {
+        game.setScore(Util.BLUE_TEAM_ID, blueScore);
+        game.setScore(Util.RED_TEAM_ID, redScore);
+        menu.setScore(Util.BLUE_TEAM_ID, blueScore);
+        menu.setScore(Util.RED_TEAM_ID, redScore);
     }
     
     @Override

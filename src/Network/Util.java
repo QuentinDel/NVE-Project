@@ -47,6 +47,7 @@ public class Util {
             BallPhysics.class,
             UpdatePhysics.class,
             UpdateBallPhysics.class,
+            ScoreUpdateMessage.class,
             JumpMessage.class,
             GrabBallMessage.class,
             NewPlayerMessage.class,
@@ -302,13 +303,17 @@ public class Util {
     public static class GameConfigurationMessage extends MyAbstractMessage {
         private ArrayList<PlayerLite> players;
         private BallPhysics ball;
-
+        private int blueScore;
+        private int redScore;
+        
         public GameConfigurationMessage(){
         }
 
-        public GameConfigurationMessage(ArrayList<PlayerLite> players, BallPhysics ball) {
+        public GameConfigurationMessage(ArrayList<PlayerLite> players, BallPhysics ball, int blueScore, int redScore) {
             this.players = players;
             this.ball = ball;
+            this.blueScore = blueScore;
+            this.redScore = redScore;
         }
 
         public ArrayList<PlayerLite> getPlayers() {
@@ -317,6 +322,14 @@ public class Util {
         
         public BallPhysics getBall(){
             return ball;
+        }
+        
+        public int getBlueScore() {
+            return blueScore;
+        }
+        
+        public int getRedScore() {
+            return redScore;
         }
     }
 
@@ -429,6 +442,27 @@ public class Util {
         
         public BallPhysics getBallPhys() {
             return ball;
+        }
+    }
+    
+    @Serializable
+    public static class ScoreUpdateMessage extends MyAbstractMessage{
+        private int blueScore;
+        private int redScore;
+        
+        public ScoreUpdateMessage(){}
+        
+        public ScoreUpdateMessage(int blueScore, int redScore) {
+            this.blueScore = blueScore;
+            this.redScore = redScore;
+        }
+        
+        public int getBlueScore() {
+            return blueScore;
+        }
+        
+        public int getRedScore() {
+            return redScore;
         }
     }
     

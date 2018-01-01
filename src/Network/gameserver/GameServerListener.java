@@ -19,7 +19,6 @@ import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMovementMessage;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.bullet.control.CharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
@@ -72,8 +71,10 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 }
             }
             Ball ball = game.getBall();
+            int blueScore = game.getScore(Util.BLUE_TEAM_ID);
+            int redScore = game.getScore(Util.RED_TEAM_ID);
             BallPhysics ball_phys = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
-            GameConfigurationMessage confMsg = new GameConfigurationMessage(players, ball_phys);
+            GameConfigurationMessage confMsg = new GameConfigurationMessage(players, ball_phys, blueScore, redScore);
             confMsg.setReliable(true);
             server.broadcast(Filters.equalTo(c), confMsg);
 

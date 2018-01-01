@@ -33,10 +33,8 @@ public class ScoreControl extends GhostControl implements PhysicsCollisionListen
     //that is, before the overlapping objects are emptied out
     public void collision(PhysicsCollisionEvent event) {
         if (event.getObjectA() == this && event.getNodeB() instanceof Ball) {
-            System.out.println("Detected Collision with ball");
             app.onGoal(teamID);
         } else if (event.getObjectB() == this && event.getNodeA() instanceof Ball) {
-            System.out.println("Detected Collision with ball");
             app.onGoal(teamID);
         }
     }
