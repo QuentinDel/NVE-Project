@@ -73,7 +73,7 @@ public class Menu extends BaseAppState implements ScreenController {
         
         nifty.addScreen("start", createStartScreen(this, "start"));
         nifty.addScreen("lobby", createLobbyScreen(this, "lobby"));
-        nifty.addScreen("hud", createHudScreen(this, "hud"));
+        nifty.addScreen("hudID", createHudScreen(this, "hud"));
         nifty.gotoScreen("start");
 
         // attach the nifty display to the gui view port as a processor
@@ -167,28 +167,28 @@ public class Menu extends BaseAppState implements ScreenController {
     }
     
     public void setHealth(int newHealth) {
-        Element niftyElement = nifty.getCurrentScreen().findElementByName("health");
+        Element niftyElement = nifty.getScreen("hud").findElementById("health");
         if (niftyElement != null) {
             niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newHealth));
         }
     }
     
     private void setRedScore(int newScore) {
-        Element niftyElement = nifty.getCurrentScreen().findElementByName("redscore");
+        Element niftyElement = nifty.getScreen("hud").findElementById("redscore");
         if (niftyElement != null) {
             niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newScore));
         }
     }
     
     private void setBlueScore(int newScore) {
-        Element niftyElement = nifty.getCurrentScreen().findElementByName("bluescore");
+        Element niftyElement = nifty.getScreen("hud").findElementById("bluescore");
         if (niftyElement != null) {
             niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newScore));
         }
     }
     
     public void setTimer(int newTime) {
-        Element niftyElement = nifty.getCurrentScreen().findElementByName("time");
+        Element niftyElement = nifty.getScreen("hud").findElementById("time");
         if (niftyElement != null) {
             niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newTime));
         }
@@ -203,7 +203,6 @@ public class Menu extends BaseAppState implements ScreenController {
     
     @Override
     public void update(float tpf) {
-        //TODO: implement behavior during runtime
     }
 
     @Override
