@@ -8,6 +8,7 @@ package Network.gameserver;
 import Game.Ball;
 import Game.Game;
 import Game.Player;
+import Network.GameApplication;
 import Network.Util;
 import Network.Util.BallPhysics;
 import Network.Util.GrabBallMessage;
@@ -19,7 +20,6 @@ import Network.Util.ShootBallMessage;
 import Network.Util.TeamJoinMessage;
 import Network.Util.UpdateBallPhysics;
 import Network.Util.UpdatePhysics;
-import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Filters;
@@ -40,7 +40,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Henrik
  */
-public class GameServer extends SimpleApplication implements ClientStateListener{
+public class GameServer extends GameApplication implements ClientStateListener{
     private Server server;
     private Client auth;
     private final int port;
@@ -127,6 +127,11 @@ public class GameServer extends SimpleApplication implements ClientStateListener
                     ballUpdate();
                 }
             }, 0, BALL_UPDATE_SEND_RATE);
+    }
+    
+    @Override
+    public void onGoal() {
+        game.resetBall();
     }
 
     @Override

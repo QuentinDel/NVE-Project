@@ -9,7 +9,6 @@ import Game.Game;
 import Game.PlayerMovement;
 import Network.Util.GameServerLite;
 import Network.Util;
-import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Network;
@@ -17,6 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import Game.Menu;
+import Network.GameApplication;
 import com.jme3.network.Message;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +28,7 @@ import java.util.Collection;
  * @author Rickard
  */
 
-public class GameClient extends SimpleApplication implements ClientStateListener {
+public class GameClient extends GameApplication implements ClientStateListener {
     // Listeners and senders
     private GameClientAuthListener authListener;
     private GameClientListener gameListener;
@@ -219,6 +219,11 @@ public class GameClient extends SimpleApplication implements ClientStateListener
         game.updateBallPhysics(ball);
         
         // Set the team scores
+    }
+    
+    @Override
+    public void onGoal() {
+        game.resetBall();
     }
     
     @Override

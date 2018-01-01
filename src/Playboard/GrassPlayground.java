@@ -7,6 +7,7 @@ package Playboard;
 
 import Game.Game;
 import Game.ScoreControl;
+import Network.GameApplication;
 import static Playboard.PlaygroundConstant.BOARD_LENGTH;
 import static Playboard.PlaygroundConstant.BOARD_WIDTH;
 import static Playboard.PlaygroundConstant.GOAL_LINE_LENGTH;
@@ -57,6 +58,7 @@ import com.jme3.util.SkyFactory;
 
 public class GrassPlayground extends PlaygroundAbstract {
   
+  private GameApplication app;
   private Game game;
   
   private Node playgroundFloor;
@@ -66,8 +68,9 @@ public class GrassPlayground extends PlaygroundAbstract {
   private ScoreControl blueScoreControl;
   private ScoreControl redScoreControl;
 
-  public GrassPlayground(AssetManager assetManager, Game game){
-      super(assetManager);
+  public GrassPlayground(GameApplication app, Game game){
+      super(app.getAssetManager());
+      this.app = app;
       this.game = game;
       board = new Node("board");
       playgroundFloor = new Node("GrassPG");
@@ -128,12 +131,12 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node scoreZoneBlue = new Node("markPointBlue");
     Box goalScoreBox = new Box(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH);
     Geometry goalScoreBlue = new Geometry("scoreZoneBlue", goalScoreBox);
-    blueScoreControl = new ScoreControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
+    blueScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
     goalScoreBlue.addControl(blueScoreControl);
     
     Node scoreZoneRed = new Node("markPointRed");
     Geometry goalScoreRed = new Geometry("scoreZoneRed", goalScoreBox.clone());
-    redScoreControl = new ScoreControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
+    redScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
     goalScoreRed.addControl(redScoreControl);
     
 

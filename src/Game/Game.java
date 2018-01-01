@@ -5,6 +5,7 @@
  */
 package Game;
 
+import Network.GameApplication;
 import Network.GameClient.GameClient;
 import Network.Util;
 import Network.Util.BallPhysics;
@@ -12,7 +13,6 @@ import Network.Util.PlayerLite;
 import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -46,7 +46,7 @@ import java.util.ArrayList;
  */
 public class Game extends BaseAppState {
     
-    private SimpleApplication sapp;
+    private GameApplication sapp;
     private boolean needCleaning = false;
     
     private Spatial sceneModel;
@@ -74,7 +74,7 @@ public class Game extends BaseAppState {
     @Override
     protected void initialize(Application app) {
         System.out.println("Game: initialize");
-        sapp = (SimpleApplication) app;
+        sapp = (GameApplication) app;
         
         bulletAppState = new BulletAppState();
     }
@@ -128,7 +128,7 @@ public class Game extends BaseAppState {
         //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
         //sceneModel = sapp.getAssetManager().loadModel("main.scene");
         //sceneModel.setLocalScale(2f);
-        playground = new GrassPlayground(sapp.getAssetManager(), this);
+        playground = new GrassPlayground(sapp, this);
         sceneModel = playground.getNode();
         
         // We set up collision detection for the level by creating a
