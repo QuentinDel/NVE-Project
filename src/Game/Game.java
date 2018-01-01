@@ -241,7 +241,7 @@ public class Game extends BaseAppState {
     
     public void resetBall() {
         ball.setPosition(new Vector3f(0, 30f, 0));
-        ball.setAngularVelocity(new Vector3f(0, 30f, 0));
+        ball.setAngularVelocity(new Vector3f(0, 0, 0));
         ball.setVelocity(new Vector3f(0, 30f, 0));
     }
 
