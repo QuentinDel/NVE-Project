@@ -5,6 +5,7 @@
  */
 package Game;
 
+import Network.Util;
 import Network.Util.PlayerLite;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -44,7 +45,7 @@ public class Player extends Node{
     public Player(int id, String name) {
         this.id = id;
         this.playerName = name;
-        this.team = 0;
+        this.team = Util.SPECTATOR_TEAM_ID;
     }
 
     public Player(int id, String name, int team) {

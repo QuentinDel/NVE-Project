@@ -11,6 +11,7 @@ package Game;
  */
 
 import Network.GameClient.GameClient;
+import Network.Util;
 import Network.Util.GameServerLite;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
@@ -129,11 +130,11 @@ public class Menu extends BaseAppState implements ScreenController {
     }
     
     public void joinRed() {
-        joinTeam(1);
+        joinTeam(Util.RED_TEAM_ID);
     }
     
     public void joinBlue() {
-        joinTeam(2);
+        joinTeam(Util.BLUE_TEAM_ID);
     }
     
     public void refreshServerbrowser() {

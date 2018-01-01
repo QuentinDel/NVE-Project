@@ -25,6 +25,10 @@ public class Util {
     public static final int RUNNING = 0;
     public static final int WAITING = 1;
     
+    public static final int SPECTATOR_TEAM_ID = 0;
+    public static final int RED_TEAM_ID = 1;
+    public static final int BLUE_TEAM_ID = 2;
+    
     public static void initialiseSerializables() {
         Serializer.registerClasses(
             GameServerLite.class,
