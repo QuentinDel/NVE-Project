@@ -156,6 +156,16 @@ public class Menu extends BaseAppState implements ScreenController {
         nifty.gotoScreen("hud");
     }
     
+    public void setScore(int teamID, int newScore) {
+        if (teamID == Util.BLUE_TEAM_ID) {
+            setBlueScore(newScore);
+        } else if (teamID == Util.RED_TEAM_ID) {
+            setRedScore(newScore);
+        } else {
+            System.out.println("Invalid teamID: " + teamID);
+        }
+    }
+    
     public void setHealth(int newHealth) {
         Element niftyElement = nifty.getCurrentScreen().findElementByName("health");
         if (niftyElement != null) {
@@ -163,14 +173,14 @@ public class Menu extends BaseAppState implements ScreenController {
         }
     }
     
-    public void setRedScore(int newScore) {
+    private void setRedScore(int newScore) {
         Element niftyElement = nifty.getCurrentScreen().findElementByName("redscore");
         if (niftyElement != null) {
             niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newScore));
         }
     }
     
-    public void setBlueScore(int newScore) {
+    private void setBlueScore(int newScore) {
         Element niftyElement = nifty.getCurrentScreen().findElementByName("bluescore");
         if (niftyElement != null) {
             niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(newScore));
@@ -379,7 +389,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         backgroundColor("#f009");
                         width("10%");
                         height("100%");
-                        control(new LabelBuilder("redscore", "4"));
+                        control(new LabelBuilder("redscore", "0"));
                     }});
                     panel(new PanelBuilder() {{ //Time
                         childLayoutCenter();
@@ -395,7 +405,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         backgroundColor("#00f9");
                         width("10%");
                         height("100%");
-                        control(new LabelBuilder("bluescore", "3"));
+                        control(new LabelBuilder("bluescore", "0"));
                     }});
                 }});
                 panel(new PanelBuilder() {{//Empty space

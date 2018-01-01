@@ -18,5 +18,5 @@ import com.jme3.app.SimpleApplication;
 public abstract class GameApplication extends SimpleApplication {
     
     //Should be called when a goal is registered on the client or the server
-    public abstract void onGoal();
+    public abstract void onGoal(int teamID);
 }

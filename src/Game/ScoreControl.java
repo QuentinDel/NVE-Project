@@ -19,27 +19,25 @@ public class ScoreControl extends GhostControl implements PhysicsCollisionListen
     
     private GameApplication app;
     private Game game;
+    private int teamID;
     
-    public ScoreControl(GameApplication app, BoxCollisionShape shape, Game game){
+    public ScoreControl(GameApplication app, BoxCollisionShape shape, int teamID){
         super(shape);
         this.app = app;
         this.game = game;
+        this.teamID = teamID;
     }
     
+    //TODO sometimes multiple goals are registered before the ball is reset, fix
+    //This is probably because the onGoal() function gets called multiple times in a single physics tick,
+    //that is, before the overlapping objects are emptied out
     public void collision(PhysicsCollisionEvent event) {
         if (event.getObjectA() == this && event.getNodeB() instanceof Ball) {
             System.out.println("Detected Collision with ball");
-            app.onGoal();
+            app.onGoal(teamID);
         } else if (event.getObjectB() == this && event.getNodeA() instanceof Ball) {
             System.out.println("Detected Collision with ball");
-            app.onGoal();
+            app.onGoal(teamID);
         }
-    }
-    
-    private void goal() {
-        //TODO detect which team's goal it was
-        //TODO increment score
-        //TODO networking
-        //TODO stop ball from spinning after being reset (or is that good/cool?)
     }
 }

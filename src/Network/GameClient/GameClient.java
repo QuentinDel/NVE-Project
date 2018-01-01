@@ -222,8 +222,11 @@ public class GameClient extends GameApplication implements ClientStateListener {
     }
     
     @Override
-    public void onGoal() {
+    public void onGoal(int teamID) {
         game.resetBall();
+        game.incrementScore(teamID);
+        int currentScore = game.getScore(teamID);
+        menu.setScore(teamID, currentScore);
     }
     
     @Override

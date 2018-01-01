@@ -71,6 +71,9 @@ public class Game extends BaseAppState {
     
     private GrassPlayground playground;
     
+    private int blueScore = 0;
+    private int redScore = 0;
+    
     @Override
     protected void initialize(Application app) {
         System.out.println("Game: initialize");
@@ -267,6 +270,50 @@ public class Game extends BaseAppState {
         ball.notOwnedAnymore();
         ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
         removeLoadBar();
+    }
+    
+    public void incrementScore(int teamID) {
+        switch (teamID) {
+            case Util.BLUE_TEAM_ID:
+                blueScore++;
+                break;
+            case Util.RED_TEAM_ID:
+                redScore++;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public void setScore(int teamID, int newScore) {
+        switch (teamID) {
+            case Util.BLUE_TEAM_ID:
+                blueScore++;
+                break;
+            case Util.RED_TEAM_ID:
+                redScore++;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public int getScore(int teamID) {
+        switch (teamID) {
+            case Util.BLUE_TEAM_ID:
+                return blueScore;
+            case Util.RED_TEAM_ID:
+                return redScore;
+            default:
+                return 0;
+        }
+    }
+    
+    private void checkWinCondition() {
+        //TODO: end the game if score for either team ends up above a certain treshold
+        //Or maybe the game is just time-based? Discussion needed
+        
+        //This function should call a function of the GameClient (abstract) since clients and server might end the game in different ways
     }
     
     //Returns a Player with id "playerID" from the playerStore

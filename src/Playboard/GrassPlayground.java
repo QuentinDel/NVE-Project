@@ -8,6 +8,7 @@ package Playboard;
 import Game.Game;
 import Game.ScoreControl;
 import Network.GameApplication;
+import Network.Util;
 import static Playboard.PlaygroundConstant.BOARD_LENGTH;
 import static Playboard.PlaygroundConstant.BOARD_WIDTH;
 import static Playboard.PlaygroundConstant.GOAL_LINE_LENGTH;
@@ -131,12 +132,12 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node scoreZoneBlue = new Node("markPointBlue");
     Box goalScoreBox = new Box(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH);
     Geometry goalScoreBlue = new Geometry("scoreZoneBlue", goalScoreBox);
-    blueScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
+    blueScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.BLUE_TEAM_ID);
     goalScoreBlue.addControl(blueScoreControl);
     
     Node scoreZoneRed = new Node("markPointRed");
     Geometry goalScoreRed = new Geometry("scoreZoneRed", goalScoreBox.clone());
-    redScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), game);
+    redScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.RED_TEAM_ID);
     goalScoreRed.addControl(redScoreControl);
     
 

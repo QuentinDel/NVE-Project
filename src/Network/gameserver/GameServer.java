@@ -130,8 +130,9 @@ public class GameServer extends GameApplication implements ClientStateListener{
     }
     
     @Override
-    public void onGoal() {
+    public void onGoal(int teamID) {
         game.resetBall();
+        game.incrementScore(teamID);
     }
 
     @Override
