@@ -51,7 +51,8 @@ public class Util {
             JumpMessage.class,
             GrabBallMessage.class,
             NewPlayerMessage.class,
-            ShootBallMessage.class
+            ShootBallMessage.class,
+            PlayerDisconnectedMessage.class
         );
     }
     
@@ -539,6 +540,22 @@ public class Util {
         public float getPower(){
             return power;
         }
+    }
+    
+    @Serializable
+    public static class PlayerDisconnectedMessage extends MyAbstractMessage {
+        private int playerID;
+        
+        public PlayerDisconnectedMessage(){}
+        
+        public PlayerDisconnectedMessage(int playerID) {
+            this.playerID = playerID;
+        }
+        
+        public int getId() {
+            return this.playerID;
+        }
+        
     }
     
     //Used to tell a thread listening or sending packets to terminate

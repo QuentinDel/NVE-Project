@@ -39,6 +39,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.texture.Texture;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -54,7 +55,7 @@ public class Game extends BaseAppState {
     private BetterCharacterControl playerControl;
     
    
-    private ArrayList<Player> playerStore;
+    private HashMap<Integer, Player> playerStore;
     private int userID;
     private Ball ball;
             
@@ -93,7 +94,7 @@ public class Game extends BaseAppState {
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
         }
-        playerStore = new ArrayList();
+        playerStore = new HashMap();
         
         /** Set up Physics */
         sapp.getStateManager().attach(bulletAppState);
@@ -196,7 +197,7 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().addCollisionObject(playerNode.getGhostControl());
         sapp.getRootNode().attachChild(playerNode);
         sapp.getRootNode().attachChild(playerNode.getNodeCatchZone());
-        playerStore.add(playerNode);
+        playerStore.put(p.getId(), playerNode);
         System.out.println("addLocalPlayer");
         return playerNode;
         
@@ -226,9 +227,18 @@ public class Game extends BaseAppState {
         playerControl.setViewDirection(new Vector3f(1,1,1));
         bulletAppState.getPhysicsSpace().add(playerControl);
         sapp.getRootNode().attachChild(playerNode);
-        playerStore.add(playerNode);
+        playerStore.put(p.getId(), playerNode);
         
         return playerNode;
+    }
+    
+    //Removes a player from the game
+    public void removePlayer(int playerID) {
+        Player player = playerStore.get(playerID);
+        
+        bulletAppState.getPhysicsSpace().remove(player.getControl(BetterCharacterControl.class));
+        playerStore.remove(playerID);
+        sapp.getRootNode().detachChild(player);
     }
     
     public void addBall() {
@@ -312,12 +322,7 @@ public class Game extends BaseAppState {
     //Returns a Player with id "playerID" from the playerStore
     //Returns null if not found
     public Player getPlayer(int playerID) {
-        for (Player p: playerStore) {
-            if (p.getId() == playerID) {
-                return p;
-            }
-        }
-        return null;
+        return playerStore.get(playerID);
     }
 
     //Makes the player with the given id jump

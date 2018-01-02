@@ -136,6 +136,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
                 PlayerMessage.class,
                 JumpMessage.class,
                 NewPlayerMessage.class,
+                PlayerDisconnectedMessage.class,
                 UpdatePhysics.class,
                 UpdateBallPhysics.class,
                 ScoreUpdateMessage.class,
@@ -232,6 +233,10 @@ public class GameClient extends GameApplication implements ClientStateListener {
         this.stateManager.attach(game);
         
         menu.gotoMenu();
+    }
+    
+    public void removePlayer(int playerID) {
+        game.removePlayer(playerID);
     }
     
     //Shut down the connection to the gameServer and terminate the thread that sends messages to the gameServer

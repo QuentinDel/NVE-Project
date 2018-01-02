@@ -18,9 +18,11 @@ import Network.Util.JoinAckMessage;
  */
 public class ClientConnectionListener implements ConnectionListener {
     private Util.BiMap<Integer, Player> connPlayerMap;
+    private GameServer gameServer;
 
-    public ClientConnectionListener(Util.BiMap<Integer, Player> connPlayerMap) {
+    public ClientConnectionListener(Util.BiMap<Integer, Player> connPlayerMap, GameServer gameServer) {
         this.connPlayerMap = connPlayerMap;
+        this.gameServer = gameServer;
     }
 
     @Override
@@ -31,7 +33,8 @@ public class ClientConnectionListener implements ConnectionListener {
     @Override
     public void connectionRemoved(Server server, HostedConnection c) {
         if (connPlayerMap.containsKey(c.getId())) {
-            connPlayerMap.remove(c.getId());    
+            connPlayerMap.remove(c.getId());
+            gameServer.removePlayer(c.getId());
         }
         System.out.println("Client #"+c.getId() + " has disconnected from the server");
     }

@@ -14,6 +14,7 @@ import Network.Util.BallPhysics;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
+import Network.Util.PlayerDisconnectedMessage;
 import Network.Util.PlayerMovementMessage;
 import Network.Util.PlayerPhysics;
 import Network.Util.ScoreUpdateMessage;
@@ -104,7 +105,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         // TODO: add auth listener (if we need one?)
 
         /* add connection listener for clients */
-        server.addConnectionListener(new ClientConnectionListener(connPlayerMap));
+        server.addConnectionListener(new ClientConnectionListener(connPlayerMap, this));
 
         /* add message listener */
         server.addMessageListener(new GameServerListener(connPlayerMap, game, server, this),
@@ -157,6 +158,13 @@ public class GameServer extends GameApplication implements ClientStateListener{
         
         Ball ball = game.getBall();
         ball.setVelocity(direction.mult(power));
+    }
+    
+    public void removePlayer(int playerID) {
+        game.removePlayer(playerID);
+        
+        PlayerDisconnectedMessage msg = new PlayerDisconnectedMessage(playerID);
+        server.broadcast(msg);
     }
 
     @Override

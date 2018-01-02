@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 import Network.Util.JoinAckMessage;
 import Network.Util.JumpMessage;
 import Network.Util.NewPlayerMessage;
+import Network.Util.PlayerDisconnectedMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMessage;
 import Network.Util.PlayerPhysics;
@@ -95,6 +96,15 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() throws Exception {
                     gameClient.game.addPlayer(msg.getPlayer());
+                    return true;
+                }
+            });
+        } else if (m instanceof PlayerDisconnectedMessage) {
+            final PlayerDisconnectedMessage msg = (PlayerDisconnectedMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    gameClient.removePlayer(msg.getId());
                     return true;
                 }
             });
