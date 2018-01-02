@@ -57,8 +57,6 @@ public class Game extends BaseAppState {
     private ArrayList<Player> playerStore;
     private int userID;
     private Ball ball;
-    private float powerShoot = 0;
-    private final float MAXPOWERSHOOT = 100f;
             
     protected final float playerRadius = 1.5f;
     protected final float playerHeight = 6f;
@@ -194,7 +192,7 @@ public class Game extends BaseAppState {
         playerControl.warp(p.getPosition());
         playerControl.setViewDirection(p.getDirection());
         bulletAppState.getPhysicsSpace().add(playerControl);
-        bulletAppState.getPhysicsSpace().addCollisionObject(playerNode.getGoshtControl());
+        bulletAppState.getPhysicsSpace().addCollisionObject(playerNode.getGhostControl());
         sapp.getRootNode().attachChild(playerNode);
         sapp.getRootNode().attachChild(playerNode.getNodeCatchZone());
         playerStore.add(playerNode);
@@ -223,7 +221,6 @@ public class Game extends BaseAppState {
         playerControl.setJumpForce(new Vector3f(0, playerJumpSpeed, 0));
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
         playerControl.warp(p.getPosition());
-        System.out.println("playerposition: "+p.getPosition());
         //playerControl.setViewDirection(p.getDirection());
         playerControl.setViewDirection(new Vector3f(1,1,1));
         bulletAppState.getPhysicsSpace().add(playerControl);
@@ -255,10 +252,6 @@ public class Game extends BaseAppState {
         ball.setPosition(player.getPosition().add(new Vector3f(0, 2*cameraHeight, 0)));
         ball.removePhysic();
         ball.setOwned(id);
-        
-        if(id == userID && sapp instanceof GameClient){
-            insertLoadBar();
-        }
     }
     
     public void removeBallToPlayer(int id){
@@ -269,7 +262,6 @@ public class Game extends BaseAppState {
         ball.addPhysic();
         ball.notOwnedAnymore();
         ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
-        removeLoadBar();
     }
     
     public void incrementScore(int teamID) {
@@ -355,7 +347,6 @@ public class Game extends BaseAppState {
         }  
     }
     
-
     @Override
     public void update(float tpf) {
         
@@ -366,39 +357,5 @@ public class Game extends BaseAppState {
         System.out.println("Game: onDisable");
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
         sapp.getRootNode().detachAllChildren();
-    }
-
-    private void insertLoadBar() {
-        sapp.getInputManager().addMapping("LoadFire", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        sapp.getInputManager().addListener(actionListener, "LoadFire");
-        sapp.getInputManager().addListener(analogListener, "LoadFire");
-    }
-    
-    private final ActionListener actionListener = new ActionListener() {
-        @Override
-        public void onAction(String name, boolean keyPressed, float tpf) {
-            if (name.equals("LoadFire") && !keyPressed) {
-                System.out.println("Shoot " + powerShoot);
-                ((GameClient)sapp).queueGameServerMessage(new Util.ShootBallMessage(userID, sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
-                powerShoot = 0;
-            }
-
-        }
-    };
-    
-    private final AnalogListener analogListener = new AnalogListener() {
-        @Override
-        public void onAnalog(String name, float value, float tpf) {
-             if (name.equals("LoadFire") && powerShoot < 1) {
-               powerShoot += tpf;
-            }
-            
-        }
-    };
-
-    private void removeLoadBar() {
-        sapp.getInputManager().removeListener(actionListener);
-        sapp.getInputManager().removeListener(analogListener);
-
     }
 }

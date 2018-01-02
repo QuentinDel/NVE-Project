@@ -36,11 +36,13 @@ public class GameServerListener implements MessageListener<HostedConnection> {
     private Util.BiMap<Integer, Player> connPlayerMap;
     private Game game;
     private Server server;
+    private GameServer gameServer;
 
-    public GameServerListener(Util.BiMap<Integer, Player> connPlayerMap, Game game, Server server) {
+    public GameServerListener(Util.BiMap<Integer, Player> connPlayerMap, Game game, Server server, GameServer gameServer) {
         this.connPlayerMap = connPlayerMap;
         this.game = game;
         this.server = server;
+        this.gameServer = gameServer;
     }
 
     @Override
@@ -135,14 +137,12 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             } else {
                 //check if ball is in range
                 System.out.println("Ball Grabbed");
-                game.setBallToPlayer(msg.getId());
+                gameServer.grabBall(msg.getId());
                 server.broadcast(new GrabBallMessage(player.getId()));
             }
         } else if (m instanceof Util.ShootBallMessage) {
             Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
-            game.removeBallToPlayer(msg.getPlayerId());
-            Ball ball = game.getBall();
-            ball.setVelocity(msg.getDirection().mult(msg.getPower()));
+            gameServer.shootBall(msg.getPlayerId(), msg.getDirection(), msg.getPower());
             server.broadcast(msg);
         }
 

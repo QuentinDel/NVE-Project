@@ -21,6 +21,7 @@ import Network.Util.ShootBallMessage;
 import Network.Util.TeamJoinMessage;
 import Network.Util.UpdateBallPhysics;
 import Network.Util.UpdatePhysics;
+import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Filters;
@@ -106,7 +107,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         server.addConnectionListener(new ClientConnectionListener(connPlayerMap));
 
         /* add message listener */
-        server.addMessageListener(new GameServerListener(connPlayerMap, game, server),
+        server.addMessageListener(new GameServerListener(connPlayerMap, game, server, this),
                                   JoinGameMessage.class,
                                   TeamJoinMessage.class,
                                   PlayerMovementMessage.class,
@@ -143,6 +144,19 @@ public class GameServer extends GameApplication implements ClientStateListener{
         game.resetBall();
         game.incrementScore(teamID);
         scoreUpdate();
+    }
+    
+    @Override
+    public void grabBall(int playerID) {
+        game.setBallToPlayer(playerID);
+    }
+    
+    @Override
+    public void shootBall(int playerID, Vector3f direction, float power) {
+        game.removeBallToPlayer(playerID);
+        
+        Ball ball = game.getBall();
+        ball.setVelocity(direction.mult(power));
     }
 
     @Override

@@ -134,7 +134,7 @@ public class GameClientListener implements MessageListener<Client>{
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() {
-                    gameClient.game.setBallToPlayer(msg.getId());
+                    gameClient.grabBall(msg.getId());
                     return true;
                 }
             });
@@ -143,7 +143,7 @@ public class GameClientListener implements MessageListener<Client>{
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() {
-                    gameClient.game.removeBallToPlayer(msg.getPlayerId());
+                    gameClient.shootBall(msg.getPlayerId(), msg.getDirection(), msg.getPower());
                     return true;
                 }
             });

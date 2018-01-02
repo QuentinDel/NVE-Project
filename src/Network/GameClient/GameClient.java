@@ -5,6 +5,7 @@
  */
 package Network.GameClient;
 
+import Game.Ball;
 import Game.Game;
 import Game.PlayerMovement;
 import Network.Util.GameServerLite;
@@ -16,7 +17,9 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import Game.Menu;
+import Game.Player;
 import Network.GameApplication;
+import com.jme3.math.Vector3f;
 import com.jme3.network.Message;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -240,6 +243,21 @@ public class GameClient extends GameApplication implements ClientStateListener {
         game.incrementScore(teamID);
         int currentScore = game.getScore(teamID);
         menu.setScore(teamID, currentScore);
+    }
+    
+    @Override
+    public void grabBall(int playerID) {
+        game.setBallToPlayer(playerID);
+        move.insertLoadBar();
+    }
+    
+    @Override
+    public void shootBall(int playerID, Vector3f direction, float power) {
+        game.removeBallToPlayer(playerID);
+        move.removeLoadBar();
+        
+        Ball ball = game.getBall();
+        ball.setVelocity(direction.mult(power));
     }
     
     @Override

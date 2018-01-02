@@ -6,6 +6,7 @@
 package Network;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.math.Vector3f;
 
 /**
  *
@@ -19,4 +20,9 @@ public abstract class GameApplication extends SimpleApplication {
     
     //Should be called when a goal is registered on the client or the server
     public abstract void onGoal(int teamID);
+    
+    //Should be called whenever a player picks up the ball
+    public abstract void grabBall(int playerID);
+    
+    public abstract void shootBall(int playerID, Vector3f direction, float power);
 }

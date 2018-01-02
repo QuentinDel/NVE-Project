@@ -19,6 +19,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
@@ -47,6 +48,8 @@ public class PlayerMovement extends BaseAppState {
     private boolean left = false, right = false, up = false, down = false, grapBall = false;
     
     private final float playerMoveSpeed = 20;
+    private float powerShoot = 0;
+    private final float MAXPOWERSHOOT = 100f;
     
     
     @Override
@@ -76,7 +79,10 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().deleteMapping("Up");
         sapp.getInputManager().deleteMapping("Down");
         sapp.getInputManager().deleteMapping("Jump");
-        
+        sapp.getInputManager().deleteMapping("Catch");
+        if (sapp.getInputManager().hasMapping("LoadFire")) {
+            sapp.getInputManager().deleteMapping("LoadFire");
+        }
     }
     
     //Sets which player should be moved by keyboard inputs
@@ -86,6 +92,26 @@ public class PlayerMovement extends BaseAppState {
         this.playerControl = p.getControl(BetterCharacterControl.class);
         this.playerInitialized = true;
     }
+    
+    public void insertLoadBar() {
+        sapp.getInputManager().addMapping("LoadFire", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        sapp.getInputManager().addListener(actionListener, "LoadFire");
+        sapp.getInputManager().addListener(analogListener, "LoadFire");
+    }
+    
+    public void removeLoadBar() {
+        sapp.getInputManager().deleteMapping("LoadFire");
+    }
+    
+    private final AnalogListener analogListener = new AnalogListener() {
+        @Override
+        public void onAnalog(String name, float value, float tpf) {
+             if (name.equals("LoadFire") && powerShoot < 1) {
+               powerShoot += tpf;
+            }
+            
+        }
+    };
     
     /** These are our custom actions triggered by key presses.
      * We do not walk yet, we just keep track of the direction the user pressed. */
@@ -105,7 +131,7 @@ public class PlayerMovement extends BaseAppState {
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
             } else if (binding.equals("Catch") && !isPressed){
-                for (PhysicsCollisionObject collObj : playerNode.getGoshtControl().getOverlappingObjects()){
+                for (PhysicsCollisionObject collObj : playerNode.getGhostControl().getOverlappingObjects()){
                     if(collObj.getUserObject() instanceof Ball){
                         Ball ballCatch = (Ball) collObj.getUserObject();
                         if(!ballCatch.getIsOwned()){
@@ -115,13 +141,13 @@ public class PlayerMovement extends BaseAppState {
                             grapBall = true;
                         }
                     }
-                    
                 }
-                    
-                //}
-                
             }
-               
+            if (binding.equals("LoadFire") && !isPressed) {
+                System.out.println("Shoot " + powerShoot);
+                ((GameClient)sapp).queueGameServerMessage(new Util.ShootBallMessage(playerNode.getId(), sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
+                powerShoot = 0;
+            }
         }
     };
     

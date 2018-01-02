@@ -141,7 +141,7 @@ public class Player extends Node{
         setPosition(playerData.getPosition());
     }
     
-    public GhostControl getGoshtControl(){
+    public GhostControl getGhostControl(){
         return zoneBallCatch;
     }
             
