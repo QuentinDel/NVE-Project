@@ -541,8 +541,14 @@ public class Util {
         }
     }
     
+    //Used to tell a thread listening or sending packets to terminate
+    //Dont serialize or send this over the network
+    public static class TerminateMessage extends MyAbstractMessage {
+        
+        public TerminateMessage(){}
+        
+    }
     
-   
 
     public static class BiMap<K,V> {
         ConcurrentHashMap<K,V> map = new ConcurrentHashMap<>();

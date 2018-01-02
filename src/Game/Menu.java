@@ -74,6 +74,7 @@ public class Menu extends BaseAppState implements ScreenController {
         nifty.addScreen("start", createStartScreen(this, "start"));
         nifty.addScreen("lobby", createLobbyScreen(this, "lobby"));
         nifty.addScreen("hudID", createHudScreen(this, "hud"));
+        nifty.addScreen("pause", createPauseScreen(this, "pause"));
         nifty.gotoScreen("start");
 
         // attach the nifty display to the gui view port as a processor
@@ -125,7 +126,6 @@ public class Menu extends BaseAppState implements ScreenController {
     }
     
     public void joinTeam(int team) {
-        System.out.println("join team: "+team);
         sapp.joinTeam(team);
     }
     
@@ -141,6 +141,14 @@ public class Menu extends BaseAppState implements ScreenController {
         sapp.queueRefreshMessage();
     }
     
+    public void resume() {
+        sapp.resume();
+    }
+    
+    public void quitServer() {
+        sapp.disconnectFromGame();
+    }
+    
     public void gotoMenu() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("start");
@@ -154,6 +162,11 @@ public class Menu extends BaseAppState implements ScreenController {
     public void gotoHud() {
         sapp.getInputManager().setCursorVisible(false);
         nifty.gotoScreen("hud");
+    }
+    
+    public void gotoPause() {
+        sapp.getInputManager().setCursorVisible(true);
+        nifty.gotoScreen("pause");
     }
     
     public void setScore(int teamID, int newScore) {
@@ -424,6 +437,53 @@ public class Menu extends BaseAppState implements ScreenController {
                     }});
                 }});
                 
+            }});
+        }}.build(nifty);
+    }
+    
+    public Screen createPauseScreen(final Menu menu, String screenID) {
+        return new ScreenBuilder(screenID) {{
+            controller(menu);
+            layer(new LayerBuilder("foreground") {{
+                childLayoutVertical();
+                panel(new PanelBuilder() {{
+                    alignCenter();
+                    height("30%");
+                }});
+                panel(new PanelBuilder() {{
+                    childLayoutVertical();
+                    backgroundColor("#f008");
+                    alignCenter();
+                    height("20%");
+                    width("40%");
+                    panel(new PanelBuilder() {{
+                        childLayoutCenter();
+                        alignCenter();
+                        height("50%");
+                        width("50%");
+                        style("nifty-panel-red");
+                        control(new ButtonBuilder("Resume", "Resume") {{
+                            valignCenter();
+                            alignCenter();
+                            interactOnClick("resume()");
+                        }});
+                    }});
+                    panel(new PanelBuilder() {{
+                        childLayoutCenter();
+                        alignCenter();
+                        height("50%");
+                        width("50%");
+                        style("nifty-panel-red");
+                        control(new ButtonBuilder("Quit", "Quit") {{
+                            valignCenter();
+                            alignCenter();
+                            x(SizeValue.px(100));
+                            y(SizeValue.px(100));
+
+                            interactOnClick("quitServer()");
+                        }});
+                    }});
+                }});
             }});
         }}.build(nifty);
     }

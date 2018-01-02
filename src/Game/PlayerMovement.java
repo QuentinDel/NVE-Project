@@ -68,7 +68,8 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         sapp.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         sapp.getInputManager().addMapping("Catch", new KeyTrigger(KeyInput.KEY_R));
-        sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump", "Catch");
+        sapp.getInputManager().addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
+        sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump", "Catch", "Pause");
     }
     
     @Override
@@ -80,6 +81,7 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().deleteMapping("Down");
         sapp.getInputManager().deleteMapping("Jump");
         sapp.getInputManager().deleteMapping("Catch");
+        sapp.getInputManager().deleteMapping("Pause");
         if (sapp.getInputManager().hasMapping("LoadFire")) {
             sapp.getInputManager().deleteMapping("LoadFire");
         }
@@ -142,11 +144,12 @@ public class PlayerMovement extends BaseAppState {
                         }
                     }
                 }
-            }
-            if (binding.equals("LoadFire") && !isPressed) {
+            } else if (binding.equals("LoadFire") && !isPressed) {
                 System.out.println("Shoot " + powerShoot);
-                ((GameClient)sapp).queueGameServerMessage(new Util.ShootBallMessage(playerNode.getId(), sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
+                sapp.queueGameServerMessage(new Util.ShootBallMessage(playerNode.getId(), sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
                 powerShoot = 0;
+            } else if (binding.equals("Pause") && isPressed) {
+                sapp.pause();
             }
         }
     };

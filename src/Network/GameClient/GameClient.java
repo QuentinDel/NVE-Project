@@ -23,6 +23,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.network.Message;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -81,7 +83,6 @@ public class GameClient extends GameApplication implements ClientStateListener {
         //setDisplayStatView(false);
         //setDisplayFps(false);
         menu.setEnabled(true);
-        move.setEnabled(true);
         
         try {
             //Initialize the queue to use to send informations
@@ -118,11 +119,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void joinServer(GameServerLite server, String name) {
         toLobby();
         game.setLevel(server.getIdMap());
-        if (gameConnection != null) {
-            gameConnection.close();
-            //TODO close the old senderThread here
-            //Or do i just refuse to join a new server if im already connected?
-        }
+        disconnectFromGame();
         try {
             System.out.println("Connect to a game server");
             //Initialize the queue to use to send informations
@@ -204,11 +201,49 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void toLobby() {
         menu.gotoLobby();
         game.setEnabled(true);
+        this.getFlyByCamera().unregisterInput();
     }
     
     // Go to the game
     public void toGame() {
         menu.gotoHud();
+        move.setEnabled(true);
+        this.getFlyByCamera().registerWithInput(this.getInputManager());
+    }
+    
+    public void pause() {
+        move.setEnabled(false);
+        menu.gotoPause();
+        this.getFlyByCamera().unregisterInput();
+    }
+    
+    public void resume() {
+        move.setEnabled(true);
+        menu.gotoHud();
+        this.getFlyByCamera().registerWithInput(this.getInputManager());
+    }
+    
+    public void resetGame() {
+        move.setEnabled(false);
+        game.setEnabled(false);
+        
+        this.stateManager.detach(game);
+        game = new Game();
+        this.stateManager.attach(game);
+        
+        menu.gotoMenu();
+    }
+    
+    //Shut down the connection to the gameServer and terminate the thread that sends messages to the gameServer
+    public void disconnectFromGame() {
+        if (gameConnection != null && gameConnection.isConnected()) {
+            gameConnection.close();
+            try {
+                outgoingGame.put(new TerminateMessage());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     // Setups the game by adding players, balls, etc.
@@ -286,6 +321,6 @@ public class GameClient extends GameApplication implements ClientStateListener {
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
         System.out.println("DisconnectInfo "+ info);
-        System.exit(0);
+        resetGame();
     }
 }

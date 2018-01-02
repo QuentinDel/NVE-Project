@@ -101,8 +101,7 @@ public class Game extends BaseAppState {
         
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-        sapp.getFlyByCamera().setMoveSpeed(100);
-        //setUpKeys();
+        sapp.getFlyByCamera().setMoveSpeed(0);
         setUpLight();
         initLevel();
         addBall();
@@ -341,7 +340,7 @@ public class Game extends BaseAppState {
     
     public void updateBallPhysics(BallPhysics physics) {
         if(!ball.getIsOwned()){
-            ball.setPosition(physics.getPosition());
+            ball.setPosition(physics.getPosition()); //This line causes the ball to spin in the wrong direction. Not sure why
             ball.setVelocity(physics.getVelocity());
             ball.setAngularVelocity(physics.getAngularVelocity());
         }  
@@ -355,6 +354,7 @@ public class Game extends BaseAppState {
     @Override
     public void onDisable() {
         System.out.println("Game: onDisable");
+        bulletAppState.getPhysicsSpace().destroy();
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
         sapp.getRootNode().detachAllChildren();
     }

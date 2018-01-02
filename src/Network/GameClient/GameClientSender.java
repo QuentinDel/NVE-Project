@@ -8,6 +8,7 @@ package Network.GameClient;
 import Network.Util.InternalMovementMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
+import Network.Util.TerminateMessage;
 import com.jme3.network.Client;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.gameserver.GameToAuthSender;
@@ -66,6 +67,9 @@ public class GameClientSender implements Runnable {
                     this.serverConnection.send(movementMsg);
                     aggregatedMovement = new PlayerMovementMessage(new Vector3f(), new Vector3f());
                     timer = 0f;
+                } else if (msg instanceof TerminateMessage){
+                    //Terminate this thread
+                    break;
                 } else {
                     this.serverConnection.send(msg);
                 }
