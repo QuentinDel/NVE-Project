@@ -102,6 +102,8 @@ public class Game extends BaseAppState {
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         sapp.getFlyByCamera().setMoveSpeed(0);
+        sapp.getCamera().setLocation(new Vector3f(-100, 30, -100));
+        sapp.getCamera().lookAt(new Vector3f(180, -45, 0), sapp.getCamera().getUp());
         setUpLight();
         initLevel();
         addBall();
