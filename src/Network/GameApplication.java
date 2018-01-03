@@ -25,4 +25,6 @@ public abstract class GameApplication extends SimpleApplication {
     public abstract void grabBall(int playerID);
     
     public abstract void shootBall(int playerID, Vector3f direction, float power);
+
+    public abstract void dropBall(int playerID);
 }

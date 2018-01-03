@@ -263,6 +263,7 @@ public class Game extends BaseAppState {
         ball.setPosition(player.getPosition().add(new Vector3f(0, 2*cameraHeight, 0)));
         ball.removePhysic();
         ball.setOwned(id);
+        player.setHasBall(true);
     }
     
     public void removeBallToPlayer(int id){
@@ -273,6 +274,7 @@ public class Game extends BaseAppState {
         ball.addPhysic();
         ball.notOwnedAnymore();
         ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
+        player.setHasBall(false);
     }
     
     public void incrementScore(int teamID) {
