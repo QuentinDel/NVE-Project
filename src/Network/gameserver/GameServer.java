@@ -164,7 +164,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
 
     @Override
     public void dropBall(int playerID) {
-        game.removeBallToPlayer(playerID);
+        game.removeBallToPlayer(playerID, false);
     }
     
     public void removePlayer(int playerID) {
