@@ -141,7 +141,9 @@ public class GameClient extends GameApplication implements ClientStateListener {
                 UpdateBallPhysics.class,
                 ScoreUpdateMessage.class,
                 GrabBallMessage.class,
-                ShootBallMessage.class);
+                ShootBallMessage.class,
+                AttackMessage.class,
+                DropBallMessage.class);
             
             // finally start the communication channel to the server
             gameConnection.start();
@@ -224,6 +226,16 @@ public class GameClient extends GameApplication implements ClientStateListener {
         this.getFlyByCamera().registerWithInput(this.getInputManager());
     }
     
+    public void enableChat() {
+        move.setEnabled(false);
+        this.getFlyByCamera().unregisterInput();
+    }
+    
+    public void disableChat() {
+        move.setEnabled(true);
+        this.getFlyByCamera().registerWithInput(this.getInputManager());
+    }
+    
     public void resetGame() {
         move.setEnabled(false);
         game.setEnabled(false);
@@ -299,7 +311,16 @@ public class GameClient extends GameApplication implements ClientStateListener {
         Ball ball = game.getBall();
         ball.setVelocity(direction.mult(power));
     }
-    
+
+    public void doAttack(int playerID) {
+        //perform attack animation
+    }
+
+    @Override
+    public void dropBall(int playerID) {
+        game.removeBallToPlayer(playerID);
+    }
+
     @Override
     public void simpleUpdate(float tpf) {
         

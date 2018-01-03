@@ -9,7 +9,9 @@ import Game.Ball;
 import Game.Game;
 import Game.Player;
 import Network.Util;
+import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
+import Network.Util.DropBallMessage;
 import Network.Util.GameConfigurationMessage;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinAckMessage;
@@ -18,6 +20,8 @@ import Network.Util.JumpMessage;
 import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMovementMessage;
+import Network.Util.ShootBallMessage;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Filters;
@@ -136,14 +140,33 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 //ball is owned by someone, do nothing
             } else {
                 //check if ball is in range
-                System.out.println("Ball Grabbed");
-                gameServer.grabBall(msg.getId());
+                System.out.println("Ball Grabbed by #" + player.getId());
+                gameServer.grabBall(player.getId());
                 server.broadcast(new GrabBallMessage(player.getId()));
             }
         } else if (m instanceof Util.ShootBallMessage) {
             Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
-            gameServer.shootBall(msg.getPlayerId(), msg.getDirection(), msg.getPower());
-            server.broadcast(msg);
+            Player player = connPlayerMap.get(c.getId());
+            if (player.hasBall()) {
+                gameServer.shootBall(msg.getPlayerId(), msg.getDirection(), msg.getPower());
+                server.broadcast(msg);
+            }
+
+        } else if (m instanceof AttackMessage) {
+            final AttackMessage msg = (AttackMessage) m;
+            Player player = connPlayerMap.get(c.getId());
+            if (!player.hasBall()) {
+                server.broadcast(msg);
+            }
+            //needs hit detection
+            Ball ball = game.getBall();
+            if(ball.getIsOwned()){
+                Player target = connPlayerMap.get(ball.getOwner());
+                System.out.println("Successful attack");
+                DropBallMessage dropMsg = new DropBallMessage(target.getId());
+                gameServer.dropBall(target.getId());
+                server.broadcast(dropMsg);
+            }
         }
 
     }

@@ -10,6 +10,7 @@ import Game.Game;
 import Game.Player;
 import Network.GameApplication;
 import Network.Util;
+import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinGameMessage;
@@ -114,7 +115,8 @@ public class GameServer extends GameApplication implements ClientStateListener{
                                   PlayerMovementMessage.class,
                                   JumpMessage.class,
                                   GrabBallMessage.class,
-                                  ShootBallMessage.class);
+                                  ShootBallMessage.class,
+                                  AttackMessage.class);
         game.setLevel("playground");
         game.setEnabled(true);
         Timer physicsUpdateTimer = new Timer(true);
@@ -158,6 +160,11 @@ public class GameServer extends GameApplication implements ClientStateListener{
         
         Ball ball = game.getBall();
         ball.setVelocity(direction.mult(power));
+    }
+
+    @Override
+    public void dropBall(int playerID) {
+        game.removeBallToPlayer(playerID);
     }
     
     public void removePlayer(int playerID) {

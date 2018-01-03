@@ -15,6 +15,9 @@ import Network.Util;
 import Network.Util.GameServerLite;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
@@ -83,8 +86,38 @@ public class Menu extends BaseAppState implements ScreenController {
         
         populateServerbrowser(new LinkedBlockingQueue<GameServerLite>()); //Only here for testing purposes
         
+        sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
+        sapp.getInputManager().addListener(actionListener, "EnableChat");
     }
     
+    private ActionListener actionListener = new ActionListener() {
+        public void onAction(String binding, boolean isPressed, float tpf) {
+            if (binding.equals("EnableChat")) {
+                sapp.enableChat();
+                sapp.getInputManager().deleteMapping("EnableChat");
+                sapp.getInputManager().addMapping("sendChatMessage", new KeyTrigger(KeyInput.KEY_RETURN));
+                sapp.getInputManager().addListener(actionListener, "sendChatMessage");
+                TextField input = (TextField) nifty.getCurrentScreen().findNiftyControl("chatMessage", TextField.class);
+                input.enable();
+                input.setFocus();
+            } else if (binding.equals("sendChatMessage")) {
+                sapp.disableChat();
+                sapp.getInputManager().deleteMapping("sendChatMessage");
+                sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
+                sapp.getInputManager().addListener(actionListener, "EnableChat");
+
+                TextField input = nifty.getCurrentScreen().findNiftyControl("chatMessage", TextField.class);
+                String message = input.getRealText();
+                input.setText("");
+                input.disable();
+                ListBox<String> listBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
+                if (message != "") {
+                    listBox.addItem(message);
+                }
+            }
+        }
+    };
+
     public void populateServerbrowser(Collection<GameServerLite> servers) {
         ListBox<GameServerLite> listBox = (ListBox<GameServerLite>) nifty.getCurrentScreen().findNiftyControl("serverbrowser", ListBox.class);
         if (listBox != null) {
@@ -434,6 +467,34 @@ public class Menu extends BaseAppState implements ScreenController {
                         width("10%");
                         height("100%");
                         control(new LabelBuilder("health", "100"));
+                    }});
+                }});
+            }});
+            layer(new LayerBuilder("chat") {{
+                childLayoutVertical();
+                panel(new PanelBuilder() {{//Empty space
+                    height("80%");
+                }});
+                panel(new PanelBuilder() {{
+                    childLayoutCenter();
+                    height("20%");
+                    width("30%");
+                    backgroundColor("#1116");
+                    panel(new PanelBuilder() {{
+                        childLayoutVertical();
+                        height("95%");
+                        width("95%");
+                        control(new ListBoxBuilder("chatBox") {{
+                            displayItems(7);
+                            selectionModeDisabled();
+                            hideHorizontalScrollbar();
+                            backgroundColor("#1116");
+                        }});
+                        control(new TextFieldBuilder("chatMessage", "") {{
+                            maxLength(20);
+                            height("30px");
+                            backgroundColor("#1116");
+                        }});
                     }});
                 }});
                 

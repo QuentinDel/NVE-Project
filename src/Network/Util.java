@@ -52,7 +52,9 @@ public class Util {
             GrabBallMessage.class,
             NewPlayerMessage.class,
             ShootBallMessage.class,
-            PlayerDisconnectedMessage.class
+            PlayerDisconnectedMessage.class,
+            AttackMessage.class,
+            DropBallMessage.class
         );
     }
     
@@ -556,6 +558,38 @@ public class Util {
             return this.playerID;
         }
         
+    }
+
+    @Serializable
+    public static class AttackMessage extends MyAbstractMessage {
+        private int id;
+
+        public AttackMessage() {
+        }
+
+        public AttackMessage(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    @Serializable
+    public static class DropBallMessage extends MyAbstractMessage {
+        private int id;
+
+        public DropBallMessage() {
+        }
+
+        public DropBallMessage(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
     
     //Used to tell a thread listening or sending packets to terminate

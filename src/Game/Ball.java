@@ -88,6 +88,10 @@ public class Ball extends Node {
     public void notOwnedAnymore(){
         isOwned = false;
     }
+
+    public int getOwner() {
+        return ownedBy;
+    }
     
     public Vector3f getPosition() {
         return this.ball_phy.getPhysicsLocation();

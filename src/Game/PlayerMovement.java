@@ -7,6 +7,7 @@ package Game;
 
 import Network.GameClient.GameClient;
 import Network.Util;
+import Network.Util.AttackMessage;
 import Network.Util.InternalMovementMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
@@ -69,7 +70,8 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         sapp.getInputManager().addMapping("Catch", new KeyTrigger(KeyInput.KEY_R));
         sapp.getInputManager().addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
-        sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump", "Catch", "Pause");
+        sapp.getInputManager().addMapping("Attack", new KeyTrigger(KeyInput.KEY_F));
+        sapp.getInputManager().addListener(actionListener, "Left", "Right", "Up", "Down", "Jump", "Catch", "Pause", "Attack");
     }
     
     @Override
@@ -82,6 +84,7 @@ public class PlayerMovement extends BaseAppState {
         sapp.getInputManager().deleteMapping("Jump");
         sapp.getInputManager().deleteMapping("Catch");
         sapp.getInputManager().deleteMapping("Pause");
+        sapp.getInputManager().deleteMapping("Attack");
         if (sapp.getInputManager().hasMapping("LoadFire")) {
             sapp.getInputManager().deleteMapping("LoadFire");
         }
@@ -151,6 +154,11 @@ public class PlayerMovement extends BaseAppState {
                 powerShoot = 0;
             } else if (binding.equals("Pause") && isPressed) {
                 sapp.pause();
+            } else if (binding.equals("Attack") && isPressed) {
+                if (!playerNode.hasBall()) {
+                    //perform attack animation
+                    sapp.queueGameServerMessage(new AttackMessage(sapp.getPlayerID()));
+                }
             }
         }
     };
