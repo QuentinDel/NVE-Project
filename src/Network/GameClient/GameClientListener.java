@@ -7,7 +7,9 @@ package Network.GameClient;
 
 import Game.Player;
 import Network.Util;
+import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
+import Network.Util.DropBallMessage;
 import Network.Util.GameConfigurationMessage;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
@@ -154,6 +156,24 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.shootBall(msg.getPlayerId(), msg.getDirection(), msg.getPower());
+                    return true;
+                }
+            });
+        } else if (m instanceof AttackMessage) {
+            final AttackMessage msg = (AttackMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.doAttack(msg.getId());
+                    return true;
+                }
+            });
+        } else if (m instanceof DropBallMessage) {
+            final DropBallMessage msg = (DropBallMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.dropBall(msg.getId());
                     return true;
                 }
             });
