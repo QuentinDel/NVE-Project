@@ -7,6 +7,9 @@ package Game;
 
 import Network.Util;
 import Network.Util.PlayerLite;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -16,11 +19,13 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 
@@ -38,7 +43,14 @@ public class Player extends Node{
     private boolean hasBall = false;
     private AudioNode audioJump;
     private AudioNode audioShot;
-
+    
+    AnimControl ninjaControl;
+    AnimChannel channelWalk;
+    AnimChannel channelJump;
+    AnimChannel channelAttack;
+    private boolean isWalking;
+    private boolean otherAnim;
+    
     /**
      * team 0: no team/spectator
      * team 1: red
@@ -63,6 +75,38 @@ public class Player extends Node{
         this.id = playerData.getId();
         this.playerName = playerData.getName();
         this.team = playerData.getTeam();
+    }
+    
+    public void initSpatial(AssetManager assetManager){
+        Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+        ninja.scale(0.03f);
+        ninja.rotate(0f, 180 * FastMath.DEG_TO_RAD, 0f);
+        Material mat = new Material(assetManager,  // Create new material and...
+             "Common/MatDefs/Light/Lighting.j3md"); // ... specify .j3md file to use (illuminated).
+        mat.setBoolean("UseMaterialColors",true);  // Set some parameters, e.g. blue.
+        if(team == Util.RED_TEAM_ID){
+            mat.setColor("Ambient", ColorRGBA.Red);   // ... color of this object
+            mat.setColor("Diffuse", ColorRGBA.Red);   // ... color of light being reflected
+        }
+        else{
+            mat.setColor("Ambient", ColorRGBA.Blue);   // ... color of this object
+            mat.setColor("Diffuse", ColorRGBA.Blue);   // ... color of light being reflected
+        }
+       
+        ninja.setMaterial(mat);               // Use new material on this Geometry.
+        ninjaControl = ninja.getControl(AnimControl.class);
+        channelWalk = ninjaControl.createChannel();
+        channelWalk.setLoopMode(LoopMode.Loop);
+        this.makeIdle();
+
+        channelJump = ninjaControl.createChannel();
+        channelJump.setLoopMode(LoopMode.DontLoop);
+        
+        channelAttack = ninjaControl.createChannel();
+        channelAttack.setLoopMode(LoopMode.DontLoop);
+        
+        System.out.println(ninjaControl.getAnimationNames());
+        this.attachChild(ninja);
     }
     
     public void initSound(AssetManager assetManager){
@@ -180,11 +224,55 @@ public class Player extends Node{
         hasBall = value;
     }
 
-    public void makeAudioJump() {
+    public void makeJump() {
+        channelWalk.setAnim("Jump", 0f);
         audioJump.playInstance();
+        if(isWalking){
+            this.makeRunning();
+        }
+        else{
+            this.makeIdle();
+        }
+        
     }
     
-    public void makeAudiShoot(){
+    public void makeAttack(){
+        channelWalk.setAnim("Attack1", 0f);
+        if(isWalking){
+            this.makeRunning();
+        }
+        else{
+            this.makeIdle();
+        }
+    }
+    
+    public void makeShoot(){
+        channelWalk.setAnim("Kick", 0f);
         audioShot.playInstance();
+        if(isWalking){
+            this.makeRunning();
+        }
+        else{
+            this.makeIdle();
+        }
+    }
+    
+    public void makeRunning(){
+        System.out.println("set Running");
+        isWalking = true;
+        otherAnim = false;
+        channelWalk.setAnim("Walk", 1.5f);
+        channelWalk.setSpeed(2f);
+    }
+    
+    public void makeIdle(){
+        System.out.println("setIdle");
+        isWalking = false;
+        channelWalk.setAnim("Idle1", 1.5f);
+        channelWalk.setSpeed(1);
+    }
+    
+    public boolean getIsWalking(){
+        return isWalking;
     }
 }

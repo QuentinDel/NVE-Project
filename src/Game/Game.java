@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package Game;
-
+//D:\Program Files\MATLAB\R2016a\toolbox\sl3d\vrealm\program\sounds
 import Network.GameApplication;
 import Network.GameClient.GameClient;
 import Network.Util;
@@ -71,7 +71,6 @@ public class Game extends BaseAppState {
     public static final int MAX_PLAYER_COUNT = 8;
     
     private GrassPlayground playground;
-    private AudioNode audioGoal;
     
     private int blueScore = 0;
     private int redScore = 0;
@@ -168,9 +167,7 @@ public class Game extends BaseAppState {
         scene.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
         blue.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
         red.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
-        
-        initAudio();
-        
+                
         sapp.getRootNode().attachChild(sceneModel);
         bulletAppState.getPhysicsSpace().addCollisionListener(blue);
         bulletAppState.getPhysicsSpace().addCollisionListener(red);
@@ -187,6 +184,7 @@ public class Game extends BaseAppState {
         Player playerNode = new Player(p);
         playerNode.initSound(sapp.getAssetManager());
         playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera(), sapp.getContext().getSettings(), playerHeight);
+        playerNode.initSpatial(sapp.getAssetManager());
         this.userID = p.getId();
         
         // Setup the geometry for the player
@@ -217,11 +215,7 @@ public class Game extends BaseAppState {
         //playerNode.initZoneBallCatch(sapp.getAssetManager());
         
         // Setup the geometry for the player
-        Spatial teapot = sapp.getAssetManager().loadModel("Models/Teapot/Teapot.obj");
-        Material mat_default = new Material(
-            sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
-        teapot.setMaterial(mat_default);
-        playerNode.attachChild(teapot);
+        playerNode.initSpatial(sapp.getAssetManager());
         playerNode.initSound(sapp.getAssetManager());
         
         // Setup the control for the player
@@ -282,12 +276,11 @@ public class Game extends BaseAppState {
         ball.notOwnedAnymore();
         ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
         if(isShoot)
-            player.makeAudiShoot();
+            player.makeShoot();
         player.setHasBall(false);
     }
     
     public void incrementScore(int teamID) {
-        audioGoal.playInstance();
         switch (teamID) {
             case Util.BLUE_TEAM_ID:
                 blueScore++;
@@ -341,7 +334,7 @@ public class Game extends BaseAppState {
     public void makeJump(int playerID) {
         Player p = getPlayer(playerID);
         p.getControl(BetterCharacterControl.class).jump();
-        p.makeAudioJump();
+        p.makeJump();
     }
     
     public void updatePlayerPhysics(ArrayList<PlayerPhysics> physics) {
@@ -350,6 +343,15 @@ public class Game extends BaseAppState {
             if (p != null) {
                 p.setDirection(pp.getDirection());
                 p.setVelocity(pp.getVelocity());
+                //System.out.println(pp.getVelocity());
+                //System.out.print(p.getIsWalking());
+                if(p.getIsWalking() && pp.getVelocity().equals(new Vector3f(0, 0, 0))){                   
+                    p.makeIdle();
+                }
+                else if(!p.getIsWalking() && !pp.getVelocity().equals(new Vector3f(0, 0, 0))){
+                    p.makeRunning();
+                }
+                    
                 p.setPosition(pp.getPosition());
                 if (p.getId() == this.userID) {
                     sapp.getCamera().setLocation(p.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
@@ -378,13 +380,10 @@ public class Game extends BaseAppState {
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
         sapp.getRootNode().detachAllChildren();
     }
-    
-    private void initAudio(){
-         
-        audioGoal = new AudioNode(sapp.getAssetManager(), "Sounds/goal.wav", AudioData.DataType.Buffer);
-        audioGoal.setPositional(false);
-        audioGoal.setLooping(false);
-        audioGoal.setVolume(1);
-        //audioJump.setLocalTranslation(this);
+
+    public void performAttackAnim(int playerID) {
+       Player p = getPlayer(playerID);
+       p.makeAttack();
+
     }
 }

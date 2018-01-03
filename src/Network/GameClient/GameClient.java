@@ -19,6 +19,8 @@ import Network.Util.*;
 import Game.Menu;
 import Game.Player;
 import Network.GameApplication;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Message;
 import java.util.ArrayList;
@@ -62,6 +64,8 @@ public class GameClient extends GameApplication implements ClientStateListener {
     //Gameinformation
     private int myPlayerID;
     private PlayerLite myPlayerLite;
+    private AudioNode audioGoal;
+
     
     public GameClient(String hostname, int port) {
         this.hostname = hostname;
@@ -100,6 +104,8 @@ public class GameClient extends GameApplication implements ClientStateListener {
             authConnection.addClientStateListener(this);
             authConnection.start();
             new Thread(authSender).start();
+            initAudio();
+
         }catch (IOException ex) {
             ex.printStackTrace();
             this.destroy();
@@ -295,6 +301,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
         game.incrementScore(teamID);
         int currentScore = game.getScore(teamID);
         menu.setScore(teamID, currentScore);
+        audioGoal.playInstance();
     }
     
     @Override
@@ -313,6 +320,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     }
 
     public void doAttack(int playerID) {
+        game.performAttackAnim(playerID);
         //perform attack animation
     }
 
@@ -348,5 +356,14 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void clientDisconnected(Client c, DisconnectInfo info) {
         System.out.println("DisconnectInfo "+ info);
         resetGame();
+    }
+    
+     private void initAudio(){
+         
+        audioGoal = new AudioNode(assetManager, "Sounds/goal.wav", AudioData.DataType.Buffer);
+        audioGoal.setPositional(false);
+        audioGoal.setLooping(false);
+        audioGoal.setVolume(1);
+        //audioJump.setLocalTranslation(this);
     }
 }
