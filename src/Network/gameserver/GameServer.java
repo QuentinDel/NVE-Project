@@ -154,7 +154,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
     
     @Override
     public void shootBall(int playerID, Vector3f direction, float power) {
-        game.removeBallToPlayer(playerID);
+        game.removeBallToPlayer(playerID, false);
         
         Ball ball = game.getBall();
         ball.setVelocity(direction.mult(power));

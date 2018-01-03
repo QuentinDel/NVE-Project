@@ -130,6 +130,7 @@ public class PlayerMovement extends BaseAppState {
             } else if (binding.equals("Jump")) {
                 if (isPressed) { 
                     playerControl.jump();
+                    playerNode.makeAudioJump();
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
             } else if (binding.equals("Catch") && !isPressed){

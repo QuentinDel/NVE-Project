@@ -8,6 +8,8 @@ package Game;
 import Network.Util;
 import Network.Util.PlayerLite;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.GhostControl;
@@ -34,6 +36,8 @@ public class Player extends Node{
     private Geometry catchZone;
     private Node toRotate;
     private boolean hasBall = false;
+    private AudioNode audioJump;
+    private AudioNode audioShot;
 
     /**
      * team 0: no team/spectator
@@ -41,6 +45,7 @@ public class Player extends Node{
      * team 2: blue
      */
     private int team;
+    
     
     public Player(int id, String name) {
         this.id = id;
@@ -58,6 +63,24 @@ public class Player extends Node{
         this.id = playerData.getId();
         this.playerName = playerData.getName();
         this.team = playerData.getTeam();
+    }
+    
+    public void initSound(AssetManager assetManager){
+         //Create the sound
+        audioJump = new AudioNode(assetManager, "Sounds/twang.wav", AudioData.DataType.Buffer);
+        audioJump.setPositional(true);
+        audioJump.setLooping(false);
+        audioJump.setVolume(1);
+        //audioJump.setLocalTranslation(this);
+        this.attachChild(audioJump);
+        
+        
+        audioShot = new AudioNode(assetManager, "Sounds/explo.wav", AudioData.DataType.Buffer);
+        audioShot.setPositional(true);
+        audioShot.setLooping(false);
+        audioShot.setVolume(1);
+        //audioJump.setLocalTranslation(this);
+        this.attachChild(audioShot);
     }
     
     public void initZoneBallCatch(AssetManager assetManager, Camera camera, AppSettings settings, float playerHeight){
@@ -155,5 +178,13 @@ public class Player extends Node{
 
     public void setHasBall(boolean value) {
         hasBall = value;
+    }
+
+    public void makeAudioJump() {
+        audioJump.playInstance();
+    }
+    
+    public void makeAudiShoot(){
+        audioShot.playInstance();
     }
 }

@@ -14,6 +14,8 @@ import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -69,6 +71,7 @@ public class Game extends BaseAppState {
     public static final int MAX_PLAYER_COUNT = 8;
     
     private GrassPlayground playground;
+    private AudioNode audioGoal;
     
     private int blueScore = 0;
     private int redScore = 0;
@@ -166,6 +169,8 @@ public class Game extends BaseAppState {
         blue.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
         red.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
         
+        initAudio();
+        
         sapp.getRootNode().attachChild(sceneModel);
         bulletAppState.getPhysicsSpace().addCollisionListener(blue);
         bulletAppState.getPhysicsSpace().addCollisionListener(red);
@@ -180,6 +185,7 @@ public class Game extends BaseAppState {
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p);
+        playerNode.initSound(sapp.getAssetManager());
         playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera(), sapp.getContext().getSettings(), playerHeight);
         this.userID = p.getId();
         
@@ -216,6 +222,7 @@ public class Game extends BaseAppState {
             sapp.getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
         teapot.setMaterial(mat_default);
         playerNode.attachChild(teapot);
+        playerNode.initSound(sapp.getAssetManager());
         
         // Setup the control for the player
         BetterCharacterControl playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
@@ -265,7 +272,7 @@ public class Game extends BaseAppState {
         ball.setOwned(id);
     }
     
-    public void removeBallToPlayer(int id){
+    public void removeBallToPlayer(int id, boolean isShoot){
         Player player = playerStore.get(id);
         player.detachChild(ball);
         Vector3f position = player.getPosition();
@@ -273,9 +280,12 @@ public class Game extends BaseAppState {
         ball.addPhysic();
         ball.notOwnedAnymore();
         ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
+        if(isShoot)
+            player.makeAudiShoot();
     }
     
     public void incrementScore(int teamID) {
+        audioGoal.playInstance();
         switch (teamID) {
             case Util.BLUE_TEAM_ID:
                 blueScore++;
@@ -329,6 +339,7 @@ public class Game extends BaseAppState {
     public void makeJump(int playerID) {
         Player p = getPlayer(playerID);
         p.getControl(BetterCharacterControl.class).jump();
+        p.makeAudioJump();
     }
     
     public void updatePlayerPhysics(ArrayList<PlayerPhysics> physics) {
@@ -364,5 +375,14 @@ public class Game extends BaseAppState {
         bulletAppState.getPhysicsSpace().destroy();
         sapp.getStateManager().detach(bulletAppState); //will this break anything?
         sapp.getRootNode().detachAllChildren();
+    }
+    
+    private void initAudio(){
+         
+        audioGoal = new AudioNode(sapp.getAssetManager(), "Sounds/goal.wav", AudioData.DataType.Buffer);
+        audioGoal.setPositional(false);
+        audioGoal.setLooping(false);
+        audioGoal.setVolume(1);
+        //audioJump.setLocalTranslation(this);
     }
 }
