@@ -224,6 +224,16 @@ public class GameClient extends GameApplication implements ClientStateListener {
         this.getFlyByCamera().registerWithInput(this.getInputManager());
     }
     
+    public void enableChat() {
+        move.setEnabled(false);
+        this.getFlyByCamera().unregisterInput();
+    }
+    
+    public void disableChat() {
+        move.setEnabled(true);
+        this.getFlyByCamera().registerWithInput(this.getInputManager());
+    }
+    
     public void resetGame() {
         move.setEnabled(false);
         game.setEnabled(false);
