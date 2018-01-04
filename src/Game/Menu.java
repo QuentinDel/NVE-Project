@@ -50,7 +50,7 @@ public class Menu extends BaseAppState implements ScreenController {
     private GameClient sapp;
     
     private GameServerLite currentServer;
-    private String playerName;
+    private String playerName = "PlayerName";
     
     @Override
     public void initialize(Application app) {
@@ -105,6 +105,7 @@ public class Menu extends BaseAppState implements ScreenController {
 
                 TextField input = nifty.getCurrentScreen().findNiftyControl("chatMessage", TextField.class);
                 String message = input.getRealText();
+                message = playerName + ": " + message;
                 input.setText("");
                 input.disable();
                 ListBox<String> chatBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
@@ -156,7 +157,6 @@ public class Menu extends BaseAppState implements ScreenController {
     public void joinServer() {
         if (currentServer != null) {
             TextField input = nifty.getCurrentScreen().findNiftyControl("PlayerName", TextField.class);
-            String playerName = "Bob"; //Default name
             if (input != null) {
                 playerName = input.getRealText();
             }
@@ -332,7 +332,7 @@ public class Menu extends BaseAppState implements ScreenController {
                             control(new ButtonBuilder("RefreshButton", "Refresh") {{
                                 interactOnClick("refreshServerBrowser()");
                             }});
-                            control(new TextFieldBuilder("PlayerName", "PlayerName") {{
+                            control(new TextFieldBuilder("PlayerName", playerName) {{
                                 maxLength(20);
                                 height("30px");
                                 width("20%");
