@@ -38,12 +38,8 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Menu extends BaseAppState implements ScreenController {
-
-    //TODO PROPERLY ADD ASSETS, IT CANT FIND THE START-BACKGROUND (but why can it find the xml files?!?)
-    //TODO Listen to the playername textfield, currently writing there doesnt do anything
     
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
@@ -72,7 +68,6 @@ public class Menu extends BaseAppState implements ScreenController {
                 sapp.getAudioRenderer(),
                 sapp.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
-        //nifty.fromXml("./Interface/scene.xml", "start", this);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
         
@@ -218,12 +213,16 @@ public class Menu extends BaseAppState implements ScreenController {
     }
     
     public void setScore(int teamID, int newScore) {
-        if (teamID == Util.BLUE_TEAM_ID) {
-            setBlueScore(newScore);
-        } else if (teamID == Util.RED_TEAM_ID) {
-            setRedScore(newScore);
-        } else {
-            System.out.println("Invalid teamID: " + teamID);
+        switch (teamID) {
+            case Util.BLUE_TEAM_ID:
+                setBlueScore(newScore);
+                break;
+            case Util.RED_TEAM_ID:
+                setRedScore(newScore);
+                break;
+            default:
+                System.out.println("Invalid teamID: " + teamID);
+                break;
         }
     }
     
