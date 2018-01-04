@@ -12,7 +12,9 @@ package Game;
 
 import Network.GameClient.GameClient;
 import Network.Util;
+import Network.Util.ChatMessage;
 import Network.Util.GameServerLite;
+import static Network.Util.MAX_MESSAGE_LENGTH;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.input.KeyInput;
@@ -83,11 +85,6 @@ public class Menu extends BaseAppState implements ScreenController {
         // attach the nifty display to the gui view port as a processor
         sapp.getGuiViewPort().addProcessor(niftyDisplay);
         sapp.getInputManager().setCursorVisible(true);
-        
-        populateServerbrowser(new LinkedBlockingQueue<GameServerLite>()); //Only here for testing purposes
-        
-        sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
-        sapp.getInputManager().addListener(actionListener, "EnableChat");
     }
     
     private ActionListener actionListener = new ActionListener() {
@@ -110,13 +107,27 @@ public class Menu extends BaseAppState implements ScreenController {
                 String message = input.getRealText();
                 input.setText("");
                 input.disable();
-                ListBox<String> listBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
-                if (message != "") {
-                    listBox.addItem(message);
+                ListBox<String> chatBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
+                if (!message.equals("")) {
+                    sapp.queueGameServerMessage(new ChatMessage(message));
                 }
             }
         }
     };
+    
+    public void addMessage(String message) {
+        ListBox<String> chatBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
+        chatBox.addItem(message);
+    }
+    
+    private void removeChatControls() {
+        if (sapp.getInputManager().hasMapping("EnableChat")) {
+            sapp.getInputManager().deleteMapping("EnableChat");
+        }
+        if (sapp.getInputManager().hasMapping("chatMessage")) {
+            sapp.getInputManager().deleteMapping("chatMessage");
+        }
+    }
 
     public void populateServerbrowser(Collection<GameServerLite> servers) {
         ListBox<GameServerLite> listBox = (ListBox<GameServerLite>) nifty.getCurrentScreen().findNiftyControl("serverbrowser", ListBox.class);
@@ -185,21 +196,28 @@ public class Menu extends BaseAppState implements ScreenController {
     public void gotoMenu() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("start");
+        removeChatControls();
     }
     
     public void gotoLobby() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("lobby");
+        removeChatControls();
     }
     
     public void gotoHud() {
         sapp.getInputManager().setCursorVisible(false);
         nifty.gotoScreen("hud");
+        
+        //Init chat controls
+        sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
+        sapp.getInputManager().addListener(actionListener, "EnableChat");
     }
     
     public void gotoPause() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("pause");
+        removeChatControls();
     }
     
     public void setScore(int teamID, int newScore) {
@@ -491,7 +509,7 @@ public class Menu extends BaseAppState implements ScreenController {
                             backgroundColor("#1116");
                         }});
                         control(new TextFieldBuilder("chatMessage", "") {{
-                            maxLength(20);
+                            maxLength(MAX_MESSAGE_LENGTH);
                             height("30px");
                             backgroundColor("#1116");
                         }});

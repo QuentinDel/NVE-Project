@@ -149,7 +149,8 @@ public class GameClient extends GameApplication implements ClientStateListener {
                 GrabBallMessage.class,
                 ShootBallMessage.class,
                 AttackMessage.class,
-                DropBallMessage.class);
+                DropBallMessage.class,
+                ChatMessage.class);
             
             // finally start the communication channel to the server
             gameConnection.start();
@@ -240,6 +241,10 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void disableChat() {
         move.setEnabled(true);
         this.getFlyByCamera().registerWithInput(this.getInputManager());
+    }
+    
+    public void addChatMessage(String message) {
+        menu.addMessage(message);
     }
     
     public void resetGame() {
@@ -340,7 +345,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
         if (authConnection != null) {
             authConnection.close();
         }
-        if (gameConnection != null) {
+        if (gameConnection != null && gameConnection.isConnected()) {
             gameConnection.close();
         }
         super.destroy();

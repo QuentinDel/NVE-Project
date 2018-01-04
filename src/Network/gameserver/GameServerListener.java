@@ -11,6 +11,7 @@ import Game.Player;
 import Network.Util;
 import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
+import Network.Util.ChatMessage;
 import Network.Util.DropBallMessage;
 import Network.Util.GameConfigurationMessage;
 import Network.Util.GrabBallMessage;
@@ -162,13 +163,21 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Ball ball = game.getBall();
             if(ball.getIsOwned()){
                 Player target = connPlayerMap.get(ball.getOwner());
-                System.out.println("Successful attack");
                 DropBallMessage dropMsg = new DropBallMessage(target.getId());
                 gameServer.dropBall(target.getId());
                 server.broadcast(dropMsg);
             }
+        } else if (m instanceof ChatMessage) {
+            final ChatMessage msg = (ChatMessage) m;
+            final String message = msg.getMessage();
+            if (message.length() > Util.MAX_MESSAGE_LENGTH || message.length() == 0) {
+                return; //Invalid message length, ignore
+            } else {
+                server.broadcast(msg);
+            }
+        
         }
 
     }
-    
+
 }

@@ -9,6 +9,7 @@ import Game.Player;
 import Network.Util;
 import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
+import Network.Util.ChatMessage;
 import Network.Util.DropBallMessage;
 import Network.Util.GameConfigurationMessage;
 import com.jme3.network.Client;
@@ -174,6 +175,15 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.dropBall(msg.getId());
+                    return true;
+                }
+            });
+        } else if (m instanceof ChatMessage) {
+            final ChatMessage msg = (ChatMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.addChatMessage(msg.getMessage());
                     return true;
                 }
             });
