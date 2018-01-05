@@ -120,6 +120,8 @@ public class GrassPlayground extends PlaygroundAbstract {
     Geometry goalPicket = new Geometry("picket", picket);
     Box trans = new Box(GOAL_TRANSV, GOAL_PICKET_THICKNESS, GOAL_PICKET_THICKNESS);
     Geometry goalTrans = new Geometry("trans", trans);
+    Box teamColorBox = new Box(GOAL_TRANSV / 2, GOAL_PICKET_THICKNESS * 2, GOAL_PICKET_THICKNESS);
+    Geometry teamColorGeom = new Geometry("teamColor", teamColorBox);
     
     //Geometry for the walls
     Node walls = new Node("walls");
@@ -165,7 +167,12 @@ public class GrassPlayground extends PlaygroundAbstract {
     wallWidthTop.setQueueBucket(RenderQueue.Bucket.Transparent);   
     wallLengthLeft.setMaterial(matWalls);
     wallWidthTop.setMaterial(matWalls);
-   
+    
+    //Material for teamcolor
+    Material teamColor = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    teamColor.setColor("Color", ColorRGBA.Red);
+    teamColorGeom.setMaterial(teamColor);
+
     
     //Material for score zone
     Material matScoreZone = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -200,6 +207,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     goal.attachChild(goalPicket);
     goal.attachChild(goalTrans);
     goal.attachChild(otherPicket);
+    goal.attachChild(teamColorGeom);
     walls.attachChild(wallWidthTop);
     walls.attachChild(wallWidthBottom);
     walls.attachChild(wallLengthLeft);
@@ -220,7 +228,9 @@ public class GrassPlayground extends PlaygroundAbstract {
     goalPicket.setLocalTranslation(BOARD_LENGTH, GOAL_PICKET_HEIGHT, GOAL_TRANSV - GOAL_PICKET_THICKNESS);
     otherPicket.setLocalTranslation(BOARD_LENGTH, GOAL_PICKET_HEIGHT, -GOAL_TRANSV + GOAL_PICKET_THICKNESS);
     goalTrans.setLocalTranslation(BOARD_LENGTH, 2*GOAL_PICKET_HEIGHT, 0f);
+    teamColorGeom.setLocalTranslation(BOARD_LENGTH, 3.5f*GOAL_PICKET_HEIGHT, 0f);
     goalTrans.rotate(0f , 90*FastMath.DEG_TO_RAD, 0f);
+    teamColorGeom.rotate(0f , 90*FastMath.DEG_TO_RAD, 0f);
     wallWidthTop.setLocalTranslation(BOARD_LENGTH, WALL_HEIGHT, 0f);
     wallWidthBottom.setLocalTranslation(-BOARD_LENGTH, WALL_HEIGHT, 0f);
     wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
@@ -233,6 +243,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node otherGoalZone = goalZoneNode.clone(true);
     otherGoalZone.rotate(0f , 0f , 180*FastMath.DEG_TO_RAD);
     Node otherGoal = goal.clone(true);
+    ((Geometry)otherGoal.getChild("teamColor")).getMaterial().setColor("Color", ColorRGBA.Blue);
     otherGoal.rotate(0f , 180*FastMath.DEG_TO_RAD , 0f);
     
     playgroundWithoutLine.attachChild(walls);

@@ -181,10 +181,10 @@ public class Game extends BaseAppState {
     //A local player does not have a geometry
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
-        Player playerNode = new Player(p);
+        Player playerNode = new Player(p, true);
         playerNode.initSound(sapp.getAssetManager());
         playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera(), sapp.getContext().getSettings(), playerHeight);
-        playerNode.initSpatial(sapp.getAssetManager());
+        //playerNode.initSpatial(sapp.getAssetManager());
         this.userID = p.getId();
         
         // Setup the geometry for the player
@@ -211,7 +211,7 @@ public class Game extends BaseAppState {
     //A non-local player has a geometry
     public Player addPlayer(PlayerLite p) {
         // Setup the player node
-        Player playerNode = new Player(p);
+        Player playerNode = new Player(p, false);
         //playerNode.initZoneBallCatch(sapp.getAssetManager());
         
         // Setup the geometry for the player
@@ -261,6 +261,7 @@ public class Game extends BaseAppState {
     public void setBallToPlayer(int id){
         Player player = playerStore.get(id);
         player.attachChild(ball);
+        System.out.println("playerPosition " + player.getPosition());
         ball.setPosition(player.getPosition().add(new Vector3f(0, 2*cameraHeight, 0)));
         ball.removePhysic();
         ball.setOwned(id);
@@ -274,7 +275,8 @@ public class Game extends BaseAppState {
         sapp.getRootNode().attachChild(ball);
         ball.addPhysic();
         ball.notOwnedAnymore();
-        ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
+        ball.setPosition(position.add(new Vector3f(0f, 2*cameraHeight, 0f)));
+        ball.setVelocity(new Vector3f(0, -1, 0));
         if(isShoot)
             player.makeShoot();
         player.setHasBall(false);

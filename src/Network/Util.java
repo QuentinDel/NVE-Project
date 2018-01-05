@@ -197,13 +197,17 @@ public class Util {
         protected Vector3f position;
         protected Vector3f velocity;
         protected Vector3f angularVelocity;
+        protected boolean isOwned;
+        protected int idOwner;
         
         public BallPhysics(){}
         
-        public BallPhysics(Vector3f position, Vector3f velocity, Vector3f angularVelocity){
+        public BallPhysics(Vector3f position, Vector3f velocity, Vector3f angularVelocity, boolean isOwned, int idOwner){
             this.position = position;
             this.velocity = velocity;
             this.angularVelocity = angularVelocity;
+            this.isOwned = isOwned;
+            this.idOwner = idOwner;
         }
         
         public Vector3f getPosition() {
@@ -216,6 +220,14 @@ public class Util {
         
         public Vector3f getAngularVelocity() {
             return angularVelocity;
+        }
+        
+        public boolean isOwned(){
+            return isOwned;
+        }
+        
+        public int getOwner(){
+            return idOwner;
         }
         
     }

@@ -49,7 +49,7 @@ public class Player extends Node{
     AnimChannel channelJump;
     AnimChannel channelAttack;
     private boolean isWalking;
-    private boolean otherAnim;
+    private boolean isLocal;
     
     /**
      * team 0: no team/spectator
@@ -71,10 +71,11 @@ public class Player extends Node{
         this.team = team;
     }
 
-    public Player(PlayerLite playerData) {
+    public Player(PlayerLite playerData, boolean isLocal) {
         this.id = playerData.getId();
         this.playerName = playerData.getName();
         this.team = playerData.getTeam();
+        this.isLocal = isLocal;
     }
     
     public void initSpatial(AssetManager assetManager){
@@ -225,51 +226,63 @@ public class Player extends Node{
     }
 
     public void makeJump() {
-        channelWalk.setAnim("Jump", 0f);
         audioJump.playInstance();
-        if(isWalking){
-            this.makeRunning();
+
+        if(!isLocal){
+            channelWalk.setAnim("Jump", 0f);
+            if(isWalking){
+                this.makeRunning();
+            }
+            else{
+                this.makeIdle();
+            }
         }
-        else{
-            this.makeIdle();
-        }
-        
     }
     
     public void makeAttack(){
-        channelWalk.setAnim("Attack1", 0f);
-        if(isWalking){
-            this.makeRunning();
-        }
-        else{
-            this.makeIdle();
+        if(!isLocal){
+       
+            channelWalk.setAnim("Attack1", 0f);
+            if(isWalking){
+                this.makeRunning();
+            }
+            else{
+                this.makeIdle();
+            }
         }
     }
     
     public void makeShoot(){
-        channelWalk.setAnim("Kick", 0f);
         audioShot.playInstance();
-        if(isWalking){
-            this.makeRunning();
+        if(!isLocal){
+            channelWalk.setAnim("Kick", 0f);
+            if(isWalking){
+                this.makeRunning();
+            }
+            else{
+                this.makeIdle();
+            }
         }
-        else{
-            this.makeIdle();
-        }
+       
     }
     
     public void makeRunning(){
-        System.out.println("set Running");
-        isWalking = true;
-        otherAnim = false;
-        channelWalk.setAnim("Walk", 1.5f);
-        channelWalk.setSpeed(2f);
+        if(!isLocal){
+             System.out.println("set Running");
+            isWalking = true;
+            channelWalk.setAnim("Walk", 1.5f);
+            channelWalk.setSpeed(2f);
+        }
+       
     }
     
     public void makeIdle(){
-        System.out.println("setIdle");
-        isWalking = false;
-        channelWalk.setAnim("Idle1", 1.5f);
-        channelWalk.setSpeed(1);
+        if(!isLocal){
+            System.out.println("setIdle");
+            isWalking = false;
+            channelWalk.setAnim("Idle1", 1.5f);
+            channelWalk.setSpeed(1);
+        }
     }
     
     public boolean getIsWalking(){

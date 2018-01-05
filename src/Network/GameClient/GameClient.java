@@ -280,7 +280,11 @@ public class GameClient extends GameApplication implements ClientStateListener {
         }
         // Update the ball
         BallPhysics ball = msg.getBall();
+        if(ball.isOwned()){
+            game.setBallToPlayer(ball.getOwner());
+        }
         game.updateBallPhysics(ball);
+        
         
         // Set the team scores
         int blueScore = msg.getBlueScore();
