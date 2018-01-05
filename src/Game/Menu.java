@@ -12,7 +12,9 @@ package Game;
 
 import Network.GameClient.GameClient;
 import Network.Util;
+import Network.Util.ChatMessage;
 import Network.Util.GameServerLite;
+import static Network.Util.MAX_MESSAGE_LENGTH;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.input.KeyInput;
@@ -36,19 +38,15 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Menu extends BaseAppState implements ScreenController {
-
-    //TODO PROPERLY ADD ASSETS, IT CANT FIND THE START-BACKGROUND (but why can it find the xml files?!?)
-    //TODO Listen to the playername textfield, currently writing there doesnt do anything
     
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
     private GameClient sapp;
     
     private GameServerLite currentServer;
-    private String playerName;
+    private String playerName = "PlayerName";
     
     @Override
     public void initialize(Application app) {
@@ -70,7 +68,6 @@ public class Menu extends BaseAppState implements ScreenController {
                 sapp.getAudioRenderer(),
                 sapp.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
-        //nifty.fromXml("./Interface/scene.xml", "start", this);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
         
@@ -83,11 +80,6 @@ public class Menu extends BaseAppState implements ScreenController {
         // attach the nifty display to the gui view port as a processor
         sapp.getGuiViewPort().addProcessor(niftyDisplay);
         sapp.getInputManager().setCursorVisible(true);
-        
-        populateServerbrowser(new LinkedBlockingQueue<GameServerLite>()); //Only here for testing purposes
-        
-        sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
-        sapp.getInputManager().addListener(actionListener, "EnableChat");
     }
     
     private ActionListener actionListener = new ActionListener() {
@@ -108,24 +100,36 @@ public class Menu extends BaseAppState implements ScreenController {
 
                 TextField input = nifty.getCurrentScreen().findNiftyControl("chatMessage", TextField.class);
                 String message = input.getRealText();
+                message = playerName + ": " + message;
                 input.setText("");
                 input.disable();
-                ListBox<String> listBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
-                if (message != "") {
-                    listBox.addItem(message);
+                ListBox<String> chatBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
+                if (!message.equals("")) {
+                    sapp.queueGameServerMessage(new ChatMessage(message));
                 }
             }
         }
     };
+    
+    public void addMessage(String message) {
+        ListBox<String> chatBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
+        chatBox.addItem(message);
+    }
+    
+    private void removeChatControls() {
+        if (sapp.getInputManager().hasMapping("EnableChat")) {
+            sapp.getInputManager().deleteMapping("EnableChat");
+        }
+        if (sapp.getInputManager().hasMapping("chatMessage")) {
+            sapp.getInputManager().deleteMapping("chatMessage");
+        }
+    }
 
     public void populateServerbrowser(Collection<GameServerLite> servers) {
         ListBox<GameServerLite> listBox = (ListBox<GameServerLite>) nifty.getCurrentScreen().findNiftyControl("serverbrowser", ListBox.class);
         if (listBox != null) {
             listBox.clear();
             listBox.addAllItems(servers);
-            listBox.addItem(new GameServerLite("127.0.0.1", "Castle",  8000,  4, 0, 2, 3)); //Hardcoded servers for testing
-            listBox.addItem(new GameServerLite("127.0.0.1", "Beach",   8000,  1, 1, 4, 3));
-            listBox.addItem(new GameServerLite("127.0.0.1", "Football", 8000, 0, 0, 2, 0));
         }
     }
 
@@ -148,7 +152,6 @@ public class Menu extends BaseAppState implements ScreenController {
     public void joinServer() {
         if (currentServer != null) {
             TextField input = nifty.getCurrentScreen().findNiftyControl("PlayerName", TextField.class);
-            String playerName = "Bob"; //Default name
             if (input != null) {
                 playerName = input.getRealText();
             }
@@ -185,30 +188,41 @@ public class Menu extends BaseAppState implements ScreenController {
     public void gotoMenu() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("start");
+        removeChatControls();
     }
     
     public void gotoLobby() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("lobby");
+        removeChatControls();
     }
     
     public void gotoHud() {
         sapp.getInputManager().setCursorVisible(false);
         nifty.gotoScreen("hud");
+        
+        //Init chat controls
+        sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
+        sapp.getInputManager().addListener(actionListener, "EnableChat");
     }
     
     public void gotoPause() {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("pause");
+        removeChatControls();
     }
     
     public void setScore(int teamID, int newScore) {
-        if (teamID == Util.BLUE_TEAM_ID) {
-            setBlueScore(newScore);
-        } else if (teamID == Util.RED_TEAM_ID) {
-            setRedScore(newScore);
-        } else {
-            System.out.println("Invalid teamID: " + teamID);
+        switch (teamID) {
+            case Util.BLUE_TEAM_ID:
+                setBlueScore(newScore);
+                break;
+            case Util.RED_TEAM_ID:
+                setRedScore(newScore);
+                break;
+            default:
+                System.out.println("Invalid teamID: " + teamID);
+                break;
         }
     }
     
@@ -317,7 +331,7 @@ public class Menu extends BaseAppState implements ScreenController {
                             control(new ButtonBuilder("RefreshButton", "Refresh") {{
                                 interactOnClick("refreshServerBrowser()");
                             }});
-                            control(new TextFieldBuilder("PlayerName", "PlayerName") {{
+                            control(new TextFieldBuilder("PlayerName", playerName) {{
                                 maxLength(20);
                                 height("30px");
                                 width("20%");
@@ -491,7 +505,7 @@ public class Menu extends BaseAppState implements ScreenController {
                             backgroundColor("#1116");
                         }});
                         control(new TextFieldBuilder("chatMessage", "") {{
-                            maxLength(20);
+                            maxLength(MAX_MESSAGE_LENGTH);
                             height("30px");
                             backgroundColor("#1116");
                         }});

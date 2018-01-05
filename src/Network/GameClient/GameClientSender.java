@@ -5,6 +5,7 @@
  */
 package Network.GameClient;
 
+import Network.Util.ChatMessage;
 import Network.Util.InternalMovementMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;

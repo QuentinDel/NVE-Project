@@ -9,6 +9,7 @@ import Game.Player;
 import Network.Util;
 import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
+import Network.Util.ChatMessage;
 import Network.Util.DropBallMessage;
 import Network.Util.GameConfigurationMessage;
 import com.jme3.network.Client;
@@ -40,6 +41,10 @@ public class GameClientListener implements MessageListener<Client>{
     
     private Client serverConnection;
     private GameClient gameClient;
+    
+    private int lastUpdatePhysicsID = -1;
+    private int lastUpdateBallID = -1;
+    private int lastScoreUpdateID = -1;
     
     public GameClientListener(Client serverConn, GameClient gameClient) {
         serverConnection = serverConn;
@@ -112,6 +117,11 @@ public class GameClientListener implements MessageListener<Client>{
             });
         } else if (m instanceof UpdatePhysics) {
             final UpdatePhysics msg = (UpdatePhysics) m;
+            if (msg.getMessageID() < lastUpdatePhysicsID) {
+                // Outdated message, ignore
+                return;
+            }
+            lastUpdatePhysicsID = msg.getMessageID();
             final ArrayList<PlayerPhysics> physics = msg.getPlayersPhys();
             gameClient.enqueue(new Callable() {
                 @Override
@@ -122,6 +132,11 @@ public class GameClientListener implements MessageListener<Client>{
             });
         } else if (m instanceof UpdateBallPhysics) {
             final UpdateBallPhysics msg = (UpdateBallPhysics) m;
+            if (msg.getMessageID() < lastUpdateBallID) {
+                // Outdated message, ignore
+                return;
+            }
+            lastUpdateBallID = msg.getMessageID();
             final BallPhysics ball_phy = msg.getBallPhys();
             gameClient.enqueue(new Callable() {
                 @Override
@@ -132,6 +147,11 @@ public class GameClientListener implements MessageListener<Client>{
             });
         } else if (m instanceof ScoreUpdateMessage) {
             final ScoreUpdateMessage msg = (ScoreUpdateMessage) m;
+            if (msg.getMessageID() < lastScoreUpdateID) {
+                // Outdated message, ignore
+                return;
+            }
+            lastScoreUpdateID = msg.getMessageID();
             final int blueScore = msg.getBlueScore();
             final int redScore = msg.getRedScore();
             gameClient.enqueue(new Callable() {
@@ -174,6 +194,15 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.dropBall(msg.getId());
+                    return true;
+                }
+            });
+        } else if (m instanceof ChatMessage) {
+            final ChatMessage msg = (ChatMessage) m;
+            gameClient.enqueue(new Callable() {
+                @Override
+                public Object call() {
+                    gameClient.addChatMessage(msg.getMessage());
                     return true;
                 }
             });

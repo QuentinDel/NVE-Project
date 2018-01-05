@@ -12,6 +12,7 @@ import Network.GameApplication;
 import Network.Util;
 import Network.Util.AttackMessage;
 import Network.Util.BallPhysics;
+import Network.Util.ChatMessage;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinGameMessage;
 import Network.Util.JumpMessage;
@@ -116,7 +117,8 @@ public class GameServer extends GameApplication implements ClientStateListener{
                                   JumpMessage.class,
                                   GrabBallMessage.class,
                                   ShootBallMessage.class,
-                                  AttackMessage.class);
+                                  AttackMessage.class,
+                                  ChatMessage.class);
         game.setLevel("playground");
         game.setEnabled(true);
         Timer physicsUpdateTimer = new Timer(true);

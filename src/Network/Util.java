@@ -29,6 +29,8 @@ public class Util {
     public static final int RED_TEAM_ID = 1;
     public static final int BLUE_TEAM_ID = 2;
     
+    public static final int MAX_MESSAGE_LENGTH = 50;
+    
     public static void initialiseSerializables() {
         Serializer.registerClasses(
             GameServerLite.class,
@@ -54,7 +56,8 @@ public class Util {
             ShootBallMessage.class,
             PlayerDisconnectedMessage.class,
             AttackMessage.class,
-            DropBallMessage.class
+            DropBallMessage.class,
+            ChatMessage.class
         );
     }
     
@@ -601,6 +604,21 @@ public class Util {
 
         public int getId() {
             return id;
+        }
+    }
+    
+    @Serializable
+    public static class ChatMessage extends MyAbstractMessage {
+        private String message;
+        
+        public ChatMessage() {}
+        
+        public ChatMessage(String message) {
+            this.message = message;
+        }
+        
+        public String getMessage() {
+            return this.message;
         }
     }
     
