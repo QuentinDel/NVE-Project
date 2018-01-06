@@ -20,10 +20,10 @@ import java.util.logging.Logger;
 class AuthConnectionListener implements ConnectionListener {
     private Server server;
     private LinkedBlockingQueue<Callable> outgoing;
-    private ConcurrentHashMap< String, GameServerLite > gamingServerInfos;
+    private ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos;
 
             
-    AuthConnectionListener(Server server, ConcurrentHashMap< String, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
+    AuthConnectionListener(Server server, ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
         this.server = server;
         this.gamingServerInfos = gamingServerInfos;
         this.outgoing = outgoing;
@@ -54,8 +54,10 @@ class AuthConnectionListener implements ConnectionListener {
     
     @Override
     public void connectionRemoved(Server s, HostedConnection c) {
-        System.out.println("Client #"+c.getId() + " has disconnected from the server");
-        if (gamingServerInfos.contains(c.getAddress()))
-            gamingServerInfos.remove(c.getAddress());    
+        System.out.println("Client #"+c.getId() + " has disconnected from the server address ");
+        if (gamingServerInfos.containsKey(c.getId())){
+            System.out.println("Gaming Server removed");
+            gamingServerInfos.remove(c.getId());    
+        }
     }
 }

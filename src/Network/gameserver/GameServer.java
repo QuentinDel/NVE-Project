@@ -102,7 +102,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         new Thread(authSender).start();
         /* add game info generator */
         // TODO: it needs some information
-        gameInfoGen = new GameInformationGenerator(outgoingAuth, connPlayerMap);
+        gameInfoGen = new GameInformationGenerator(this, outgoingAuth, connPlayerMap);
         new Thread(gameInfoGen).start();
         // TODO: add auth listener (if we need one?)
 
@@ -166,6 +166,8 @@ public class GameServer extends GameApplication implements ClientStateListener{
 
     @Override
     public void dropBall(int playerID) {
+        Util.DropBallMessage dropMsg = new Util.DropBallMessage(playerID);
+        server.broadcast(dropMsg);
         game.removeBallToPlayer(playerID, false);
     }
     
@@ -221,6 +223,14 @@ public class GameServer extends GameApplication implements ClientStateListener{
         int redScore = game.getScore(Util.RED_TEAM_ID);
         ScoreUpdateMessage msg = new ScoreUpdateMessage(blueScore, redScore);
         server.broadcast(msg);
+    }
+    
+    public int getPort(){
+        return port;
+    }
+    
+    public Game getGame(){
+        return game;
     }
 
 }

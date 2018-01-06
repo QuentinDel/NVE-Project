@@ -21,8 +21,10 @@ public class GameInformationGenerator implements Runnable {
     LinkedBlockingQueue<Message> outgoing;
     Util.GameServerLite serverInfo;
     private Util.BiMap<Integer, Player> connPlayerMap;
+    private GameServer gameServer;
 
-    public GameInformationGenerator(LinkedBlockingQueue<Message> outgoing, Util.BiMap<Integer, Player> connPlayerMap) {
+    public GameInformationGenerator(GameServer gameServer, LinkedBlockingQueue<Message> outgoing, Util.BiMap<Integer, Player> connPlayerMap) {
+        this.gameServer = gameServer;
         this.outgoing = outgoing;
         this.connPlayerMap = connPlayerMap;
     }
@@ -31,7 +33,9 @@ public class GameInformationGenerator implements Runnable {
     public void run() {
         while (true) {
             //gather information(needs to be fed with necessary references or updated with data)
-            serverInfo = new Util.GameServerLite(Util.HOSTNAME, "Beach", Util.PORT_GAME, connPlayerMap.size(), 1, 5, 4);
+            serverInfo = new Util.GameServerLite(Util.HOSTNAME, gameServer.getGame().getLevelId(), gameServer.getPort(), 
+                    connPlayerMap.size(), 1, gameServer.getGame().getScore(Util.BLUE_TEAM_ID), gameServer.getGame().getScore(Util.RED_TEAM_ID));
+
             //send it to outgoing queue
             GameInformationMessage msg = new GameInformationMessage(serverInfo);
             try {

@@ -164,9 +164,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Ball ball = game.getBall();
             if(ball.getIsOwned()){
                 Player target = connPlayerMap.get(ball.getOwner());
-                DropBallMessage dropMsg = new DropBallMessage(target.getId());
                 gameServer.dropBall(target.getId());
-                server.broadcast(dropMsg);
             }
         } else if (m instanceof ChatMessage) {
             final ChatMessage msg = (ChatMessage) m;

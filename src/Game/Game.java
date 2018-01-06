@@ -405,4 +405,8 @@ public class Game extends BaseAppState {
         this.setBallToPlayer(ball.getOwner());
         
     }
+    
+    public String getLevelId(){
+        return level_id;
+    }
 }

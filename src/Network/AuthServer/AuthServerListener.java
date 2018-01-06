@@ -29,10 +29,10 @@ import java.util.logging.Logger;
 public class AuthServerListener implements MessageListener<HostedConnection> {
     
     private Server server;
-    private ConcurrentHashMap< String, GameServerLite > gamingServerInfos;
+    private ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos;
     private LinkedBlockingQueue<Callable> outgoing;
     
-    public AuthServerListener(Server server, ConcurrentHashMap< String, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
+    public AuthServerListener(Server server, ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
         this.server = server;
         this.gamingServerInfos = gamingServerInfos;
         this.outgoing = outgoing;
@@ -43,8 +43,10 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
     public void messageReceived(final HostedConnection source, Message m) {
         
         if (m instanceof Network.Util.GameInformationMessage){
+            System.out.println("Message received");
             GameInformationMessage msg = (GameInformationMessage) m;
-            gamingServerInfos.put(msg.getGameServerInfo().getAddress(), msg.getGameServerInfo());
+            gamingServerInfos.put(source.getId(), msg.getGameServerInfo());
+            System.out.println(source.getId());
         }
         
         
@@ -55,6 +57,8 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
                 public Object call() throws Exception {
                     ArrayList<GameServerLite> serversList = new ArrayList<>();
                     serversList.addAll(gamingServerInfos.values());
+                    System.out.println(serversList.size());
+
                     Util.GameServerListsMessage msg = new Util.GameServerListsMessage(serversList);
                     msg.setReliable(true);
                     server.broadcast(Filters.equalTo(source), msg);

@@ -29,7 +29,7 @@ public class AuthServer extends SimpleApplication{
     
     private static Server authServer;
     private final int port;    
-    private ConcurrentHashMap< String, GameServerLite > gamingServerInfos;
+    private ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos;
     private LinkedBlockingQueue<Callable> outgoing;
     
     public static void main(String[] args) {

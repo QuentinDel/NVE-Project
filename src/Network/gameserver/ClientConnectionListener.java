@@ -5,6 +5,7 @@
  */
 package Network.gameserver;
 
+import Game.Ball;
 import Game.Player;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -33,8 +34,14 @@ public class ClientConnectionListener implements ConnectionListener {
     @Override
     public void connectionRemoved(Server server, HostedConnection c) {
         if (connPlayerMap.containsKey(c.getId())) {
+            Ball ball = gameServer.getGame().getBall();
+
+            if(ball.getIsOwned() && ball.getOwner() == c.getId()){
+                gameServer.dropBall(c.getId());
+            }
             connPlayerMap.remove(c.getId());
             gameServer.removePlayer(c.getId());
+           
         }
         System.out.println("Client #"+c.getId() + " has disconnected from the server");
     }
