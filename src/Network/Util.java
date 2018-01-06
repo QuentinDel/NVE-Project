@@ -57,7 +57,8 @@ public class Util {
             PlayerDisconnectedMessage.class,
             AttackMessage.class,
             DropBallMessage.class,
-            ChatMessage.class
+            ChatMessage.class,
+            BallInitInformation.class
         );
     }
     
@@ -200,17 +201,15 @@ public class Util {
         protected Vector3f position;
         protected Vector3f velocity;
         protected Vector3f angularVelocity;
-        protected boolean isOwned;
-        protected int idOwner;
+        
         
         public BallPhysics(){}
         
-        public BallPhysics(Vector3f position, Vector3f velocity, Vector3f angularVelocity, boolean isOwned, int idOwner){
+        public BallPhysics(Vector3f position, Vector3f velocity, Vector3f angularVelocity){
             this.position = position;
             this.velocity = velocity;
             this.angularVelocity = angularVelocity;
-            this.isOwned = isOwned;
-            this.idOwner = idOwner;
+            
         }
         
         public Vector3f getPosition() {
@@ -225,6 +224,23 @@ public class Util {
             return angularVelocity;
         }
         
+    }
+    
+     @Serializable   
+    public static class BallInitInformation extends BallPhysics{
+        protected boolean isOwned;
+        protected int idOwner;
+        
+        public BallInitInformation(){};
+        
+         public BallInitInformation(Vector3f position, Vector3f velocity, Vector3f angularVelocity, boolean isOwned, int idOwner){
+            this.position = position;
+            this.velocity = velocity;
+            this.angularVelocity = angularVelocity;
+            this.isOwned = isOwned;
+            this.idOwner = idOwner;
+        }
+         
         public boolean isOwned(){
             return isOwned;
         }
@@ -232,7 +248,6 @@ public class Util {
         public int getOwner(){
             return idOwner;
         }
-        
     }
    
     @Serializable
@@ -320,14 +335,14 @@ public class Util {
     @Serializable
     public static class GameConfigurationMessage extends MyAbstractMessage {
         private ArrayList<PlayerLite> players;
-        private BallPhysics ball;
+        private BallInitInformation ball;
         private int blueScore;
         private int redScore;
         
         public GameConfigurationMessage(){
         }
 
-        public GameConfigurationMessage(ArrayList<PlayerLite> players, BallPhysics ball, int blueScore, int redScore) {
+        public GameConfigurationMessage(ArrayList<PlayerLite> players, BallInitInformation ball, int blueScore, int redScore) {
             this.players = players;
             this.ball = ball;
             this.blueScore = blueScore;
@@ -338,7 +353,7 @@ public class Util {
             return players;
         }
         
-        public BallPhysics getBall(){
+        public BallInitInformation getBall(){
             return ball;
         }
         

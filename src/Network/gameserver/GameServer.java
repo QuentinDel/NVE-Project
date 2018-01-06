@@ -210,7 +210,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
     public void ballUpdate() {
         Ball ball = game.getBall();
         if (ball != null) {
-            BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity(), ball.getIsOwned(), ball.getOwner());
+            BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
             UpdateBallPhysics msg = new UpdateBallPhysics(ball_phy);
             server.broadcast(msg);
         }

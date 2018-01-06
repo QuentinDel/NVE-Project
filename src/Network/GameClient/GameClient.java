@@ -150,7 +150,8 @@ public class GameClient extends GameApplication implements ClientStateListener {
                 ShootBallMessage.class,
                 AttackMessage.class,
                 DropBallMessage.class,
-                ChatMessage.class);
+                ChatMessage.class,
+                BallInitInformation.class);
             
             // finally start the communication channel to the server
             gameConnection.start();
@@ -277,16 +278,20 @@ public class GameClient extends GameApplication implements ClientStateListener {
     // Setups the game by adding players, balls, etc.
     public void putConfig(GameConfigurationMessage msg){
         // Add players
+        BallInitInformation ball = msg.getBall();
         ArrayList<PlayerLite> playerList = msg.getPlayers();
+        Vector3f position = null;
         for (final PlayerLite player : playerList){
             System.out.println("player pos: "+player.getPosition());
             System.out.println("player dir: "+player.getDirection());
             game.addPlayer(player);
+            if(ball.isOwned() && player.getId() == ball.getOwner())
+                position = player.getPosition();
         }
         // Update the ball
-        BallPhysics ball = msg.getBall();
         if(ball.isOwned()){
-            game.setBallToPlayer(ball.getOwner());
+            System.out.println(ball.getOwner());
+            game.setBallToPlayer(ball.getOwner(), position);
         }
         game.updateBallPhysics(ball);
         

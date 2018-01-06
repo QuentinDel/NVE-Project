@@ -227,6 +227,7 @@ public class Game extends BaseAppState {
         //playerControl.setViewDirection(p.getDirection());
         playerControl.setViewDirection(new Vector3f(1,1,1));
         bulletAppState.getPhysicsSpace().add(playerControl);
+        
         sapp.getRootNode().attachChild(playerNode);
         playerStore.put(p.getId(), playerNode);
         
@@ -263,6 +264,15 @@ public class Game extends BaseAppState {
         player.attachChild(ball);
         System.out.println("playerPosition " + player.getPosition());
         ball.setPosition(player.getPosition().add(new Vector3f(0, 2*cameraHeight, 0)));
+        ball.removePhysic();
+        ball.setOwned(id);
+        player.setHasBall(true);
+    }
+    
+    public void setBallToPlayer(int id, Vector3f position){
+        Player player = playerStore.get(id);
+        player.attachChild(ball);
+        ball.setPosition(position.add(new Vector3f(0, 2*cameraHeight, 0)));
         ball.removePhysic();
         ball.setOwned(id);
         player.setHasBall(true);
@@ -387,5 +397,12 @@ public class Game extends BaseAppState {
        Player p = getPlayer(playerID);
        p.makeAttack();
 
+    }
+
+    public void initBallToPlayer() {
+        Player p = playerStore.get(ball.getOwner());
+        ball.setPosition(p.getPosition());
+        this.setBallToPlayer(ball.getOwner());
+        
     }
 }

@@ -170,6 +170,7 @@ public class Player extends Node{
 
     public Vector3f getPosition() {
         if (this.getControl(BetterCharacterControl.class) == null) {
+            System.out.println("No better Control");
             return new Vector3f();
         }
         return this.getWorldTranslation();

@@ -10,6 +10,7 @@ import Game.Game;
 import Game.Player;
 import Network.Util;
 import Network.Util.AttackMessage;
+import Network.Util.BallInitInformation;
 import Network.Util.BallPhysics;
 import Network.Util.ChatMessage;
 import Network.Util.DropBallMessage;
@@ -80,7 +81,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Ball ball = game.getBall();
             int blueScore = game.getScore(Util.BLUE_TEAM_ID);
             int redScore = game.getScore(Util.RED_TEAM_ID);
-            BallPhysics ball_phys = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity(), ball.getIsOwned(), ball.getOwner());
+            BallInitInformation ball_phys = new BallInitInformation(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity(), ball.getIsOwned(), ball.getOwner());
             GameConfigurationMessage confMsg = new GameConfigurationMessage(players, ball_phys, blueScore, redScore);
             confMsg.setReliable(true);
             server.broadcast(Filters.equalTo(c), confMsg);
