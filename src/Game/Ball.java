@@ -18,6 +18,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import Network.GameApplication;
+
 
 /**
  *
@@ -25,15 +27,17 @@ import com.jme3.texture.Texture;
  */
 public class Ball extends Node {
     
-    private final Application sapp;
+    private final GameApplication sapp;
     private Geometry ball_geo;
     private RigidBodyControl ball_phy;
+    private BallControl ball_ghost;
     private final BulletAppState bulletAppState;
     private boolean isOwned;
     private int ownedBy;
-
     
-    public Ball(Application sapp, BulletAppState bulletAppState){
+    private final float GHOST_SCALE = 1.05f;
+    
+    public Ball(GameApplication sapp, BulletAppState bulletAppState){
         this.sapp = sapp;
         this.bulletAppState = bulletAppState;
         this.isOwned = false;
@@ -63,11 +67,18 @@ public class Ball extends Node {
         ball_phy = new RigidBodyControl(ball_shape, 10f);
         ball_phy.setRestitution(0.8f);
         ball_phy.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        ball_phy.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         super.addControl(ball_phy);
         this.addPhysic();
-       
-
+        
+        //This BallControl detects collisions with the goals
+        //We make it slightly larger than the RigidBodyControl to ensure that collisions always will be detected
+        CollisionShape ghost_shape = new SphereCollisionShape(sphere.getRadius()*GHOST_SCALE);
+        ball_ghost = new BallControl(ghost_shape, sapp);
+        ball_ghost.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        ball_ghost.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
+        super.addControl(ball_ghost);
+        this.addGhostPhysics();
+        
         //Move the ball to the initial position
         //ball_phy.setPhysicsLocation(new Vector3f(-5, 6f, -5));
     }
@@ -123,5 +134,10 @@ public class Ball extends Node {
     
     public void removePhysic(){
         bulletAppState.getPhysicsSpace().remove(ball_phy);
+    }
+    
+    public void addGhostPhysics() {
+        bulletAppState.getPhysicsSpace().add(ball_ghost);
+        bulletAppState.getPhysicsSpace().addTickListener(ball_ghost);
     }
 }

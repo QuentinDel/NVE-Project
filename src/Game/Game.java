@@ -154,8 +154,8 @@ public class Game extends BaseAppState {
         sceneModel.addControl(scene);
         
         //Get collisionlisteners for the scorezones
-        ScoreControl blue = playground.getBlueScoreControl();
-        ScoreControl red = playground.getRedScoreControl();
+        GoalControl blue = playground.getBlueGoalControl();
+        GoalControl red = playground.getRedGoalControl();
         
         //Setup collisiongroups
         landscape.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
@@ -169,8 +169,6 @@ public class Game extends BaseAppState {
         red.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
                 
         sapp.getRootNode().attachChild(sceneModel);
-        bulletAppState.getPhysicsSpace().addCollisionListener(blue);
-        bulletAppState.getPhysicsSpace().addCollisionListener(red);
         bulletAppState.getPhysicsSpace().add(landscape);
         bulletAppState.getPhysicsSpace().add(scene);
         bulletAppState.getPhysicsSpace().add(blue);
@@ -246,13 +244,15 @@ public class Game extends BaseAppState {
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);   
         sapp.getRootNode().attachChild(ball);
-        ball.setPosition(new Vector3f(-20, 6f, -5));
+        ball.setPosition(new Vector3f(0, 30f, 0));
+        ball.setVelocity(new Vector3f(0, 30f, 0));
     }
     
     public void resetBall() {
-        ball.setPosition(new Vector3f(0, 30f, 0));
-        ball.setAngularVelocity(new Vector3f(0, 0, 0));
-        ball.setVelocity(new Vector3f(0, 30f, 0));
+        ball.removePhysic();
+        sapp.getRootNode().detachChild(ball);
+        
+        addBall();
     }
 
     public Ball getBall() {
@@ -308,10 +308,10 @@ public class Game extends BaseAppState {
     public void setScore(int teamID, int newScore) {
         switch (teamID) {
             case Util.BLUE_TEAM_ID:
-                blueScore++;
+                blueScore = newScore;
                 break;
             case Util.RED_TEAM_ID:
-                redScore++;
+                redScore = newScore;
                 break;
             default:
                 break;

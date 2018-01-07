@@ -6,7 +6,7 @@
 package Playboard;
 
 import Game.Game;
-import Game.ScoreControl;
+import Game.GoalControl;
 import Network.GameApplication;
 import Network.Util;
 import static Playboard.PlaygroundConstant.BOARD_LENGTH;
@@ -33,16 +33,13 @@ import static Playboard.PlaygroundConstant.WALL_HEIGHT;
 import static Playboard.PlaygroundConstant.WALL_LENGTH;
 import static Playboard.PlaygroundConstant.WALL_THICKNESS;
 import static Playboard.PlaygroundConstant.WALL_WIDTH;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
-import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -66,8 +63,8 @@ public class GrassPlayground extends PlaygroundAbstract {
   private Node playgroundWithoutLine;
   private Node playgroundLines;
   
-  private ScoreControl blueScoreControl;
-  private ScoreControl redScoreControl;
+  private GoalControl blueGoalControl;
+  private GoalControl redGoalControl;
 
   public GrassPlayground(GameApplication app, Game game){
       super(app.getAssetManager());
@@ -134,13 +131,13 @@ public class GrassPlayground extends PlaygroundAbstract {
     Node scoreZoneBlue = new Node("markPointBlue");
     Box goalScoreBox = new Box(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH);
     Geometry goalScoreBlue = new Geometry("scoreZoneBlue", goalScoreBox);
-    blueScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.BLUE_TEAM_ID);
-    goalScoreBlue.addControl(blueScoreControl);
+    blueGoalControl = new GoalControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.BLUE_TEAM_ID);
+    goalScoreBlue.addControl(blueGoalControl);
     
     Node scoreZoneRed = new Node("markPointRed");
     Geometry goalScoreRed = new Geometry("scoreZoneRed", goalScoreBox.clone());
-    redScoreControl = new ScoreControl(app, new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.RED_TEAM_ID);
-    goalScoreRed.addControl(redScoreControl);
+    redGoalControl = new GoalControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.RED_TEAM_ID);
+    goalScoreRed.addControl(redGoalControl);
     
 
     // PART FOR MATERIALS SETTINGS 
@@ -277,11 +274,11 @@ public class GrassPlayground extends PlaygroundAbstract {
       return playgroundLines;
   }
   
-  public ScoreControl getBlueScoreControl() {
-      return blueScoreControl;
+  public GoalControl getBlueGoalControl() {
+      return blueGoalControl;
   }
   
-  public ScoreControl getRedScoreControl() {
-      return redScoreControl;
+  public GoalControl getRedGoalControl() {
+      return redGoalControl;
   }
 }

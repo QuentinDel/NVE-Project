@@ -448,7 +448,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         backgroundColor("#f009");
                         width("10%");
                         height("100%");
-                        control(new LabelBuilder("redscore", "0"));
+                        control(new LabelBuilder("redscore", "  0  "));
                     }});
                     panel(new PanelBuilder() {{ //Time
                         childLayoutCenter();
@@ -464,7 +464,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         backgroundColor("#00f9");
                         width("10%");
                         height("100%");
-                        control(new LabelBuilder("bluescore", "0"));
+                        control(new LabelBuilder("bluescore", "  0  "));
                     }});
                 }});
                 panel(new PanelBuilder() {{//Empty space
