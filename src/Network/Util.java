@@ -2,17 +2,21 @@
 package Network;
 
 import Game.Player;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ *
+ * A class containing information needed all across the game, such as packets
+ * 
+ * @author Rickard, Quentin, Henrik
+ * Discussion, various packets
+ */
 
 public class Util {
     
@@ -62,10 +66,7 @@ public class Util {
         );
     }
     
-     
-    
     abstract public static class MyAbstractMessage extends AbstractMessage {
-
 
         protected int messageID;
         protected static int globalCounter = 1000;
@@ -201,7 +202,6 @@ public class Util {
         protected Vector3f position;
         protected Vector3f velocity;
         protected Vector3f angularVelocity;
-        
         
         public BallPhysics(){}
         
@@ -690,7 +690,4 @@ public class Util {
         }
     }
     
-    
-
-     
 }
