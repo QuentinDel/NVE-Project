@@ -5,7 +5,6 @@
  */
 package Game;
 
-import com.jme3.app.Application;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -20,10 +19,19 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 import Network.GameApplication;
 
-
 /**
+ * 
+ * This class represents the Ball.
+ * It has a RigidBodyControl to handle the physics and a BallControl to handle goal detection
+ * 
  *
  * @author Quentin
+ * Initial setup (geometries etc)
+ * ownership
+ * 
+ * @author Rickard
+ * BallControl, physics Collisiongroups
+ * 
  */
 public class Ball extends Node {
     
@@ -43,10 +51,12 @@ public class Ball extends Node {
         this.isOwned = false;
         ownedBy = 0;
         
-        initGeometry();
+        initBall();
     }
     
-    private void initGeometry(){
+    //This method sets up the Geometry and various Controls for the ball
+    //It also attaches the ball to the root node, and hte Controls to the physicsSpace
+    private void initBall(){
         Sphere sphere = new Sphere(64, 64, 2f, true, false);
         sphere.setTextureMode(Sphere.TextureMode.Projected);
         
@@ -78,9 +88,6 @@ public class Ball extends Node {
         ball_ghost.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
         super.addControl(ball_ghost);
         this.addGhostPhysics();
-        
-        //Move the ball to the initial position
-        //ball_phy.setPhysicsLocation(new Vector3f(-5, 6f, -5));
     }
     
     public Geometry getGeometry(){

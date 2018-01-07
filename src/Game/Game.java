@@ -4,9 +4,7 @@
  * and open the template in the editor.
  */
 package Game;
-//D:\Program Files\MATLAB\R2016a\toolbox\sl3d\vrealm\program\sounds
 import Network.GameApplication;
-import Network.GameClient.GameClient;
 import Network.Util;
 import Network.Util.BallPhysics;
 import Network.Util.PlayerLite;
@@ -14,38 +12,31 @@ import Network.Util.PlayerPhysics;
 import Playboard.GrassPlayground;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.audio.AudioData;
-import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.scene.shape.Sphere.TextureMode;
-import com.jme3.texture.Texture;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  *
+ * This is the main Game Appstate.
+ * This appstate keeps track of the current state of the game; positions/velocities of players/ball, etc.
+ * It does NOT contain any game logic for updating positions or such, as those things are handles separately by physicsControls
+ * 
  * @author Rickard
+ * Physics setup, loading of level
+ * 
+ * @author Quentin
+ * Animations, work on ball/players such as ownership
  */
 public class Game extends BaseAppState {
     
@@ -56,7 +47,6 @@ public class Game extends BaseAppState {
     private BulletAppState bulletAppState;
     private BetterCharacterControl playerControl;
     
-   
     private HashMap<Integer, Player> playerStore;
     private int userID;
     private Ball ball;
@@ -124,15 +114,14 @@ public class Game extends BaseAppState {
         sapp.getRootNode().addLight(dl);
     }
     
+    //Sets the level that is to be loaded
     public void setLevel(String level_id) {
         this.level_id = level_id;
     }
     
     // Loads the level, creates players and adds physics to them.
     public void initLevel() {
-        //sapp.getAssetManager().registerLocator(level_id+".zip", ZipLocator.class);
-        //sceneModel = sapp.getAssetManager().loadModel("main.scene");
-        //sceneModel.setLocalScale(2f);
+        //Currently the level we use is hardcoded
         playground = new GrassPlayground(sapp, this);
         sceneModel = playground.getNode();
         
@@ -182,10 +171,9 @@ public class Game extends BaseAppState {
         Player playerNode = new Player(p, true);
         playerNode.initSound(sapp.getAssetManager());
         playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera(), sapp.getContext().getSettings(), playerHeight);
-        //playerNode.initSpatial(sapp.getAssetManager());
         this.userID = p.getId();
         
-        // Setup the geometry for the player
+        // Move the player to their initial Position (should be based on team(;
         playerNode.move(new Vector3f(0, 3.5f, 0));
         
         // Setup the control for the player
@@ -195,12 +183,13 @@ public class Game extends BaseAppState {
         playerControl.setGravity(new Vector3f(0, playerGravity, 0));
         playerControl.warp(p.getPosition());
         playerControl.setViewDirection(p.getDirection());
+        
+        //Attach player/control to the scene graph and the physicsspace
         bulletAppState.getPhysicsSpace().add(playerControl);
         bulletAppState.getPhysicsSpace().addCollisionObject(playerNode.getGhostControl());
         sapp.getRootNode().attachChild(playerNode);
         sapp.getRootNode().attachChild(playerNode.getNodeCatchZone());
         playerStore.put(p.getId(), playerNode);
-        System.out.println("addLocalPlayer");
         return playerNode;
         
     }
@@ -241,6 +230,8 @@ public class Game extends BaseAppState {
         sapp.getRootNode().detachChild(player);
     }
     
+    //Add a ball to the game, the ball is initially dropped from the sky
+    //Currently only supports one ball
     public void addBall() {
         ball = new Ball(sapp, bulletAppState);   
         sapp.getRootNode().attachChild(ball);
@@ -248,6 +239,7 @@ public class Game extends BaseAppState {
         ball.setVelocity(new Vector3f(0, 30f, 0));
     }
     
+    //Remove the current ball from the game and add a new one
     public void resetBall() {
         ball.removePhysic();
         sapp.getRootNode().detachChild(ball);
@@ -259,16 +251,17 @@ public class Game extends BaseAppState {
         return ball;
     }
     
+    //Give a player ownership of the ball (they pick it up)
     public void setBallToPlayer(int id){
         Player player = playerStore.get(id);
         player.attachChild(ball);
-        System.out.println("playerPosition " + player.getPosition());
         ball.setPosition(player.getPosition().add(new Vector3f(0, 2*cameraHeight, 0)));
         ball.removePhysic();
         ball.setOwned(id);
         player.setHasBall(true);
     }
     
+    //Similar to above, but takes the position of the player that owns the ball
     public void setBallToPlayer(int id, Vector3f position){
         Player player = playerStore.get(id);
         player.attachChild(ball);
@@ -278,6 +271,7 @@ public class Game extends BaseAppState {
         player.setHasBall(true);
     }
     
+    //Force a player to drop the ball
     public void removeBallToPlayer(int id, boolean isShoot){
         Player player = playerStore.get(id);
         player.detachChild(ball);
@@ -349,14 +343,14 @@ public class Game extends BaseAppState {
         p.makeJump();
     }
     
+    //Updates the position, velocity and viewdirection of all players in the given Arraylist
     public void updatePlayerPhysics(ArrayList<PlayerPhysics> physics) {
         for (PlayerPhysics pp: physics) {
             Player p = getPlayer(pp.getId());
             if (p != null) {
                 p.setDirection(pp.getDirection());
                 p.setVelocity(pp.getVelocity());
-                //System.out.println(pp.getVelocity());
-                //System.out.print(p.getIsWalking());
+                p.setPosition(pp.getPosition());
                 if(p.getIsWalking() && pp.getVelocity().equals(new Vector3f(0, 0, 0))){                   
                     p.makeIdle();
                 }
@@ -364,7 +358,6 @@ public class Game extends BaseAppState {
                     p.makeRunning();
                 }
                     
-                p.setPosition(pp.getPosition());
                 if (p.getId() == this.userID) {
                     sapp.getCamera().setLocation(p.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
                 }
@@ -372,9 +365,10 @@ public class Game extends BaseAppState {
         }
     }
     
+    //Update the position, velocity and angularvelocity of the ball
     public void updateBallPhysics(BallPhysics physics) {
         if(!ball.getIsOwned()){
-            ball.setPosition(physics.getPosition()); //This line causes the ball to spin in the wrong direction. Not sure why
+            ball.setPosition(physics.getPosition());
             ball.setVelocity(physics.getVelocity());
             ball.setAngularVelocity(physics.getAngularVelocity());
         }  
@@ -389,7 +383,7 @@ public class Game extends BaseAppState {
     public void onDisable() {
         System.out.println("Game: onDisable");
         bulletAppState.getPhysicsSpace().destroy();
-        sapp.getStateManager().detach(bulletAppState); //will this break anything?
+        sapp.getStateManager().detach(bulletAppState);
         sapp.getRootNode().detachAllChildren();
     }
 
@@ -397,13 +391,6 @@ public class Game extends BaseAppState {
        Player p = getPlayer(playerID);
        p.makeAttack();
 
-    }
-
-    public void initBallToPlayer() {
-        Player p = playerStore.get(ball.getOwner());
-        ball.setPosition(p.getPosition());
-        this.setBallToPlayer(ball.getOwner());
-        
     }
     
     public String getLevelId(){

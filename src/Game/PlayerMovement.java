@@ -12,11 +12,9 @@ import Network.Util.InternalMovementMessage;
 import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -24,20 +22,29 @@ import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
-import java.util.concurrent.Callable;
 
 /**
  *
+ * Handles input related to the local player
+ * This class also informs the gameclient to queue movementmessages
+ * 
  * @author Rickard
+ * Implementation,
+ * Discussion
+ * 
+ * @Quentin
+ * Ball catching/shooting
+ * Discussion
+ * 
+ * @Henrik
+ * Discussion
  */
 public class PlayerMovement extends BaseAppState {
     
     private GameClient sapp;
     private Player playerNode;
-    private Ball ball;
     private BetterCharacterControl playerControl;
     private boolean playerInitialized = false;
-    
     
     private Vector3f walkDirection = new Vector3f();
     private Vector3f lastWalkDirection = new Vector3f();
@@ -51,7 +58,6 @@ public class PlayerMovement extends BaseAppState {
     private final float playerMoveSpeed = 20;
     private float powerShoot = 0;
     private final float MAXPOWERSHOOT = 100f;
-    
     
     @Override
     public void initialize(Application app) {
@@ -98,12 +104,14 @@ public class PlayerMovement extends BaseAppState {
         this.playerInitialized = true;
     }
     
+    //Insert mappings for shooting
     public void insertLoadBar() {
         sapp.getInputManager().addMapping("LoadFire", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         sapp.getInputManager().addListener(actionListener, "LoadFire");
         sapp.getInputManager().addListener(analogListener, "LoadFire");
     }
     
+    //Remove mapping for shooting
     public void removeLoadBar() {
         sapp.getInputManager().deleteMapping("LoadFire");
     }
@@ -114,7 +122,6 @@ public class PlayerMovement extends BaseAppState {
              if (name.equals("LoadFire") && powerShoot < 1) {
                powerShoot += tpf;
             }
-            
         }
     };
     
@@ -132,8 +139,8 @@ public class PlayerMovement extends BaseAppState {
                 down = isPressed;
             } else if (binding.equals("Jump")) {
                 if (isPressed) { 
-                    playerControl.jump();
-                    playerNode.makeJump();
+                    playerControl.jump(); //Cause the player to jump
+                    playerNode.makeJump(); //Play the jump sound
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
             } else if (binding.equals("Catch") && !isPressed){
@@ -141,9 +148,6 @@ public class PlayerMovement extends BaseAppState {
                     if(collObj.getUserObject() instanceof Ball){
                         Ball ballCatch = (Ball) collObj.getUserObject();
                         if(!ballCatch.getIsOwned()){
-                            //
-                            //ballCatch.setOwned(playerNode.getId());
-                            //playerNode.attachChild(ballCatch);
                             grapBall = true;
                         }
                     }
@@ -166,6 +170,8 @@ public class PlayerMovement extends BaseAppState {
     @Override
     public void update(float tpf) {
         if (this.playerInitialized) {
+            //Here we handle the movement of the local player
+            //First get the camera direction, set the y-axis to 0 so we dont walk up into the air
             camDir = sapp.getCamera().getDirection().clone();
             camLeft = sapp.getCamera().getLeft().clone();
             camDir.y = 0;
@@ -187,7 +193,6 @@ public class PlayerMovement extends BaseAppState {
                 walkDirection.addLocal(camDir.negate());
             } 
             if (grapBall){
-                System.out.println("Try to catch the ball sent");
                 grapBall = false;
                 sapp.queueGameServerMessage(new Util.GrabBallMessage());
             }
@@ -210,9 +215,11 @@ public class PlayerMovement extends BaseAppState {
                 return;
             }
             
+            //Queue InternalMovementMessage (used for aggregation)
             sapp.queueGameServerMessage(new InternalMovementMessage(walkDirection, camDir, tpf));
             float cameraHeight = sapp.getStateManager().getState(Game.class).cameraHeight;
             
+            //Set walking and view direction and position camera
             playerControl.setWalkDirection(walkDirection);
             playerControl.setViewDirection(camDir);
             sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
@@ -221,13 +228,10 @@ public class PlayerMovement extends BaseAppState {
             playerNode.getNodeCatchZone().setLocalTranslation(sapp.getCamera().getLocation());
             playerNode.getNodeCatchZone().getChild(0).setLocalTranslation(sapp.getCamera().getDirection().multLocal(7));
 
+            //Used to see if the player has stopped moving/turning
             lastCamDir = camDir;
             lastWalkDirection = walkDirection.clone();
         }
-    }
-    
-    public void setBall(Ball ball){
-        this.ball = ball;
     }
     
     @Override

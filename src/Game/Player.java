@@ -30,8 +30,13 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 
 /**
- *
+ * This class represents a Player
+ * 
  * @author henpet-1
+ * Initial work, ball handling
+ * 
+ * @author Quentin
+ * sound and animations, ballcatching
  */
 public class Player extends Node{
     private int id;
@@ -106,7 +111,6 @@ public class Player extends Node{
         channelAttack = ninjaControl.createChannel();
         channelAttack.setLoopMode(LoopMode.DontLoop);
         
-        System.out.println(ninjaControl.getAnimationNames());
         this.attachChild(ninja);
     }
     
@@ -118,7 +122,6 @@ public class Player extends Node{
         audioJump.setVolume(1);
         //audioJump.setLocalTranslation(this);
         this.attachChild(audioJump);
-        
         
         audioShot = new AudioNode(assetManager, "Sounds/explo.wav", AudioData.DataType.Buffer);
         audioShot.setPositional(true);
@@ -140,15 +143,12 @@ public class Player extends Node{
         
         boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
         zoneBallCatch = new GhostControl(boxCollisionShape);
-        //zoneBallCatch.setSpatial(catchZone);
         catchZone.addControl(zoneBallCatch);
 
         toRotate = new Node("toRotate");
         toRotate.setLocalTranslation(camera.getLocation());
         toRotate.attachChild(catchZone);
         zoneBallCatch.setPhysicsLocation(toRotate.getLocalTranslation());
-
-
     }
 
     public int getId() {
@@ -269,7 +269,6 @@ public class Player extends Node{
     
     public void makeRunning(){
         if(!isLocal){
-             System.out.println("set Running");
             isWalking = true;
             channelWalk.setAnim("Walk", 1.5f);
             channelWalk.setSpeed(2f);
@@ -279,7 +278,6 @@ public class Player extends Node{
     
     public void makeIdle(){
         if(!isLocal){
-            System.out.println("setIdle");
             isWalking = false;
             channelWalk.setAnim("Idle1", 1.5f);
             channelWalk.setSpeed(1);

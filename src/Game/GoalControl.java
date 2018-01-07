@@ -5,12 +5,10 @@
  */
 package Game;
 
-import Network.GameApplication;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 
 /**
- *
  * This GhostControl represents a goal in the game
  * A goal belongs to a team
  * We use this to check for collisions with the ball (see BallControl)
@@ -20,12 +18,10 @@ import com.jme3.bullet.control.GhostControl;
 
 public class GoalControl extends GhostControl{
     
-    private GameApplication app;
     private int teamID;
     
     public GoalControl(BoxCollisionShape shape, int teamID){
         super(shape);
-        this.app = app;
         this.teamID = teamID;
     }
     

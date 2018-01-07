@@ -5,11 +5,6 @@
  */
 package Game;
 
-/**
- *
- * @author Rickard
- */
-
 import Network.GameClient.GameClient;
 import Network.Util;
 import Network.Util.ChatMessage;
@@ -38,6 +33,12 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
 import java.util.Collection;
 import java.util.List;
+
+/**
+ * This appstate handles the GUI (menus, HUD etc)
+ * 
+ * @author Rickard
+ */
 
 public class Menu extends BaseAppState implements ScreenController {
     
@@ -85,6 +86,8 @@ public class Menu extends BaseAppState implements ScreenController {
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String binding, boolean isPressed, float tpf) {
             if (binding.equals("EnableChat")) {
+                //The user wants to type something in the chat,
+                //delete this binding, add a binding for sending the message and put focus on the textfield
                 sapp.enableChat();
                 sapp.getInputManager().deleteMapping("EnableChat");
                 sapp.getInputManager().addMapping("sendChatMessage", new KeyTrigger(KeyInput.KEY_RETURN));
@@ -93,6 +96,8 @@ public class Menu extends BaseAppState implements ScreenController {
                 input.enable();
                 input.setFocus();
             } else if (binding.equals("sendChatMessage")) {
+                //The user wants to send a chatmessage,
+                //delete this binding, add a binding for typing again and send the message if it is non-empty
                 sapp.disableChat();
                 sapp.getInputManager().deleteMapping("sendChatMessage");
                 sapp.getInputManager().addMapping("EnableChat", new KeyTrigger(KeyInput.KEY_Y));
@@ -125,6 +130,7 @@ public class Menu extends BaseAppState implements ScreenController {
         }
     }
 
+    //Populates the serverlist
     public void populateServerbrowser(Collection<GameServerLite> servers) {
         ListBox<GameServerLite> listBox = (ListBox<GameServerLite>) nifty.getCurrentScreen().findNiftyControl("serverbrowser", ListBox.class);
         if (listBox != null) {
@@ -284,6 +290,7 @@ public class Menu extends BaseAppState implements ScreenController {
         nifty.gotoScreen("end");
     }
     
+    //This function returns a start Screen
     public Screen createStartScreen(final Menu menu, String screenID) {
         return new ScreenBuilder(screenID) {{
             controller(menu);
@@ -293,7 +300,7 @@ public class Menu extends BaseAppState implements ScreenController {
             layer(new LayerBuilder("foreground") {{
                 backgroundColor("#0000");
                 childLayoutVertical();
-                panel(new PanelBuilder() {{
+                panel(new PanelBuilder() {{ //Game title
                     childLayoutCenter();
                     backgroundColor("#f008");
                     alignCenter();
@@ -302,7 +309,7 @@ public class Menu extends BaseAppState implements ScreenController {
                     style("nifty-panel-red");
                     control(new LabelBuilder("title", "Supraball ripoff"));
                 }});
-                panel(new PanelBuilder() {{
+                panel(new PanelBuilder() {{ //Serverbrowser panel
                     childLayoutCenter();
                     backgroundColor("#0f08");
                     alignCenter();
@@ -317,7 +324,7 @@ public class Menu extends BaseAppState implements ScreenController {
                             childLayoutCenter();
                             height("100%");
                             width("80%");
-                            control(new ListBoxBuilder("serverbrowser") {{
+                            control(new ListBoxBuilder("serverbrowser") {{ //serverbrowser
                                 displayItems(15);
                                 width("100%");
                                 height("100%");
@@ -328,10 +335,10 @@ public class Menu extends BaseAppState implements ScreenController {
                             height("20%");
                             width("100%");
                             alignCenter();
-                            control(new ButtonBuilder("RefreshButton", "Refresh") {{
+                            control(new ButtonBuilder("RefreshButton", "Refresh") {{ //Button for refreshing serverlist
                                 interactOnClick("refreshServerBrowser()");
                             }});
-                            control(new TextFieldBuilder("PlayerName", playerName) {{
+                            control(new TextFieldBuilder("PlayerName", playerName) {{ //Textfield for playername
                                 maxLength(20);
                                 height("30px");
                                 width("20%");
@@ -351,7 +358,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("50%");
                         width("50%");
                         style("nifty-panel-red");
-                        control(new ButtonBuilder("JoinButton", "Join Server") {{
+                        control(new ButtonBuilder("JoinButton", "Join Server") {{ //Button for joining the selected server
                             valignCenter();
                             alignCenter();
                             interactOnClick("joinServer()");
@@ -363,7 +370,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("50%");
                         width("50%");
                         style("nifty-panel-red");
-                        control(new ButtonBuilder("QuitButton", "Quit") {{
+                        control(new ButtonBuilder("QuitButton", "Quit") {{ //Button for exiting the game
                             valignCenter();
                             alignCenter();
                             x(SizeValue.px(100));
@@ -376,6 +383,7 @@ public class Menu extends BaseAppState implements ScreenController {
         }}.build(nifty);
     }
     
+    //This function returns a start Screen
     public Screen createLobbyScreen(final Menu menu, String screenID) {
         return new ScreenBuilder(screenID) {{
             controller(menu);
@@ -397,7 +405,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("50%");
                         width("50%");
                         style("nifty-panel-red");
-                        control(new ButtonBuilder("JoinRed", "Join Red") {{
+                        control(new ButtonBuilder("JoinRed", "Join Red") {{ //Button for joining red team
                             valignCenter();
                             alignCenter();
                             interactOnClick("joinRed()");
@@ -409,7 +417,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("50%");
                         width("50%");
                         style("nifty-panel-red");
-                        control(new ButtonBuilder("JoinBlue", "Join Blue") {{
+                        control(new ButtonBuilder("JoinBlue", "Join Blue") {{ //Button for joining blue team
                             valignCenter();
                             alignCenter();
                             x(SizeValue.px(100));
@@ -423,6 +431,7 @@ public class Menu extends BaseAppState implements ScreenController {
         }}.build(nifty);
     }
     
+    //This function returns a start Screen
     public Screen createHudScreen(final Menu menu, String screenID) {
         return new ScreenBuilder(screenID) {{
             controller(menu);

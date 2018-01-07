@@ -6,7 +6,6 @@
 package Game;
 
 import Network.GameApplication;
-import Network.Util;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -50,5 +49,4 @@ public class BallControl extends GhostControl implements PhysicsTickListener {
             }
         }
     }
-    
 }
