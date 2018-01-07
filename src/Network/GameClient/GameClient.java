@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import Network.Util.*;
 import Game.Menu;
-import Game.Player;
 import Network.GameApplication;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -30,9 +29,19 @@ import java.util.logging.Logger;
 
 /**
  *
- * Client simpleApplication for running the game.
+ * Client GameApplication for running the game.
+ * Is a client to both authServer and gameServer
  *
  * @author Rickard
+ * Implementation of base application
+ * Discussion
+ * 
+ * @author Quentin
+ * audio,
+ * Discussion
+ * 
+ * @author Henrik
+ * Discussion
  */
 
 public class GameClient extends GameApplication implements ClientStateListener {
@@ -59,7 +68,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     protected Game game = new Game();
     
     private final String hostname; // where the authentication server can be found
-    private final int port; // the port att the server that we use
+    private final int port; // the port at the server that we use
     
     //Gameinformation
     private int myPlayerID;
@@ -84,8 +93,8 @@ public class GameClient extends GameApplication implements ClientStateListener {
 
     @Override
     public void simpleInitApp() {
-        //setDisplayStatView(false);
-        //setDisplayFps(false);
+        setDisplayStatView(false);
+        setDisplayFps(false);
         menu.setEnabled(true);
         
         try {
@@ -111,9 +120,6 @@ public class GameClient extends GameApplication implements ClientStateListener {
             this.destroy();
             this.stop();
         }
-        
-        //menu.setEnabled(false);
-        //game.setEnabled(true);
     }
 
     public void setServerList(Collection<GameServerLite> servers) {
@@ -127,7 +133,6 @@ public class GameClient extends GameApplication implements ClientStateListener {
         game.setLevel(server.getIdMap());
         disconnectFromGame();
         try {
-            System.out.println("Connect to a game server");
             //Initialize the queue to use to send informations
             outgoingGame = new LinkedBlockingQueue<>();
             
@@ -193,7 +198,6 @@ public class GameClient extends GameApplication implements ClientStateListener {
     }
     
     public void queueRefreshMessage() {
-        System.out.println("Queueing refresh message to auth server");
         try {
             if (outgoingAuth != null) {
                 outgoingAuth.put(new RefreshMessage());   
@@ -248,6 +252,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
         menu.addMessage(message);
     }
     
+    //Create a new fresh Game appstate and go to the menu
     public void resetGame() {
         move.setEnabled(false);
         game.setEnabled(false);
@@ -282,19 +287,15 @@ public class GameClient extends GameApplication implements ClientStateListener {
         ArrayList<PlayerLite> playerList = msg.getPlayers();
         Vector3f position = null;
         for (final PlayerLite player : playerList){
-            System.out.println("player pos: "+player.getPosition());
-            System.out.println("player dir: "+player.getDirection());
             game.addPlayer(player);
             if(ball.isOwned() && player.getId() == ball.getOwner())
                 position = player.getPosition();
         }
         // Update the ball
         if(ball.isOwned()){
-            System.out.println(ball.getOwner());
             game.setBallToPlayer(ball.getOwner(), position);
         }
         game.updateBallPhysics(ball);
-        
         
         // Set the team scores
         int blueScore = msg.getBlueScore();

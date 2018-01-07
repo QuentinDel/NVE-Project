@@ -35,7 +35,8 @@ import Network.Util.UpdatePhysics;
  * This separation should result in a slight performance boost (less if statements)
  * and improve readability
  * 
- * @author Rickard
+ * @author Rickard, Quentin, Henrik
+ * Implementation of different packets
  */
 public class GameClientListener implements MessageListener<Client>{
     

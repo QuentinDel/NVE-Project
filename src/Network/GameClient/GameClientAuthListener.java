@@ -6,18 +6,13 @@
 package Network.GameClient;
 
 import Game.Game;
-import Network.Util;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.concurrent.Callable;
 import Network.Util.GameServerListsMessage;
-import Network.Util.GrabBallMessage;
-import Network.Util.RefreshMessage;
 import Network.Util.GameServerLite;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Listener for Packets from the Authentication server

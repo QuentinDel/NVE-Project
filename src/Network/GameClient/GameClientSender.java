@@ -5,9 +5,7 @@
  */
 package Network.GameClient;
 
-import Network.Util.ChatMessage;
 import Network.Util.InternalMovementMessage;
-import Network.Util.JumpMessage;
 import Network.Util.PlayerMovementMessage;
 import Network.Util.TerminateMessage;
 import com.jme3.network.Client;
@@ -21,6 +19,11 @@ import java.util.logging.Logger;
 /**
  *
  * @author Rickard
+ * Implementation,
+ * Discussion
+ * 
+ * @author Quentin, Henrik
+ * Discussion
  */
 public class GameClientSender implements Runnable {
     private static final float CLIENT_SEND_RATE = 60f;
