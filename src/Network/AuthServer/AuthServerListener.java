@@ -8,7 +8,6 @@ package Network.AuthServer;
 import Network.Util.GameServerLite;
 import Network.Util;
 import Network.Util.GameInformationMessage;
-import com.jme3.math.Vector2f;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -17,13 +16,13 @@ import com.jme3.network.Server;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Listens for packets from gameServers and gameClients
+ * 
  * @author Quentin
  */
 public class AuthServerListener implements MessageListener<HostedConnection> {
@@ -43,12 +42,9 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
     public void messageReceived(final HostedConnection source, Message m) {
         
         if (m instanceof Network.Util.GameInformationMessage){
-            System.out.println("Message received");
             GameInformationMessage msg = (GameInformationMessage) m;
             gamingServerInfos.put(source.getId(), msg.getGameServerInfo());
-            System.out.println(source.getId());
         }
-        
         
         if (m instanceof Network.Util.RefreshMessage) {
             try {
@@ -57,7 +53,6 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
                 public Object call() throws Exception {
                     ArrayList<GameServerLite> serversList = new ArrayList<>();
                     serversList.addAll(gamingServerInfos.values());
-                    System.out.println(serversList.size());
 
                     Util.GameServerListsMessage msg = new Util.GameServerListsMessage(serversList);
                     msg.setReliable(true);
@@ -69,7 +64,5 @@ public class AuthServerListener implements MessageListener<HostedConnection> {
                 Logger.getLogger(AuthServerListener.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-          
     }
 }

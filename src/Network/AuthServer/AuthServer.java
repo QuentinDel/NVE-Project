@@ -14,7 +14,6 @@ import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,7 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * The Authentication Server keeps track of all available gameServers and informs gameClients about their existance
+ * desipte the name, the auth server does not currently do any authentication
+ * 
+ * Both gameServers and gameClients are clients to the auth server
+ * 
  * @author Quentin
  */
 public class AuthServer extends SimpleApplication{
@@ -36,7 +39,6 @@ public class AuthServer extends SimpleApplication{
         System.out.println("Server initializing");
         Util.initialiseSerializables();
         new AuthServer(Util.PORT).start(JmeContext.Type.Headless);
-        //new TheServer(Util.PORT).start();
     }
     
     public AuthServer(int port) {
@@ -49,9 +51,6 @@ public class AuthServer extends SimpleApplication{
     @Override
     @SuppressWarnings("CallToPrintStackTrace")
     public void simpleInitApp() {
-        // In a game server, the server builds and maintains a perfect 
-        // copy of the game and makes use of that copy to make descisions 
-        
         try {
             System.out.println("Using port " + port);
             // create the server by opening a port
@@ -64,7 +63,7 @@ public class AuthServer extends SimpleApplication{
         }
         System.out.println("Server started");
         
-        // add a listeners
+        // add listeners
         authServer.addMessageListener(new AuthServerListener(authServer, gamingServerInfos, outgoing), 
                 GameInformationMessage.class,
                 RefreshMessage.class
@@ -76,7 +75,6 @@ public class AuthServer extends SimpleApplication{
         new Thread(new AuthMessageSender(outgoing)).start();
     }
     
-    
     private class AuthMessageSender implements Runnable {
 
         private final LinkedBlockingQueue<Callable> outgoing;
@@ -85,16 +83,14 @@ public class AuthServer extends SimpleApplication{
             this.outgoing = outgoing;
         }
 
-
-
         @Override
-       public void run() {
+        public void run() {
             System.out.println("MesssageSender thread running");
             try {
                while (true) {
                    outgoing.take().call();
                }
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                Logger.getLogger(AuthMessageSender.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

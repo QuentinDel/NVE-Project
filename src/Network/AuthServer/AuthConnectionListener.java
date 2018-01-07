@@ -4,24 +4,27 @@ import Network.Util;
 import Network.Util.GameServerListsMessage;
 import Network.Util.GameServerLite;
 import com.jme3.network.ConnectionListener;
-import com.jme3.network.Filter;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+/**
+ * Listens for connections by gameServers and gameClients
+ * 
+ * @author Quentin
+ */
 
 // this class provides a handler for incoming HostedConnections
 class AuthConnectionListener implements ConnectionListener {
     private Server server;
     private LinkedBlockingQueue<Callable> outgoing;
     private ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos;
-
             
     AuthConnectionListener(Server server, ConcurrentHashMap< Integer, GameServerLite > gamingServerInfos, LinkedBlockingQueue<Callable> outgoing){
         this.server = server;
@@ -41,7 +44,6 @@ class AuthConnectionListener implements ConnectionListener {
                     Util.MyAbstractMessage msg = new GameServerListsMessage(serversList);
                     msg.setReliable(true);
                     server.broadcast(Filters.in(c), msg);
-                    //server.broadcast(msg);
 
                     return true;
                 }
@@ -51,12 +53,10 @@ class AuthConnectionListener implements ConnectionListener {
         }
     }
     
-    
     @Override
     public void connectionRemoved(Server s, HostedConnection c) {
         System.out.println("Client #"+c.getId() + " has disconnected from the server address ");
         if (gamingServerInfos.containsKey(c.getId())){
-            System.out.println("Gaming Server removed");
             gamingServerInfos.remove(c.getId());    
         }
     }
