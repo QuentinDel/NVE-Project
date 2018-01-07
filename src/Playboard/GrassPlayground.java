@@ -51,7 +51,17 @@ import com.jme3.util.SkyFactory;
 
 /**
  *
+ * One of the Levels in the game
+ * Contains methods to return nodes for the different parts of the level, can also return a root node for the level (not related to an applications root node)
+ * Returns the level in several parts to allow for different physics properties
+ * 
  * @author Quentin
+ * Creation of the level, Discussion
+ * 
+ * @author Rickard
+ * Separate level into several nodes
+ * some work on goaldetection
+ * Discussion
  */
 
 public class GrassPlayground extends PlaygroundAbstract {

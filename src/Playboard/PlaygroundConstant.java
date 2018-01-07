@@ -6,7 +6,8 @@
 package Playboard;
 
 /**
- *
+ * Constants for use in the levels
+ * 
  * @author Quentin
  */
 public interface PlaygroundConstant {
@@ -14,7 +15,6 @@ public interface PlaygroundConstant {
     //Board dimension
     static final float PLAYGROUND_LENGTH = 500;
     static final float PLAYGROUND_WIDTH = 500;
-            
     
     //Limitation playground
     static final float LINE_WIDTH = 75;

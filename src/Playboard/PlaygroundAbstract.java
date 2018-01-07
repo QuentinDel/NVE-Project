@@ -9,7 +9,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 
 /**
- *
+ * Abstract class for levels
+ * 
  * @author Quentin
  */
 public abstract class PlaygroundAbstract implements PlaygroundConstant{
