@@ -27,13 +27,11 @@ import Network.Util.UpdatePhysics;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
-import com.jme3.network.Filters;
 import com.jme3.network.Message;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Timer;
@@ -43,7 +41,23 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *
+ * GameServer.
+ * Is a client to the at authServer and a server to gameClients
+ * This application keeps track of the true state of a game and broadcasts information to clients when it needs to
+ * 
  * @author Henrik
+ * Implementation of most parts
+ * Discussion
+ * bugfixes
+ * 
+ * @author Rickard
+ * goaldetection
+ * Discussion
+ * bugfixes
+ * 
+ * @author Quentin
+ * Discussion
+ * 
  */
 public class GameServer extends GameApplication implements ClientStateListener{
     private Server server;
@@ -91,7 +105,6 @@ public class GameServer extends GameApplication implements ClientStateListener{
             auth.addClientStateListener(this);
 
         } catch (IOException ex) {
-            System.out.println("No good");
             ex.printStackTrace();
             destroy();
             this.stop();
@@ -101,7 +114,6 @@ public class GameServer extends GameApplication implements ClientStateListener{
         authSender = new GameToAuthSender(auth, outgoingAuth);
         new Thread(authSender).start();
         /* add game info generator */
-        // TODO: it needs some information
         gameInfoGen = new GameInformationGenerator(this, outgoingAuth, connPlayerMap);
         new Thread(gameInfoGen).start();
         // TODO: add auth listener (if we need one?)

@@ -35,8 +35,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
- *
- * @author Henrik
+ * Lisens to packets from the gameClients
+ * 
+ * @author Henrik, Quentin, Rickard
+ * Discussion, implementation
  */
 public class GameServerListener implements MessageListener<HostedConnection> {
     private Util.BiMap<Integer, Player> connPlayerMap;
@@ -141,8 +143,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (ball.getIsOwned()) {
                 //ball is owned by someone, do nothing
             } else {
-                //check if ball is in range
-                System.out.println("Ball Grabbed by #" + player.getId());
+                //TODO check if ball is in range
                 gameServer.grabBall(player.getId());
                 server.broadcast(new GrabBallMessage(player.getId()));
             }

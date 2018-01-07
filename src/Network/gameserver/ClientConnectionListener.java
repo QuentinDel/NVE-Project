@@ -11,11 +11,15 @@ import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Server;
 import Network.Util;
-import Network.Util.JoinAckMessage;
 
 /**
- *
- * @author Henrik
+ * Listens to connections from gameServers
+ * 
+ * @author Henrik, Quentin
+ * Implementation, discussion
+ * 
+ * @author Rickard
+ * Discussion
  */
 public class ClientConnectionListener implements ConnectionListener {
     private Util.BiMap<Integer, Player> connPlayerMap;

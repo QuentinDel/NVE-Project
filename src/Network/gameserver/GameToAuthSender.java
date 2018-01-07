@@ -5,7 +5,6 @@
  */
 package Network.gameserver;
 
-import Network.Util;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,6 +13,8 @@ import java.util.logging.Logger;
 
 /**
  *
+ * Sends packets to the Authserver from a queue
+ * 
  * @author Henrik
  */
 public class GameToAuthSender implements Runnable {

@@ -14,8 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Generates and sends information about the server to the auth server
  *
- * @author Henrik
+ * @author Henrik, Quentin
+ * Implementation
  */
 public class GameInformationGenerator implements Runnable {
     LinkedBlockingQueue<Message> outgoing;
