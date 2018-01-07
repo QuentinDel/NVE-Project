@@ -126,6 +126,9 @@ public class GrassPlayground extends PlaygroundAbstract {
     Geometry wallLengthLeft = new Geometry("wallL", wallBoxLength);
     Box wallBoxWidth = new Box(WALL_THICKNESS, WALL_HEIGHT, WALL_WIDTH);
     Geometry wallWidthTop = new Geometry("wallT", wallBoxWidth);
+    //Geometry for the roof
+    Box roofBox = new Box(WALL_LENGTH, WALL_THICKNESS, WALL_WIDTH);
+    Geometry roofGeom = new Geometry("roof", roofBox);
     
     //Geometry for the markPoint
     Node scoreZoneBlue = new Node("markPointBlue");
@@ -138,6 +141,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     Geometry goalScoreRed = new Geometry("scoreZoneRed", goalScoreBox.clone());
     redGoalControl = new GoalControl(new BoxCollisionShape(new Vector3f(SCORE_ZONE_THICKNESS, SCORE_ZONE_HEIGHT, SCORE_ZONE_LENGTH)), Util.RED_TEAM_ID);
     goalScoreRed.addControl(redGoalControl);
+    
     
 
     // PART FOR MATERIALS SETTINGS 
@@ -162,6 +166,8 @@ public class GrassPlayground extends PlaygroundAbstract {
     
     wallLengthLeft.setQueueBucket(RenderQueue.Bucket.Transparent);
     wallWidthTop.setQueueBucket(RenderQueue.Bucket.Transparent);   
+    roofGeom.setQueueBucket(RenderQueue.Bucket.Transparent);
+    roofGeom.setMaterial(matWalls);
     wallLengthLeft.setMaterial(matWalls);
     wallWidthTop.setMaterial(matWalls);
     
@@ -209,6 +215,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     walls.attachChild(wallWidthBottom);
     walls.attachChild(wallLengthLeft);
     walls.attachChild(wallLengthRight);
+    walls.attachChild(roofGeom);
     scoreZoneBlue.attachChild(goalScoreBlue);
     scoreZoneRed.attachChild(goalScoreRed);
 
@@ -232,6 +239,7 @@ public class GrassPlayground extends PlaygroundAbstract {
     wallWidthBottom.setLocalTranslation(-BOARD_LENGTH, WALL_HEIGHT, 0f);
     wallLengthLeft.setLocalTranslation(0f, WALL_HEIGHT, -BOARD_WIDTH);
     wallLengthRight.setLocalTranslation(0f, WALL_HEIGHT, BOARD_WIDTH);
+    roofGeom.setLocalTranslation(0f, 2*WALL_HEIGHT, 0f);
     goalScoreBlue.setLocalTranslation(BOARD_LENGTH - 0.01f, SCORE_ZONE_HEIGHT, 0f);
     goalScoreRed.setLocalTranslation(-BOARD_LENGTH + 0.1f, SCORE_ZONE_HEIGHT, 0f);
     skybox.setLocalTranslation(0, -50, 0);
