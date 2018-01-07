@@ -140,7 +140,9 @@ public class PlayerMovement extends BaseAppState {
             } else if (binding.equals("Jump")) {
                 if (isPressed) { 
                     playerControl.jump(); //Cause the player to jump
-                    playerNode.makeJump(); //Play the jump sound
+                    if (playerControl.isOnGround()) {
+                        playerNode.makeJump(); //Play the jump sound if the player is standing on the ground
+                    }
                     sapp.queueGameServerMessage(new JumpMessage(sapp.getPlayerID()));
                 }
             } else if (binding.equals("Catch") && !isPressed){
