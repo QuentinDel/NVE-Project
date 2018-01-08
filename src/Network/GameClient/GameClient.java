@@ -96,6 +96,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
         setDisplayStatView(false);
         setDisplayFps(false);
         menu.setEnabled(true);
+        move.setEnabled(false);
         
         try {
             //Initialize the queue to use to send informations
