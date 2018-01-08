@@ -116,14 +116,14 @@ public class Player extends Node{
     
     public void initSound(AssetManager assetManager){
          //Create the sound
-        audioJump = new AudioNode(assetManager, "Sounds/twang.wav", AudioData.DataType.Buffer);
+        audioJump = new AudioNode(assetManager, "Sound/Effects/Foot steps.ogg", AudioData.DataType.Buffer);
         audioJump.setPositional(true);
         audioJump.setLooping(false);
         audioJump.setVolume(1);
         //audioJump.setLocalTranslation(this);
         this.attachChild(audioJump);
         
-        audioShot = new AudioNode(assetManager, "Sounds/explo.wav", AudioData.DataType.Buffer);
+        audioShot = new AudioNode(assetManager, "Sound/Effects/Bang.wav", AudioData.DataType.Buffer);
         audioShot.setPositional(true);
         audioShot.setLooping(false);
         audioShot.setVolume(1);
@@ -232,7 +232,7 @@ public class Player extends Node{
     }
 
     public void makeJump() {
-        //audioJump.playInstance();
+        audioJump.playInstance();
 
         if(!isLocal){
             channelWalk.setAnim("Jump", 0f);
@@ -259,7 +259,7 @@ public class Player extends Node{
     }
     
     public void makeShoot(){
-        //audioShot.playInstance();
+        audioShot.playInstance();
         if(!isLocal){
             channelWalk.setAnim("Kick", 0f);
             if(isWalking){

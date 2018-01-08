@@ -169,7 +169,7 @@ public class Game extends BaseAppState {
     public Player addLocalPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p, true);
-       // playerNode.initSound(sapp.getAssetManager());
+        playerNode.initSound(sapp.getAssetManager());
         playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getContext().getSettings(), playerHeight);
         this.userID = p.getId();
         
@@ -203,7 +203,7 @@ public class Game extends BaseAppState {
         
         // Setup the geometry for the player
         playerNode.initSpatial(sapp.getAssetManager());
-       //playerNode.initSound(sapp.getAssetManager());
+        playerNode.initSound(sapp.getAssetManager());
         
         // Setup the control for the player
         BetterCharacterControl playerControl = new BetterCharacterControl(playerRadius, playerHeight, playerMass);
