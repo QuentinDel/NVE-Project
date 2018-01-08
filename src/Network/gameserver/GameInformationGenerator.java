@@ -35,7 +35,7 @@ public class GameInformationGenerator implements Runnable {
     public void run() {
         while (true) {
             //gather information(needs to be fed with necessary references or updated with data)
-            serverInfo = new Util.GameServerLite(Util.HOSTNAME, gameServer.getGame().getLevelId(), gameServer.getPort(), 
+            serverInfo = new Util.GameServerLite(Util.GAME_HOSTNAME, gameServer.getGame().getLevelId(), gameServer.getPort(), 
                     connPlayerMap.size(), 1, gameServer.getGame().getScore(Util.BLUE_TEAM_ID), gameServer.getGame().getScore(Util.RED_TEAM_ID));
 
             //send it to outgoing queue

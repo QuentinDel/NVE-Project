@@ -162,10 +162,11 @@ public class PlayerMovement extends BaseAppState {
                 sapp.pause();
             } else if (binding.equals("Attack") && isPressed) {
                 if (!playerNode.hasBall()) {
+                    Vector3f location = sapp.getCamera().getLocation().add(
+                        sapp.getCamera().getDirection().multLocal(7));
                     sapp.queueGameServerMessage(new AttackMessage(
                         sapp.getPlayerID(),
-                        sapp.getCamera().getLocation(),
-                        sapp.getCamera().getDirection().multLocal(7)));
+                        location));
                 }
             }
         }
@@ -198,10 +199,11 @@ public class PlayerMovement extends BaseAppState {
             } 
             if (grapBall){
                 grapBall = false;
+                Vector3f location = sapp.getCamera().getLocation().add(
+                        sapp.getCamera().getDirection().multLocal(7));
                 sapp.queueGameServerMessage(new Util.GrabBallMessage(
                         playerNode.getId(),
-                        sapp.getCamera().getLocation(),
-                        sapp.getCamera().getDirection().multLocal(7)));
+                        location));
             }
             
             walkDirection = walkDirection.multLocal(playerMoveSpeed);

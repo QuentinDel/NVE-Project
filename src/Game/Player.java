@@ -14,6 +14,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
@@ -223,6 +224,10 @@ public class Player extends Node{
             
     public Node getNodeCatchZone(){
         return toRotate;
+    }
+
+    public CollisionShape getCollisionShape() {
+        return boxCollisionShape;
     }
 
     public boolean hasBall() {

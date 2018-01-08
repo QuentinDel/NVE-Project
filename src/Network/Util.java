@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Util {
     
-    //public static final String HOSTNAME = "130.240.156.217";
-    public static final String HOSTNAME = "127.0.0.1";
+    public static final String HOSTNAME = "130.240.153.60";
+    public static final String GAME_HOSTNAME = "130.240.155.53";
     
     public static final int PORT = 7006;
     public static final int PORT_GAME = 7007;
@@ -518,15 +518,13 @@ public class Util {
     public static class GrabBallMessage extends MyAbstractMessage {
         private int id;
         private Vector3f location;
-        private Vector3f direction;
         
         public GrabBallMessage() {
         }
         
-        public GrabBallMessage(int id, Vector3f location, Vector3f direction){
+        public GrabBallMessage(int id, Vector3f location){
             this.id = id;
             this.location = location;
-            this.direction = direction;
         }
         
         public int getId(){
@@ -535,10 +533,6 @@ public class Util {
 
         public Vector3f getLocation() {
             return location;
-        }
-
-        public Vector3f getDirection() {
-            return direction;
         }
     }
 
@@ -606,15 +600,13 @@ public class Util {
     public static class AttackMessage extends MyAbstractMessage {
         private int id;
         private Vector3f location;
-        private Vector3f direction;
 
         public AttackMessage() {
         }
 
-        public AttackMessage(int id, Vector3f location, Vector3f direction) {
+        public AttackMessage(int id, Vector3f location) {
             this.id = id;
             this.location = location;
-            this.direction = direction;
         }
 
         public int getId() {
@@ -623,10 +615,6 @@ public class Util {
 
         public Vector3f getLocation() {
             return location;
-        }
-
-        public Vector3f getDirection() {
-            return direction;
         }
     }
 

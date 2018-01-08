@@ -5,8 +5,11 @@
  */
 package Network.gameserver;
 
+import Game.AttackControl;
 import Game.Ball;
+import Game.BallControl;
 import Game.Game;
+import Game.GrabControl;
 import Game.Player;
 import Network.Util;
 import Network.Util.AttackMessage;
@@ -24,6 +27,8 @@ import Network.Util.PlayerLite;
 import Network.Util.PlayerMovementMessage;
 import Network.Util.ShootBallMessage;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Filters;
@@ -143,17 +148,13 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (ball.getIsOwned()) {
                 //ball is owned by someone, do nothing
             } else {
-                player.updateCatchZone(msg.getLocation(), msg.getDirection());
-                for (PhysicsCollisionObject collObj : player.getGhostControl().getOverlappingObjects()){
-                    if(collObj.getUserObject() instanceof Ball){
-                        Ball ballCatch = (Ball) collObj.getUserObject();
-                        if(!ballCatch.getIsOwned()){
-                            //ball is not owned and is in range
-                            gameServer.grabBall(player.getId());
-                            server.broadcast(msg);
-                        }
-                    }
-                }
+                //player.updateCatchZone(msg.getLocation(), msg.getDirection());
+                GrabControl grab = new GrabControl(player.getCollisionShape(), server, gameServer, player, msg);
+                grab.setPhysicsLocation(msg.getLocation());
+                grab.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+                grab.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
+                game.getAppState().getPhysicsSpace().add(grab);
+                game.getAppState().getPhysicsSpace().addTickListener(grab);
             }
         } else if (m instanceof Util.ShootBallMessage) {
             Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
@@ -169,15 +170,13 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (!player.hasBall()) {
                 server.broadcast(msg);
             }
-            player.updateCatchZone(msg.getLocation(), msg.getDirection());
-            for (PhysicsCollisionObject collObj : player.getGhostControl().getOverlappingObjects()){
-                if(collObj.getUserObject() instanceof Player){
-                    Player target = (Player) collObj.getUserObject();
-                    if(target.hasBall()){
-                        gameServer.dropBall(target.getId());
-                    }
-                }
-            }
+            //player.updateCatchZone(msg.getLocation(), msg.getDirection());
+            AttackControl attack = new AttackControl(player.getCollisionShape(), server, gameServer, player, msg);
+            attack.setPhysicsLocation(msg.getLocation());
+            //attack.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
+            //attack.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_03);
+            game.getAppState().getPhysicsSpace().add(attack);
+            game.getAppState().getPhysicsSpace().addTickListener(attack);
 
         } else if (m instanceof ChatMessage) {
             final ChatMessage msg = (ChatMessage) m;
