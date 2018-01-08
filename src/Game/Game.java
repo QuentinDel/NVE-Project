@@ -277,7 +277,7 @@ public class Game extends BaseAppState {
         sapp.getRootNode().attachChild(ball);
         ball.addPhysic();
         ball.notOwnedAnymore();
-        ball.setPosition(position.add(new Vector3f(0f, 2*cameraHeight, 0f)));
+        ball.setPosition(position.add(player.getDirection().add(new Vector3f(0f, cameraHeight, 0f))));
         ball.setVelocity(new Vector3f(0, -1, 0));
         if(isShoot)
             player.makeShoot();
