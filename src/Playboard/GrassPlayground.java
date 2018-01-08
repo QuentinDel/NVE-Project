@@ -33,6 +33,9 @@ import static Playboard.PlaygroundConstant.WALL_HEIGHT;
 import static Playboard.PlaygroundConstant.WALL_LENGTH;
 import static Playboard.PlaygroundConstant.WALL_THICKNESS;
 import static Playboard.PlaygroundConstant.WALL_WIDTH;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.LoopMode;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -47,6 +50,7 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Quad;
 import com.jme3.util.SkyFactory;
+import java.util.ArrayList;
 
 
 /**
@@ -72,6 +76,10 @@ public class GrassPlayground extends PlaygroundAbstract {
   private Node playgroundFloor;
   private Node playgroundWithoutLine;
   private Node playgroundLines;
+  private Node ninjaBlue;
+  private Node ninjaRed;
+  private ArrayList<AnimChannel> channelsAnimRed;
+  private ArrayList<AnimChannel> channelsAnimBlue;
   
   private GoalControl blueGoalControl;
   private GoalControl redGoalControl;
@@ -272,6 +280,9 @@ public class GrassPlayground extends PlaygroundAbstract {
     playgroundLines.attachChild(goalZoneNode);
     playgroundLines.attachChild(otherGoalZone);
     
+    initNinja(6);
+    board.attachChild(ninjaBlue);
+    board.attachChild(ninjaRed);
     board.attachChild(scoreZoneBlue);
     board.attachChild(scoreZoneRed);
     board.attachChild(playgroundFloor);
@@ -299,4 +310,50 @@ public class GrassPlayground extends PlaygroundAbstract {
   public GoalControl getRedGoalControl() {
       return redGoalControl;
   }
+  
+  
+    public void initNinja(int nb){
+        Material mat = new Material(assetManager,  // Create new material and...
+             "Common/MatDefs/Light/Lighting.j3md"); // ... specify .j3md file to use (illuminated).
+        mat.setBoolean("UseMaterialColors",true);  // Set some parameters, e.g. blue.
+        mat.setColor("Ambient", ColorRGBA.Red);   // ... color of this object
+        mat.setColor("Diffuse", ColorRGBA.Red);   // ... color of light being reflected
+        ninjaRed = new Node("ninjaRed");
+        ninjaBlue = new Node("ninjaBlue");
+        channelsAnimRed = new ArrayList<>();
+        channelsAnimBlue = new ArrayList<>();
+
+        for (int i = 0 ; i < nb ; i++){
+          Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+          ninja.scale(0.03f);
+          //ninja.rotate(0f, -180 * FastMath.DEG_TO_RAD, 0f);
+          ninja.setMaterial(mat);
+          channelsAnimRed.add(ninja.getControl(AnimControl.class).createChannel());
+          channelsAnimRed.get(i).setLoopMode(LoopMode.Loop);
+          channelsAnimRed.get(i).setAnim("Idle2");
+          ninja.setLocalTranslation(0.25f * BOARD_LENGTH + i * BOARD_LENGTH/20, 0, BOARD_WIDTH * 1.2f);
+          ninjaRed.attachChild(ninja);
+        }
+      
+        ninjaBlue = ninjaRed.clone(true);
+    
+        mat.setColor("Ambient", ColorRGBA.Blue);   // ... color of this object
+        mat.setColor("Diffuse", ColorRGBA.Blue);   // ... color of light being reflected
+        for (Spatial nin : ninjaBlue.getChildren()){
+
+            channelsAnimBlue.add(nin.getControl(AnimControl.class).createChannel());
+            channelsAnimBlue.get(channelsAnimBlue.size()-1).setLoopMode(LoopMode.Loop);
+            channelsAnimBlue.get(channelsAnimBlue.size()-1).setAnim("Idle2");
+        }
+      
+      ninjaBlue.rotate(0f, 180 * FastMath.DEG_TO_RAD, 0f);
+    }
+    
+    public void animateHappyNinja(int colorTeam){
+        if(colorTeam == Util.BLUE_TEAM_ID){
+            for(AnimChannel chan : channelsAnimBlue){
+               chan.setAnim("Jump");
+            }
+        }
+    }
 }
