@@ -234,7 +234,7 @@ public class PlayerMovement extends BaseAppState {
             sapp.getCamera().setLocation(playerNode.getWorldTranslation().add(new Vector3f(0, cameraHeight, 0)));
             
             //Catch zone movement
-            playerNode.updateCatchZone(sapp.getCamera().getLocation(), sapp.getCamera().getDirection().multLocal(7));
+            playerNode.updateCatchZone(sapp.getCamera().getLocation(), sapp.getCamera().getDirection().multLocal(5));
 
             //Used to see if the player has stopped moving/turning
             lastCamDir = camDir;

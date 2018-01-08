@@ -42,7 +42,8 @@ import com.jme3.system.AppSettings;
 public class Player extends Node{
     private int id;
     private String playerName;
-    private BoxCollisionShape boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
+    private Vector3f boxCollissionDim = new Vector3f(2f,2f,2f);
+    private BoxCollisionShape boxCollisionShape = new BoxCollisionShape(boxCollissionDim);
     private GhostControl zoneBallCatch;
     private Geometry catchZone;
     private Node toRotate;
@@ -135,12 +136,12 @@ public class Player extends Node{
     }
     
     public void initZoneBallCatch(AssetManager assetManager, AppSettings settings, float playerHeight){
-        Box collisionShape = new Box(1f, 1f, 1f);
+        Box collisionShape = new Box(boxCollissionDim.getX(), boxCollissionDim.getY(), boxCollissionDim.getZ());
         catchZone = new Geometry("collis", collisionShape);
         Material matCube = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         matCube.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);  // !
         matCube.setTransparent(true);
-        matCube.setColor("Color", new ColorRGBA(0.8f, 0.8f, 0.8f, 0.1f));
+        matCube.setColor("Color", new ColorRGBA(0.8f, 0.8f, 0.8f, 0f));
         catchZone.setQueueBucket(RenderQueue.Bucket.Transparent);
         catchZone.setMaterial(matCube);
 
