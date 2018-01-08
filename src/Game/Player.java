@@ -232,7 +232,7 @@ public class Player extends Node{
     }
 
     public void makeJump() {
-        audioJump.playInstance();
+        //audioJump.playInstance();
 
         if(!isLocal){
             channelWalk.setAnim("Jump", 0f);
@@ -259,7 +259,7 @@ public class Player extends Node{
     }
     
     public void makeShoot(){
-        audioShot.playInstance();
+        //audioShot.playInstance();
         if(!isLocal){
             channelWalk.setAnim("Kick", 0f);
             if(isWalking){

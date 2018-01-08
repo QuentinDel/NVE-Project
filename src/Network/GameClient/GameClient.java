@@ -113,7 +113,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
             authConnection.addClientStateListener(this);
             authConnection.start();
             new Thread(authSender).start();
-            initAudio();
+           // initAudio();
 
         }catch (IOException ex) {
             ex.printStackTrace();
@@ -313,7 +313,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     @Override
     public void onGoal(int teamID) {
         game.resetBall();
-        audioGoal.playInstance();
+        //audioGoal.playInstance();
     }
     
     @Override
