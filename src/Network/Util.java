@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Util {
     
-    //public static final String HOSTNAME = "130.240.156.217";
-    public static final String HOSTNAME = "127.0.0.1";
+    public static final String HOSTNAME = "130.240.153.60";
+    public static final String GAME_HOSTNAME = "130.240.155.53";
     
     public static final int PORT = 7006;
     public static final int PORT_GAME = 7007;
