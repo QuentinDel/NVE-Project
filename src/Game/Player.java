@@ -14,6 +14,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
@@ -116,14 +117,14 @@ public class Player extends Node{
     
     public void initSound(AssetManager assetManager){
          //Create the sound
-        audioJump = new AudioNode(assetManager, "Sounds/twang.wav", AudioData.DataType.Buffer);
+        audioJump = new AudioNode(assetManager, "Sound/Effects/Foot steps.ogg", AudioData.DataType.Buffer);
         audioJump.setPositional(true);
         audioJump.setLooping(false);
         audioJump.setVolume(1);
         //audioJump.setLocalTranslation(this);
         this.attachChild(audioJump);
         
-        audioShot = new AudioNode(assetManager, "Sounds/explo.wav", AudioData.DataType.Buffer);
+        audioShot = new AudioNode(assetManager, "Sound/Effects/Bang.wav", AudioData.DataType.Buffer);
         audioShot.setPositional(true);
         audioShot.setLooping(false);
         audioShot.setVolume(1);
@@ -221,6 +222,10 @@ public class Player extends Node{
             
     public Node getNodeCatchZone(){
         return toRotate;
+    }
+
+    public CollisionShape getCollisionShape() {
+        return boxCollisionShape;
     }
 
     public boolean hasBall() {

@@ -124,6 +124,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
 
     public void setServerList(Collection<GameServerLite> servers) {
         if (menu.isEnabled()) {
+
             menu.populateServerbrowser(servers);
         }
     }
@@ -372,7 +373,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     
      private void initAudio(){
          
-        audioGoal = new AudioNode(assetManager, "Sounds/goal.wav", AudioData.DataType.Buffer);
+        audioGoal = new AudioNode(assetManager, "Sound/Effects/Gun.wav", AudioData.DataType.Buffer);
         audioGoal.setPositional(false);
         audioGoal.setLooping(false);
         audioGoal.setVolume(1);
