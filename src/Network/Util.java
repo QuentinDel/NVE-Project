@@ -517,16 +517,28 @@ public class Util {
     @Serializable
     public static class GrabBallMessage extends MyAbstractMessage {
         private int id;
+        private Vector3f location;
+        private Vector3f direction;
         
         public GrabBallMessage() {
         }
         
-        public GrabBallMessage(int id){
+        public GrabBallMessage(int id, Vector3f location, Vector3f direction){
             this.id = id;
+            this.location = location;
+            this.direction = direction;
         }
         
         public int getId(){
             return id;
+        }
+
+        public Vector3f getLocation() {
+            return location;
+        }
+
+        public Vector3f getDirection() {
+            return direction;
         }
     }
 
@@ -593,16 +605,28 @@ public class Util {
     @Serializable
     public static class AttackMessage extends MyAbstractMessage {
         private int id;
+        private Vector3f location;
+        private Vector3f direction;
 
         public AttackMessage() {
         }
 
-        public AttackMessage(int id) {
+        public AttackMessage(int id, Vector3f location, Vector3f direction) {
             this.id = id;
+            this.location = location;
+            this.direction = direction;
         }
 
         public int getId() {
             return id;
+        }
+
+        public Vector3f getLocation() {
+            return location;
+        }
+
+        public Vector3f getDirection() {
+            return direction;
         }
     }
 

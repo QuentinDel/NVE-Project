@@ -143,9 +143,17 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (ball.getIsOwned()) {
                 //ball is owned by someone, do nothing
             } else {
-                //TODO check if ball is in range
-                gameServer.grabBall(player.getId());
-                server.broadcast(new GrabBallMessage(player.getId()));
+                player.updateCatchZone(msg.getLocation(), msg.getDirection());
+                for (PhysicsCollisionObject collObj : player.getGhostControl().getOverlappingObjects()){
+                    if(collObj.getUserObject() instanceof Ball){
+                        Ball ballCatch = (Ball) collObj.getUserObject();
+                        if(!ballCatch.getIsOwned()){
+                            //ball is not owned and is in range
+                            gameServer.grabBall(player.getId());
+                            server.broadcast(msg);
+                        }
+                    }
+                }
             }
         } else if (m instanceof Util.ShootBallMessage) {
             Util.ShootBallMessage msg = (Util.ShootBallMessage) m;
@@ -161,12 +169,16 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (!player.hasBall()) {
                 server.broadcast(msg);
             }
-            //needs hit detection
-            Ball ball = game.getBall();
-            if(ball.getIsOwned()){
-                Player target = connPlayerMap.get(ball.getOwner());
-                gameServer.dropBall(target.getId());
+            player.updateCatchZone(msg.getLocation(), msg.getDirection());
+            for (PhysicsCollisionObject collObj : player.getGhostControl().getOverlappingObjects()){
+                if(collObj.getUserObject() instanceof Player){
+                    Player target = (Player) collObj.getUserObject();
+                    if(target.hasBall()){
+                        gameServer.dropBall(target.getId());
+                    }
+                }
             }
+
         } else if (m instanceof ChatMessage) {
             final ChatMessage msg = (ChatMessage) m;
             final String message = msg.getMessage();

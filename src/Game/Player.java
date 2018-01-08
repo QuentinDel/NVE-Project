@@ -131,7 +131,7 @@ public class Player extends Node{
         this.attachChild(audioShot);
     }
     
-    public void initZoneBallCatch(AssetManager assetManager, Camera camera, AppSettings settings, float playerHeight){
+    public void initZoneBallCatch(AssetManager assetManager, AppSettings settings, float playerHeight){
         Box collisionShape = new Box(1f, 1f, 1f);
         catchZone = new Geometry("collis", collisionShape);
         Material matCube = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -146,7 +146,7 @@ public class Player extends Node{
         catchZone.addControl(zoneBallCatch);
 
         toRotate = new Node("toRotate");
-        toRotate.setLocalTranslation(camera.getLocation());
+        //toRotate.setLocalTranslation(camera.getLocation());
         toRotate.attachChild(catchZone);
         zoneBallCatch.setPhysicsLocation(toRotate.getLocalTranslation());
     }

@@ -170,7 +170,7 @@ public class Game extends BaseAppState {
         // Setup the player node
         Player playerNode = new Player(p, true);
         playerNode.initSound(sapp.getAssetManager());
-        playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getCamera(), sapp.getContext().getSettings(), playerHeight);
+        playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getContext().getSettings(), playerHeight);
         this.userID = p.getId();
         
         // Move the player to their initial Position (should be based on team(;
@@ -199,7 +199,7 @@ public class Game extends BaseAppState {
     public Player addPlayer(PlayerLite p) {
         // Setup the player node
         Player playerNode = new Player(p, false);
-        //playerNode.initZoneBallCatch(sapp.getAssetManager());
+        playerNode.initZoneBallCatch(sapp.getAssetManager(), sapp.getContext().getSettings(), playerHeight);
         
         // Setup the geometry for the player
         playerNode.initSpatial(sapp.getAssetManager());
@@ -214,8 +214,9 @@ public class Game extends BaseAppState {
         //playerControl.setViewDirection(p.getDirection());
         playerControl.setViewDirection(new Vector3f(1,1,1));
         bulletAppState.getPhysicsSpace().add(playerControl);
-        
+        bulletAppState.getPhysicsSpace().addCollisionObject(playerNode.getGhostControl());
         sapp.getRootNode().attachChild(playerNode);
+        sapp.getRootNode().attachChild(playerNode.getNodeCatchZone());
         playerStore.put(p.getId(), playerNode);
         
         return playerNode;
