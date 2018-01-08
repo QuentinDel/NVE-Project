@@ -170,7 +170,6 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (!player.hasBall()) {
                 server.broadcast(msg);
             }
-            //player.updateCatchZone(msg.getLocation(), msg.getDirection());
             AttackControl attack = new AttackControl(player.getCollisionShape(), server, gameServer, player, msg);
             attack.setPhysicsLocation(msg.getLocation());
             //attack.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);

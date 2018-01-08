@@ -42,7 +42,7 @@ import com.jme3.system.AppSettings;
 public class Player extends Node{
     private int id;
     private String playerName;
-    private BoxCollisionShape boxCollisionShape;
+    private BoxCollisionShape boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
     private GhostControl zoneBallCatch;
     private Geometry catchZone;
     private Node toRotate;
@@ -117,7 +117,7 @@ public class Player extends Node{
     
     public void initSound(AssetManager assetManager){
          //Create the sound
-        audioJump = new AudioNode(assetManager, "Sound/Effects/Foot steps.ogg", AudioData.DataType.Buffer);
+        audioJump = new AudioNode(assetManager, "Sound/Effects/Beep.ogg", AudioData.DataType.Buffer);
         audioJump.setPositional(true);
         audioJump.setLooping(false);
         audioJump.setVolume(1);
@@ -141,8 +141,7 @@ public class Player extends Node{
         matCube.setColor("Color", new ColorRGBA(0.8f, 0.8f, 0.8f, 0.1f));
         catchZone.setQueueBucket(RenderQueue.Bucket.Transparent);
         catchZone.setMaterial(matCube);
-        
-        boxCollisionShape = new BoxCollisionShape(new Vector3f(1f, 1f, 1f));
+
         zoneBallCatch = new GhostControl(boxCollisionShape);
         catchZone.addControl(zoneBallCatch);
 
