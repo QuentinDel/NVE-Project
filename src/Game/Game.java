@@ -397,4 +397,8 @@ public class Game extends BaseAppState {
     public String getLevelId(){
         return level_id;
     }
+
+    public BulletAppState getAppState() {
+        return bulletAppState;
+    }
 }
