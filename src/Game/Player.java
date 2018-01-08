@@ -151,6 +151,11 @@ public class Player extends Node{
         zoneBallCatch.setPhysicsLocation(toRotate.getLocalTranslation());
     }
 
+    public void updateCatchZone(Vector3f location, Vector3f direction) {
+        this.getNodeCatchZone().setLocalTranslation(location);
+        this.getNodeCatchZone().getChild(0).setLocalTranslation(direction);
+    }
+
     public int getId() {
         return id;
     }
