@@ -133,6 +133,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void joinServer(GameServerLite server, String name) {
         toLobby();
         game.setLevel(server.getIdMap());
+        game.initConvergence();
         disconnectFromGame();
         try {
             //Initialize the queue to use to send informations

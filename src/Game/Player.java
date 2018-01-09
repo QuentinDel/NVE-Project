@@ -58,6 +58,10 @@ public class Player extends Node{
     private boolean isWalking;
     private boolean isLocal;
     
+    private Vector3f predictedPosition = new Vector3f();
+    private Vector3f predictedDirection = new Vector3f();
+    private Vector3f predictedVelocity = new Vector3f();
+    
     /**
      * team 0: no team/spectator
      * team 1: red
@@ -176,46 +180,69 @@ public class Player extends Node{
         this.team = team;
     }
 
-    public Vector3f getPosition() {
+    public synchronized Vector3f getPosition() {
         if (this.getControl(BetterCharacterControl.class) == null) {
-            System.out.println("No better Control");
             return new Vector3f();
         }
         return this.getWorldTranslation();
     }
-
-    public void setPosition(Vector3f position) {
+    
+    public synchronized void setPosition(Vector3f position) {
         this.getControl(BetterCharacterControl.class).warp(position);
     }
+    
+    public synchronized Vector3f getPredictedPosition() {
+        return this.predictedPosition;
+    }
 
-    public Vector3f getDirection() {
+    public synchronized void setPredictedPosition(Vector3f position) {
+        this.predictedPosition = position;
+    }
+
+    public synchronized Vector3f getDirection() {
         if (this.getControl(BetterCharacterControl.class) == null) {
             return new Vector3f();
         }
         return this.getControl(BetterCharacterControl.class).getViewDirection();
     }
-
-    public void setDirection(Vector3f direction) {
+    
+    public synchronized void setDirection(Vector3f direction) {
         this.getControl(BetterCharacterControl.class).setViewDirection(direction);
     }
+    
+    public synchronized Vector3f getPredictedDirection() {
+        return this.predictedDirection;
+    }
 
-    public Vector3f getVelocity() {
+    public synchronized void setPredictedDirection(Vector3f direction) {
+        this.predictedDirection = direction;
+    }
+
+    public synchronized Vector3f getVelocity() {
         if (this.getControl(BetterCharacterControl.class) == null) {
             return new Vector3f();
         }
         return this.getControl(BetterCharacterControl.class).getWalkDirection();
     }
-
-    public void setVelocity(Vector3f velocity) {
+    
+    public synchronized void setVelocity(Vector3f velocity) {
         this.getControl(BetterCharacterControl.class).setWalkDirection(velocity);
+    }
+    
+    public synchronized Vector3f getPredictedVelocity() {
+        return this.predictedVelocity;
+    }
+
+    public synchronized void setPredictedVelocity(Vector3f velocity) {
+        this.predictedVelocity = velocity;
     }
 
     public void updatePlayer(PlayerLite playerData) {
         this.id = playerData.getId();
         this.playerName = playerData.getName();
         this.team = playerData.getTeam();
-        setDirection(playerData.getDirection());
-        setPosition(playerData.getPosition());
+        setPredictedDirection(playerData.getDirection());
+        setPredictedPosition(playerData.getPosition());
     }
     
     public GhostControl getGhostControl(){

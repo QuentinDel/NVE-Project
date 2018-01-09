@@ -43,6 +43,10 @@ public class Ball extends Node {
     private boolean isOwned;
     private int ownedBy;
     
+    private Vector3f predictedPosition = new Vector3f();
+    private Vector3f predictedAngularVelocity = new Vector3f();
+    private Vector3f predictedVelocity = new Vector3f();
+    
     private final float GHOST_SCALE = 1.05f;
     
     public Ball(GameApplication sapp, BulletAppState bulletAppState){
@@ -111,30 +115,54 @@ public class Ball extends Node {
         return ownedBy;
     }
     
-    public Vector3f getPosition() {
+    public synchronized Vector3f getPosition() {
         return this.ball_phy.getPhysicsLocation();
     }
 
-    public void setPosition(Vector3f position) {
+    public synchronized void setPosition(Vector3f position) {
         this.ball_phy.setPhysicsLocation(position);
     }
 
-    public Vector3f getAngularVelocity() {
+    public synchronized Vector3f getPredictedPosition() {
+        return this.predictedPosition;
+    }
+    
+    public synchronized void setPredictedPosition(Vector3f position) {
+        this.predictedPosition = position;
+    }
+    
+    public synchronized Vector3f getAngularVelocity() {
         return this.ball_phy.getAngularVelocity();
     }
 
-    public void setAngularVelocity(Vector3f angularVelocity) {
+    public synchronized void setAngularVelocity(Vector3f angularVelocity) {
         this.ball_phy.setAngularVelocity(angularVelocity);
     }
+    
+    public synchronized Vector3f getPredictedAngularVelocity() {
+        return this.predictedAngularVelocity;
+    }
+    
+    public synchronized void setPredictedAngularVelocity(Vector3f angularVelocity) {
+        this.predictedAngularVelocity = angularVelocity;
+    }
 
-    public Vector3f getVelocity() {
+    public synchronized Vector3f getVelocity() {
         return this.ball_phy.getLinearVelocity();
     }
 
-    public void setVelocity(Vector3f velocity) {
+    public synchronized void setVelocity(Vector3f velocity) {
         this.ball_phy.setLinearVelocity(velocity);
     }
     
+    public synchronized Vector3f getPredictedVelocity() {
+        return this.predictedVelocity;
+    }
+
+    public synchronized void setPredictedVelocity(Vector3f velocity) {
+        this.predictedVelocity = velocity;
+    }
+
     public void addPhysic(){
         bulletAppState.getPhysicsSpace().add(ball_phy);
     }

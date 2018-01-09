@@ -71,7 +71,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
     
     private Game game = new Game();
 
-    private static final long PHYSICS_UPDATE_SEND_RATE = 10;
+    private static final long PHYSICS_UPDATE_SEND_RATE = 50;
     private static final long BALL_UPDATE_SEND_RATE = 30;
     private static final long SCORE_UPDATE_SEND_RATE = 1;
     

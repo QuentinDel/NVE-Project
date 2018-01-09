@@ -24,7 +24,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -47,9 +47,11 @@ public class Game extends BaseAppState {
     private BulletAppState bulletAppState;
     private BetterCharacterControl playerControl;
     
-    private HashMap<Integer, Player> playerStore;
+    private ConcurrentHashMap<Integer, Player> playerStore;
     private int userID;
     private Ball ball;
+    
+    private ConvergenceTickListener conv;
             
     protected final float playerRadius = 1.5f;
     protected final float playerHeight = 6f;
@@ -86,7 +88,7 @@ public class Game extends BaseAppState {
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
         }
-        playerStore = new HashMap();
+        playerStore = new ConcurrentHashMap();
         
         /** Set up Physics */
         sapp.getStateManager().attach(bulletAppState);
@@ -117,6 +119,12 @@ public class Game extends BaseAppState {
     //Sets the level that is to be loaded
     public void setLevel(String level_id) {
         this.level_id = level_id;
+    }
+    
+    public void initConvergence() {
+        //Add PhysicsTickListener for Convergence
+        conv = new ConvergenceTickListener(this);
+        bulletAppState.getPhysicsSpace().addTickListener(conv);
     }
     
     // Loads the level, creates players and adds physics to them.
@@ -333,6 +341,10 @@ public class Game extends BaseAppState {
     public Player getPlayer(int playerID) {
         return playerStore.get(playerID);
     }
+    
+    public ConcurrentHashMap<Integer, Player> getPlayerStore() {
+        return this.playerStore;
+    }
 
     //Makes the player with the given id jump
     public void makeJump(int playerID) {
@@ -346,9 +358,9 @@ public class Game extends BaseAppState {
         for (PlayerPhysics pp: physics) {
             Player p = getPlayer(pp.getId());
             if (p != null) {
-                p.setDirection(pp.getDirection());
-                p.setVelocity(pp.getVelocity());
-                p.setPosition(pp.getPosition());
+                p.setPredictedDirection(pp.getDirection());
+                p.setPredictedVelocity(pp.getVelocity());
+                p.setPredictedPosition(pp.getPosition());
                 if(p.getIsWalking() && pp.getVelocity().equals(new Vector3f(0, 0, 0))){                   
                     p.makeIdle();
                 }
@@ -366,9 +378,9 @@ public class Game extends BaseAppState {
     //Update the position, velocity and angularvelocity of the ball
     public void updateBallPhysics(BallPhysics physics) {
         if(!ball.getIsOwned()){
-            ball.setPosition(physics.getPosition());
-            ball.setVelocity(physics.getVelocity());
-            ball.setAngularVelocity(physics.getAngularVelocity());
+            ball.setPredictedPosition(physics.getPosition());
+            ball.setPredictedVelocity(physics.getVelocity());
+            ball.setPredictedAngularVelocity(physics.getAngularVelocity());
         }  
     }
     
