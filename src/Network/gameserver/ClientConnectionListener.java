@@ -6,6 +6,7 @@
 package Network.gameserver;
 
 import Game.Ball;
+import Game.Game;
 import Game.Player;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -33,6 +34,9 @@ public class ClientConnectionListener implements ConnectionListener {
     @Override
     public void connectionAdded(Server server, HostedConnection c) {
         System.out.println("Client #"+c.getId() + " has connected to the server");
+        if (connPlayerMap.size() >= Game.MAX_PLAYER_COUNT) {
+            c.close("Try again later, the game is full");
+        }
     }
 
     @Override

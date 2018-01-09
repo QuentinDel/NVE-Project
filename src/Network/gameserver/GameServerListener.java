@@ -64,7 +64,7 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             final JoinGameMessage msg = (JoinGameMessage) m;
             String name = msg.getName();
 
-            if (connPlayerMap.size() > Game.MAX_PLAYER_COUNT) {
+            if (connPlayerMap.size() >= Game.MAX_PLAYER_COUNT) {
                 c.close("Try again later, the game is full");
                 return;
             }
