@@ -117,8 +117,6 @@ public class Player extends Node{
         channelAttack = ninjaControl.createChannel();
         channelAttack.setLoopMode(LoopMode.DontLoop);
         
-        System.out.println(ninjaControl.getAnimationNames());
-        
         this.attachChild(ninja);
     }
     

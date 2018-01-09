@@ -155,7 +155,6 @@ public class PlayerMovement extends BaseAppState {
                     }
                 }
             } else if (binding.equals("LoadFire") && !isPressed) {
-                System.out.println("Shoot " + powerShoot);
                 sapp.queueGameServerMessage(new Util.ShootBallMessage(playerNode.getId(), sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
                 powerShoot = 0;
             } else if (binding.equals("Pause") && isPressed) {
