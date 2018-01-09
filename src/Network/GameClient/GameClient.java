@@ -164,8 +164,12 @@ public class GameClient extends GameApplication implements ClientStateListener {
             // finally start the communication channel to the server
             gameConnection.start();
             gameConnection.addClientStateListener(this);
-            new Thread(gameSender).start();
-            outgoingGame.put(new Util.JoinGameMessage(name));
+            if (gameConnection.isConnected()) {
+                new Thread(gameSender).start();
+                outgoingGame.put(new Util.JoinGameMessage(name));
+            } else {
+                resetGame();
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
             this.destroy();
