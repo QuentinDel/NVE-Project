@@ -26,7 +26,7 @@ public class Util {
     public static final String GAME_HOSTNAME = "127.0.0.1";
     
     public static final int PORT = 7006;
-    public static final int PORT_GAME = 7007;
+    public static final int PORT_GAME = 7009;
     
     public static final int RUNNING = 0;
     public static final int WAITING = 1;

@@ -449,7 +449,7 @@ public class Menu extends BaseAppState implements ScreenController {
                     height("8%");
                     panel(new PanelBuilder() {{ //Empty space
                         alignCenter();
-                        width("35%");
+                        width("40%");
                     }});
                     panel(new PanelBuilder() {{ //Red score
                         childLayoutCenter();
@@ -459,14 +459,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("100%");
                         control(new LabelBuilder("redscore", "  0  "));
                     }});
-                    panel(new PanelBuilder() {{ //Time
-                        childLayoutCenter();
-                        alignCenter();
-                        backgroundColor("#000c");
-                        width("10%");
-                        height("100%");
-                        control(new LabelBuilder("time", "01:31"));
-                    }});
+                   
                     panel(new PanelBuilder() {{ //Blue score
                         childLayoutCenter();
                         alignCenter();
@@ -480,18 +473,7 @@ public class Menu extends BaseAppState implements ScreenController {
                     alignCenter();
                     height("84%");
                 }});
-                panel(new PanelBuilder() {{ //Bar at bottom of screen
-                    childLayoutCenter();
-                    height("8%");
-                    panel(new PanelBuilder() {{ //Health
-                        childLayoutCenter();
-                        alignCenter();
-                        backgroundColor("#0f09");
-                        width("10%");
-                        height("100%");
-                        control(new LabelBuilder("health", "100"));
-                    }});
-                }});
+                
             }});
             layer(new LayerBuilder("chat") {{
                 childLayoutVertical();
