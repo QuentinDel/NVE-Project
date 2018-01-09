@@ -72,6 +72,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     
     //Gameinformation
     private int myPlayerID;
+    private String userName = "";
     private PlayerLite myPlayerLite;
     private AudioNode audioGoal;
 
@@ -134,6 +135,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
         toLobby();
         game.setLevel(server.getIdMap());
         game.initConvergence();
+        userName = name;
         disconnectFromGame();
         try {
             //Initialize the queue to use to send informations
@@ -164,18 +166,13 @@ public class GameClient extends GameApplication implements ClientStateListener {
             // finally start the communication channel to the server
             gameConnection.start();
             gameConnection.addClientStateListener(this);
-            if (gameConnection.isConnected()) {
-                new Thread(gameSender).start();
-                outgoingGame.put(new Util.JoinGameMessage(name));
-            } else {
-                resetGame();
-            }
+            
+            new Thread(gameSender).start();
+            
         } catch (IOException ex) {
             ex.printStackTrace();
             this.destroy();
             this.stop();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
         }
     }
     
@@ -369,6 +366,13 @@ public class GameClient extends GameApplication implements ClientStateListener {
     @Override
     public void clientConnected(Client c) {
         System.out.println("Client connected succesfully !");
+        if (c.equals(gameConnection)) {
+            try {
+                outgoingGame.put(new Util.JoinGameMessage(userName));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
     }
 

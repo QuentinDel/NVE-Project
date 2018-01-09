@@ -181,7 +181,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
     @Override
     public void dropBall(int playerID) {
         Util.DropBallMessage dropMsg = new Util.DropBallMessage(playerID);
-        server.broadcast(Filters.in(activeConnections()), dropMsg);
+        server.broadcast(dropMsg);
         game.removeBallToPlayer(playerID, false);
     }
     
@@ -189,7 +189,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         game.removePlayer(playerID);
         
         PlayerDisconnectedMessage msg = new PlayerDisconnectedMessage(playerID);
-        server.broadcast(Filters.in(activeConnections()), msg);
+        server.broadcast(msg);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         }
         if (!players.isEmpty()) {
             UpdatePhysics msg = new UpdatePhysics(players);
-            server.broadcast(Filters.in(activeConnections()), msg);
+            server.broadcast(msg);
         }
 
     }
@@ -228,7 +228,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         if (ball != null) {
             BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
             UpdateBallPhysics msg = new UpdateBallPhysics(ball_phy);
-            server.broadcast(Filters.in(activeConnections()), msg);
+            server.broadcast(msg);
         }
     }
     
@@ -236,7 +236,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         int blueScore = game.getScore(Util.BLUE_TEAM_ID);
         int redScore = game.getScore(Util.RED_TEAM_ID);
         ScoreUpdateMessage msg = new ScoreUpdateMessage(blueScore, redScore);
-        server.broadcast(Filters.in(activeConnections()), msg);
+        server.broadcast(msg);
     }
     
     public int getPort(){
