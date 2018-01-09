@@ -344,6 +344,9 @@ public class GameClient extends GameApplication implements ClientStateListener {
     @Override
     public void dropBall(int playerID) {
         game.removeBallToPlayer(playerID, false);
+        if (playerID == myPlayerID) {
+            menu.setBallStatus("");
+        }
     }
 
     @Override

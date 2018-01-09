@@ -83,6 +83,7 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() throws Exception {
                     Player myPlayerNode = gameClient.game.addLocalPlayer(myPlayer);
+                    gameClient.menu.setTeam(myPlayer.getTeam());
                     gameClient.toGame();
                     gameClient.move.setPlayer(myPlayerNode);
                     return true;
@@ -168,6 +169,7 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.grabBall(msg.getId());
+                    gameClient.menu.setBallStatus(("You are currently holding the ball!"));
                     return true;
                 }
             });
@@ -177,6 +179,7 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.shootBall(msg.getPlayerId(), msg.getDirection(), msg.getPower());
+                    gameClient.menu.setBallStatus((""));
                     return true;
                 }
             });

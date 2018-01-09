@@ -218,6 +218,27 @@ public class Menu extends BaseAppState implements ScreenController {
         removeChatControls();
     }
     
+    public void setTeam(int team) {
+        String teamString = "";
+        if (team == 1) {
+            teamString = "red";
+        } else if (team == 2) {
+            teamString = "blue";
+        }
+        
+        Element niftyElement = nifty.getScreen("hud").findElementById("team");
+        if (niftyElement != null) {
+            niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(teamString));
+        }
+    }
+    
+    public void setBallStatus(String status) {
+        Element niftyElement = nifty.getScreen("hud").findElementById("ballStatus");
+        if (niftyElement != null) {
+            niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(status));
+        }
+    }
+    
     public void setScore(int teamID, int newScore) {
         switch (teamID) {
             case Util.BLUE_TEAM_ID:
@@ -449,7 +470,7 @@ public class Menu extends BaseAppState implements ScreenController {
                     height("8%");
                     panel(new PanelBuilder() {{ //Empty space
                         alignCenter();
-                        width("40%");
+                        width("35%");
                     }});
                     panel(new PanelBuilder() {{ //Red score
                         childLayoutCenter();
@@ -459,21 +480,45 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("100%");
                         control(new LabelBuilder("redscore", "  0  "));
                     }});
-                   
+                    panel(new PanelBuilder() {{ //Team
+                        childLayoutCenter();
+                        alignCenter();
+                        backgroundColor("#0009");
+                        width("10%");
+                        height("100%");
+                        control(new LabelBuilder("team", "TEAM NAME"));
+                    }});
                     panel(new PanelBuilder() {{ //Blue score
                         childLayoutCenter();
                         alignCenter();
                         backgroundColor("#00f9");
                         width("10%");
                         height("100%");
-                        control(new LabelBuilder("bluescore", "  0  "));
+                        control(new LabelBuilder("bluescore", " 0 "));
                     }});
                 }});
                 panel(new PanelBuilder() {{//Empty space
                     alignCenter();
                     height("84%");
                 }});
-                
+                panel(new PanelBuilder() {{ //Empty spaces
+                    childLayoutHorizontal();
+                    alignCenter();
+                    width("10%");
+                    height("8%");
+                    panel(new PanelBuilder() {{ //Empty space
+                        alignCenter();
+                        width("40%");
+                        height("100%");
+                    }});
+                    panel(new PanelBuilder() {{ //Ball status
+                        childLayoutCenter();
+                        alignCenter();
+                        width("20%");
+                        height("100%");
+                        control(new LabelBuilder("ballStatus", "                   You do not have the ball!                 "));
+                    }});
+                }});                
             }});
             layer(new LayerBuilder("chat") {{
                 childLayoutVertical();
