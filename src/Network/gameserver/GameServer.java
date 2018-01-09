@@ -27,6 +27,8 @@ import Network.Util.UpdatePhysics;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
+import com.jme3.network.Filters;
+import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
@@ -179,7 +181,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
     @Override
     public void dropBall(int playerID) {
         Util.DropBallMessage dropMsg = new Util.DropBallMessage(playerID);
-        server.broadcast(dropMsg);
+        server.broadcast(Filters.in(activeConnections()), dropMsg);
         game.removeBallToPlayer(playerID, false);
     }
     
@@ -187,7 +189,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         game.removePlayer(playerID);
         
         PlayerDisconnectedMessage msg = new PlayerDisconnectedMessage(playerID);
-        server.broadcast(msg);
+        server.broadcast(Filters.in(activeConnections()), msg);
     }
 
     @Override
@@ -216,7 +218,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         }
         if (!players.isEmpty()) {
             UpdatePhysics msg = new UpdatePhysics(players);
-            server.broadcast(msg);
+            server.broadcast(Filters.in(activeConnections()), msg);
         }
 
     }
@@ -226,7 +228,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         if (ball != null) {
             BallPhysics ball_phy = new BallPhysics(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity());
             UpdateBallPhysics msg = new UpdateBallPhysics(ball_phy);
-            server.broadcast(msg);
+            server.broadcast(Filters.in(activeConnections()), msg);
         }
     }
     
@@ -234,7 +236,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         int blueScore = game.getScore(Util.BLUE_TEAM_ID);
         int redScore = game.getScore(Util.RED_TEAM_ID);
         ScoreUpdateMessage msg = new ScoreUpdateMessage(blueScore, redScore);
-        server.broadcast(msg);
+        server.broadcast(Filters.in(activeConnections()), msg);
     }
     
     public int getPort(){
@@ -243,6 +245,16 @@ public class GameServer extends GameApplication implements ClientStateListener{
     
     public Game getGame(){
         return game;
+    }
+    
+    public ArrayList<HostedConnection> activeConnections() {
+        ArrayList<HostedConnection> conns = new ArrayList();
+        Enumeration<Integer> keys = connPlayerMap.keys();
+        while (keys.hasMoreElements()) {
+            Integer key = keys.nextElement();
+            conns.add(server.getConnection(key));
+        }
+        return conns;
     }
 
 }
