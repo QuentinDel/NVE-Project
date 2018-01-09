@@ -107,7 +107,7 @@ public class Game extends BaseAppState {
     private void setUpLight() {
         // We add light so we see the scene
         AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1.3f));
+        al.setColor(ColorRGBA.White.mult(0.5f));
         sapp.getRootNode().addLight(al);
 
         DirectionalLight dl = new DirectionalLight();
