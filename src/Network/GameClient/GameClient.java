@@ -379,7 +379,9 @@ public class GameClient extends GameApplication implements ClientStateListener {
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
         System.out.println("DisconnectInfo "+ info);
-        resetGame();
+        if (c.equals(gameConnection)) {
+            resetGame();
+        }
     }
     
      private void initAudio(){
