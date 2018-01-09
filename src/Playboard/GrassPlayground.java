@@ -313,47 +313,59 @@ public class GrassPlayground extends PlaygroundAbstract {
   
   
     public void initNinja(int nb){
-        Material mat = new Material(assetManager,  // Create new material and...
-             "Common/MatDefs/Light/Lighting.j3md"); // ... specify .j3md file to use (illuminated).
-        mat.setBoolean("UseMaterialColors",true);  // Set some parameters, e.g. blue.
-        mat.setColor("Ambient", ColorRGBA.Red);   // ... color of this object
-        mat.setColor("Diffuse", ColorRGBA.Red);   // ... color of light being reflected
         ninjaRed = new Node("ninjaRed");
         ninjaBlue = new Node("ninjaBlue");
         channelsAnimRed = new ArrayList<>();
         channelsAnimBlue = new ArrayList<>();
 
         for (int i = 0 ; i < nb ; i++){
-          Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-          ninja.scale(0.03f);
-          //ninja.rotate(0f, -180 * FastMath.DEG_TO_RAD, 0f);
-          ninja.setMaterial(mat);
-          channelsAnimRed.add(ninja.getControl(AnimControl.class).createChannel());
-          channelsAnimRed.get(i).setLoopMode(LoopMode.Loop);
-          channelsAnimRed.get(i).setAnim("Idle2");
-          ninja.setLocalTranslation(0.25f * BOARD_LENGTH + i * BOARD_LENGTH/20, 0, BOARD_WIDTH * 1.2f);
-          ninjaRed.attachChild(ninja);
+            Material mat = new Material(assetManager,  // Create new material and...
+               "Common/MatDefs/Light/Lighting.j3md"); // ... specify .j3md file to use (illuminated).
+            mat.setBoolean("UseMaterialColors",true);  // Set some parameters, e.g. blue.
+            mat.setColor("Ambient", ColorRGBA.Red);   // ... color of this object
+            mat.setColor("Diffuse", ColorRGBA.Red);   // ... color of light being reflected
+            Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+            ninja.scale(0.03f);
+            //ninja.rotate(0f, -180 * FastMath.DEG_TO_RAD, 0f);
+            ninja.setMaterial(mat);
+            channelsAnimRed.add(ninja.getControl(AnimControl.class).createChannel());
+            channelsAnimRed.get(i).setLoopMode(LoopMode.Loop);
+            channelsAnimRed.get(i).setAnim("Idle2");
+            ninja.setLocalTranslation(0.25f * BOARD_LENGTH + i * BOARD_LENGTH/20, 0, BOARD_WIDTH * 1.2f);
+            ninjaRed.attachChild(ninja);
         }
       
-        ninjaBlue = ninjaRed.clone(true);
-    
-        mat.setColor("Ambient", ColorRGBA.Blue);   // ... color of this object
-        mat.setColor("Diffuse", ColorRGBA.Blue);   // ... color of light being reflected
-        for (Spatial nin : ninjaBlue.getChildren()){
-
-            channelsAnimBlue.add(nin.getControl(AnimControl.class).createChannel());
+        //ninjaBlue = ninjaRed.clone(true);
+        for (int i = 0 ; i < nb ; i++){
+            Material blueMat = new Material(assetManager,  // Create new material and...
+               "Common/MatDefs/Light/Lighting.j3md"); // ... specify .j3md file to use (illuminated).
+            blueMat.setBoolean("UseMaterialColors",true);  // Set some parameters, e.g. blue.
+            blueMat.setColor("Ambient", ColorRGBA.Blue);   // ... color of this object
+            blueMat.setColor("Diffuse", ColorRGBA.Blue);   // ... color of light being reflected
+            Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+            ninja.scale(0.03f);
+            //ninja.rotate(0f, -180 * FastMath.DEG_TO_RAD, 0f);
+            ninja.setMaterial(blueMat);
+            channelsAnimBlue.add(ninja.getControl(AnimControl.class).createChannel());
             channelsAnimBlue.get(channelsAnimBlue.size()-1).setLoopMode(LoopMode.Loop);
             channelsAnimBlue.get(channelsAnimBlue.size()-1).setAnim("Idle2");
+            ninja.setLocalTranslation(0.25f * BOARD_LENGTH + i * BOARD_LENGTH/20, 0, BOARD_WIDTH * 1.2f);
+            ninjaBlue.attachChild(ninja);
         }
-      
-      ninjaBlue.rotate(0f, 180 * FastMath.DEG_TO_RAD, 0f);
+        ninjaBlue.rotate(0f, 180 * FastMath.DEG_TO_RAD, 0f);
     }
     
     public void animateHappyNinja(int colorTeam){
+        ArrayList<AnimChannel> channelAnimTeam = channelsAnimRed;
         if(colorTeam == Util.BLUE_TEAM_ID){
-            for(AnimChannel chan : channelsAnimBlue){
-               chan.setAnim("Jump");
-            }
+            channelAnimTeam = channelsAnimBlue;
+        }
+        
+        for(AnimChannel chan : channelAnimTeam){
+            chan.setAnim("Jump");
+        }
+        for(AnimChannel chan : channelAnimTeam){
+           chan.setAnim("Idle2", 1f);
         }
     }
 }

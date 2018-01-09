@@ -317,6 +317,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void onGoal(int teamID) {
         game.resetBall();
         audioGoal.playInstance();
+        game.animHappyTeam(teamID);
     }
     
     @Override

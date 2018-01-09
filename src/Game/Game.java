@@ -98,7 +98,7 @@ public class Game extends BaseAppState {
         sapp.getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         sapp.getFlyByCamera().setMoveSpeed(0);
         sapp.getCamera().setLocation(new Vector3f(-100, 30, -100));
-        sapp.getCamera().lookAt(new Vector3f(180, -45, 0), sapp.getCamera().getUp());
+        sapp.getCamera().lookAt(new Vector3f(180, -45, 0), new Vector3f(0, 1, 0));
         setUpLight();
         initLevel();
         addBall();
@@ -409,5 +409,9 @@ public class Game extends BaseAppState {
 
     public BulletAppState getAppState() {
         return bulletAppState;
+    }
+
+    public void animHappyTeam(int teamID) {
+        playground.animateHappyNinja(teamID);
     }
 }
