@@ -398,4 +398,8 @@ public class Game extends BaseAppState {
     public BulletAppState getAppState() {
         return bulletAppState;
     }
+
+    public void animHappyTeam(int teamID) {
+        playground.animateHappyNinja(teamID);
+    }
 }
