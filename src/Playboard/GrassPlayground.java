@@ -356,10 +356,16 @@ public class GrassPlayground extends PlaygroundAbstract {
     }
     
     public void animateHappyNinja(int colorTeam){
+        ArrayList<AnimChannel> channelAnimTeam = channelsAnimRed;
         if(colorTeam == Util.BLUE_TEAM_ID){
-            for(AnimChannel chan : channelsAnimBlue){
-               chan.setAnim("Jump");
-            }
+            channelAnimTeam = channelsAnimBlue;
+        }
+        
+        for(AnimChannel chan : channelAnimTeam){
+            chan.setAnim("Jump");
+        }
+        for(AnimChannel chan : channelAnimTeam){
+           chan.setAnim("Idle2", 1f);
         }
     }
 }
