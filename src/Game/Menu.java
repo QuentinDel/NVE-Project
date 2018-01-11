@@ -49,6 +49,8 @@ public class Menu extends BaseAppState implements ScreenController {
     private GameServerLite currentServer;
     private String playerName = "PlayerName";
     
+    private int loadBarLength = 40;
+    
     @Override
     public void initialize(Application app) {
         System.out.println("Menu: initialize");
@@ -216,6 +218,28 @@ public class Menu extends BaseAppState implements ScreenController {
         sapp.getInputManager().setCursorVisible(true);
         nifty.gotoScreen("pause");
         removeChatControls();
+    }
+    
+    public void setLoadBar(float power, float maxPower) {
+        Element niftyElement = nifty.getScreen("hud").findElementById("loadBar");
+        if (niftyElement != null) {
+            float percentage = power/maxPower;
+            int markers = (int)Math.floor(loadBarLength*percentage);
+            String powerBar;
+            if (markers <= 0) {
+                powerBar = chars("-", loadBarLength);
+            } else {
+                powerBar = chars("-", markers-1) + chars("!", 1) + chars("-", loadBarLength-markers);
+            }
+            niftyElement.getRenderer(TextRenderer.class).setText(powerBar);
+        }
+    }
+    
+    private String chars(String character, int number) {
+        if (number <= 0) {
+            return "";
+        }
+        return new String(new char[number]).replace("\0", character);
     }
     
     public void setTeam(int team) {
@@ -499,7 +523,21 @@ public class Menu extends BaseAppState implements ScreenController {
                 }});
                 panel(new PanelBuilder() {{//Empty space
                     alignCenter();
-                    height("84%");
+                    height("76%");
+                }});
+                panel(new PanelBuilder() {{ //Empty spaces
+                    childLayoutCenter();
+                    alignCenter();
+                    width("100%");
+                    height("8%");
+                    panel(new PanelBuilder() {{ //Ball status
+                        childLayoutCenter();
+                        backgroundColor("#0009");
+                        alignCenter();
+                        width("10%");
+                        height("50%");
+                        control(new LabelBuilder("loadBar", chars("-", loadBarLength)));
+                    }});
                 }});
                 panel(new PanelBuilder() {{ //Empty spaces
                     childLayoutHorizontal();
@@ -518,7 +556,7 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("100%");
                         control(new LabelBuilder("ballStatus", "                   You do not have the ball!                 "));
                     }});
-                }});                
+                }});
             }});
             layer(new LayerBuilder("chat") {{
                 childLayoutVertical();

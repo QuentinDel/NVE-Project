@@ -124,6 +124,7 @@ public class PlayerMovement extends BaseAppState {
                if (powerShoot > MAXPOWERSHOOT) {
                    powerShoot = MAXPOWERSHOOT;
                }
+               sapp.getStateManager().getState(Menu.class).setLoadBar(powerShoot, 1);
             }
         }
     };
@@ -160,6 +161,7 @@ public class PlayerMovement extends BaseAppState {
             } else if (binding.equals("LoadFire") && !isPressed) {
                 sapp.queueGameServerMessage(new Util.ShootBallMessage(playerNode.getId(), sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
                 powerShoot = 0f;
+                sapp.getStateManager().getState(Menu.class).setLoadBar(powerShoot, 1);
             } else if (binding.equals("Pause") && isPressed) {
                 sapp.pause();
             } else if (binding.equals("Attack") && isPressed) {
