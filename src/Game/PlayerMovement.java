@@ -121,6 +121,9 @@ public class PlayerMovement extends BaseAppState {
         public void onAnalog(String name, float value, float tpf) {
              if (name.equals("LoadFire") && powerShoot < 1) {
                powerShoot += tpf;
+               if (powerShoot > MAXPOWERSHOOT) {
+                   powerShoot = MAXPOWERSHOOT;
+               }
             }
         }
     };
@@ -156,7 +159,7 @@ public class PlayerMovement extends BaseAppState {
                 }
             } else if (binding.equals("LoadFire") && !isPressed) {
                 sapp.queueGameServerMessage(new Util.ShootBallMessage(playerNode.getId(), sapp.getCamera().getDirection(), powerShoot * MAXPOWERSHOOT));
-                powerShoot = 0;
+                powerShoot = 0f;
             } else if (binding.equals("Pause") && isPressed) {
                 sapp.pause();
             } else if (binding.equals("Attack") && isPressed) {
