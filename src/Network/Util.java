@@ -639,15 +639,21 @@ public class Util {
     @Serializable
     public static class ChatMessage extends MyAbstractMessage {
         private String message;
+        private String player;
         
         public ChatMessage() {}
         
-        public ChatMessage(String message) {
+        public ChatMessage(String message, String playerName) {
             this.message = message;
+            this.player = playerName;
         }
         
         public String getMessage() {
             return this.message;
+        }
+        
+        public String getPlayer() {
+            return this.player;
         }
     }
     
