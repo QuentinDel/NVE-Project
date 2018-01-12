@@ -13,8 +13,18 @@ import java.util.Enumeration;
 /**
  * 
  * This PhysicsTickListener handles the converging of predicted values for players and the ball.
+ * In each physicsTick, we move the actual values toward the predicted ones, the amount is dependent on the convergence factor
+ * We also calculate the predicted values for the next physicstick.
+ * Only the position of the players is predicted, velocity and direction of players are the result of human interaction and are impossible to predict
+ * (Note that velocity for players is only the players movement controls, it does not affect gravity which we let the inbuilt-physics handle)
+ * 
+ * For the ball we do not predict velocity and angular velocity as they are calculated by the inbuilt-physics.
  * 
  * @author Rickard
+ * implementation, discussion
+ * 
+ * @author Quentin, Henrik
+ * discussion
  */
 public class ConvergenceTickListener implements PhysicsTickListener {
     

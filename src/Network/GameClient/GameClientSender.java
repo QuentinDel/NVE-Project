@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This Runnable handles the sending of messages from gameClient to gameServer.
+ * In the case of movementmessages, they are aggregated to save bandwidth
  *
  * @author Rickard
  * Implementation,

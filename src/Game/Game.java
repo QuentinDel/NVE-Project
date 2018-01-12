@@ -32,6 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * This appstate keeps track of the current state of the game; positions/velocities of players/ball, etc.
  * It does NOT contain any game logic for updating positions or such, as those things are handles separately by physicsControls
  * 
+ * The base setup of the physics, the players and the ball is based on the "Hello Collision" and "Hello Physics" examples from the JME3 wiki/documentation pages
+ * It has since then been changed and adapted to fit our own purposes, such as the additions of ghostControls, Collision groups, splitting the level into several models, etc.
+ * 
  * @author Rickard
  * Physics setup, loading of level
  * 

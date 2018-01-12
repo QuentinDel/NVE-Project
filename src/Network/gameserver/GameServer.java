@@ -59,6 +59,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * 
  * @author Quentin
  * Discussion
+ * bugfixes
  * 
  */
 public class GameServer extends GameApplication implements ClientStateListener{

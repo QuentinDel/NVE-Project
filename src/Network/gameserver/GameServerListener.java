@@ -7,16 +7,13 @@ package Network.gameserver;
 
 import Game.AttackControl;
 import Game.Ball;
-import Game.BallControl;
 import Game.Game;
 import Game.GrabControl;
 import Game.Player;
 import Network.Util;
 import Network.Util.AttackMessage;
 import Network.Util.BallInitInformation;
-import Network.Util.BallPhysics;
 import Network.Util.ChatMessage;
-import Network.Util.DropBallMessage;
 import Network.Util.GameConfigurationMessage;
 import Network.Util.GrabBallMessage;
 import Network.Util.JoinAckMessage;
@@ -25,10 +22,7 @@ import Network.Util.JumpMessage;
 import Network.Util.NewPlayerMessage;
 import Network.Util.PlayerLite;
 import Network.Util.PlayerMovementMessage;
-import Network.Util.ShootBallMessage;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Filters;
@@ -43,7 +37,7 @@ import java.util.Enumeration;
  * Lisens to packets from the gameClients
  * 
  * @author Henrik, Quentin, Rickard
- * Discussion, implementation
+ * Discussion, implementation, bugfixes
  */
 public class GameServerListener implements MessageListener<HostedConnection> {
     private Util.BiMap<Integer, Player> connPlayerMap;

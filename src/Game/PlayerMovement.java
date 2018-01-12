@@ -25,8 +25,10 @@ import com.jme3.math.Vector3f;
 
 /**
  *
- * Handles input related to the local player
- * This class also informs the gameclient to queue movementmessages
+ * Handles input related to the local player.
+ * This class also informs the gameclient to queue movementmessages.
+ * 
+ * The basic movement of the player is based on the "Walking Character" example from the JME3 wiki/documentation pages
  * 
  * @author Rickard
  * Implementation,

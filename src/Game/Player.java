@@ -38,6 +38,9 @@ import com.jme3.system.AppSettings;
  * 
  * @author Quentin
  * sound and animations, ballcatching
+ * 
+ * @author Rickard
+ * prediction
  */
 public class Player extends Node{
     private int id;

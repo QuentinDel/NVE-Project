@@ -5,7 +5,6 @@
  */
 package Game;
 
-import Network.GameApplication;
 import Network.gameserver.GameServer;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
@@ -14,15 +13,14 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.network.Message;
 import com.jme3.network.Server;
-import java.util.concurrent.Callable;
 
 /**
  * 
- * This GhostControl detects collisions with the Goals in the level
- * After a collision with a goal is detected, remove the ghostControl and the PhysicsTickListener
- * from the physics space to prevent multiple collision detections
+ * This GhostControl is a one-time detection of collisions with players for attacks
+ * If a there is a collision with a player that owns a ball, that player is attacked and forced to drop it
+ * Afterwards, even if there was no collisions, this PhysicsTickListener removes itself from the physicsspace and as a listener
  * 
- * @author Rickard
+ * @author Henrik
  */
 public class AttackControl extends GhostControl implements PhysicsTickListener {
     
