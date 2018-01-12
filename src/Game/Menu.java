@@ -352,7 +352,7 @@ public class Menu extends BaseAppState implements ScreenController {
                     height("15%");
                     width("75%");
                     style("nifty-panel-red");
-                    control(new LabelBuilder("title", "Supraball ripoff"));
+                    control(new LabelBuilder("title", "Ninja Supraball"));
                 }});
                 panel(new PanelBuilder() {{ //Serverbrowser panel
                     childLayoutCenter();
@@ -367,8 +367,8 @@ public class Menu extends BaseAppState implements ScreenController {
                         height("80%");
                         panel(new PanelBuilder() {{
                             childLayoutCenter();
-                            height("100%");
-                            width("80%");
+                            height("80%");
+                            width("100%");
                             control(new ListBoxBuilder("serverbrowser") {{ //serverbrowser
                                 displayItems(15);
                                 width("100%");
