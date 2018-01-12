@@ -82,7 +82,8 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             Ball ball = game.getBall();
             int blueScore = game.getScore(Util.BLUE_TEAM_ID);
             int redScore = game.getScore(Util.RED_TEAM_ID);
-            BallInitInformation ball_phys = new BallInitInformation(ball.getPosition(), ball.getVelocity(), ball.getAngularVelocity(), ball.getIsOwned(), ball.getOwner());
+            BallInitInformation ball_phys = new BallInitInformation(ball.getPosition(),ball.getVelocity(),
+                    ball.getAngularVelocity(), ball.getIsOwned(), ball.getOwner());
             GameConfigurationMessage confMsg = new GameConfigurationMessage(players, ball_phys, blueScore, redScore);
             confMsg.setReliable(true);
             server.broadcast(Filters.equalTo(c), confMsg);
@@ -95,7 +96,8 @@ public class GameServerListener implements MessageListener<HostedConnection> {
                 Player player = connPlayerMap.get(c.getId());
                 if (player.getTeam() != 0) {
                     //The player has already joined a team, do nothing.
-                    //If we wanted to allow players to switch teams, we would need to remove the current player from the game, and spawn a new one
+                    //If we wanted to allow players to switch teams, we would need to remove
+                    //the current player from the game, and spawn a new one
                     return;
                 }
                 if (team == 1 || team == 2) {
@@ -120,7 +122,6 @@ public class GameServerListener implements MessageListener<HostedConnection> {
 
             }
         } else if (m instanceof PlayerMovementMessage) {
-            // Some checks needed here maybe?
             final PlayerMovementMessage msg = (PlayerMovementMessage) m;
             Vector3f velocity = msg.getVelocity();
             Vector3f viewDir = msg.getViewDirection();
@@ -142,7 +143,6 @@ public class GameServerListener implements MessageListener<HostedConnection> {
             if (ball.getIsOwned()) {
                 //ball is owned by someone, do nothing
             } else {
-                //player.updateCatchZone(msg.getLocation(), msg.getDirection());
                 GrabControl grab = new GrabControl(player.getCollisionShape(), server, gameServer, player, msg);
                 grab.setPhysicsLocation(msg.getLocation());
                 grab.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);

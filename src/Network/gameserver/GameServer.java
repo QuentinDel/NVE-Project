@@ -119,7 +119,6 @@ public class GameServer extends GameApplication implements ClientStateListener{
         /* add game info generator */
         gameInfoGen = new GameInformationGenerator(this, outgoingAuth, connPlayerMap);
         new Thread(gameInfoGen).start();
-        // TODO: add auth listener (if we need one?)
 
         /* add connection listener for clients */
         server.addConnectionListener(new ClientConnectionListener(connPlayerMap, this));
