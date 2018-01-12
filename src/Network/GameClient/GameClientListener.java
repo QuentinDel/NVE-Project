@@ -169,7 +169,6 @@ public class GameClientListener implements MessageListener<Client>{
                 @Override
                 public Object call() {
                     gameClient.grabBall(msg.getId());
-                    gameClient.menu.setBallStatus(("You are currently holding the ball!"));
                     return true;
                 }
             });
