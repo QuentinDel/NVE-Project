@@ -205,7 +205,7 @@ public class GameClientListener implements MessageListener<Client>{
             gameClient.enqueue(new Callable() {
                 @Override
                 public Object call() {
-                    gameClient.addChatMessage(msg.getMessage());
+                    gameClient.addChatMessage(msg.getPlayer() + ": " + msg.getMessage());
                     return true;
                 }
             });

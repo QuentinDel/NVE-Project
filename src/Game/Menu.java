@@ -107,12 +107,11 @@ public class Menu extends BaseAppState implements ScreenController {
 
                 TextField input = nifty.getCurrentScreen().findNiftyControl("chatMessage", TextField.class);
                 String message = input.getRealText();
-                message = playerName + ": " + message;
                 input.setText("");
                 input.disable();
                 ListBox<String> chatBox = (ListBox<String>) nifty.getCurrentScreen().findNiftyControl("chatBox", ListBox.class);
                 if (!message.equals("")) {
-                    sapp.queueGameServerMessage(new ChatMessage(message));
+                    sapp.queueGameServerMessage(new ChatMessage(message, playerName));
                 }
             }
         }
