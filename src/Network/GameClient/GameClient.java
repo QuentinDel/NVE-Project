@@ -325,7 +325,7 @@ public class GameClient extends GameApplication implements ClientStateListener {
     public void grabBall(int playerID) {
         game.setBallToPlayer(playerID);
         if (playerID == myPlayerID) {
-            gameClient.menu.setBallStatus(("You are currently holding the ball!"));
+            menu.setBallStatus(("You are currently holding the ball!"));
         }
         move.insertLoadBar();
     }
