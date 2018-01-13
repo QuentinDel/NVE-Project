@@ -153,7 +153,7 @@ public class GameServer extends GameApplication implements ClientStateListener{
         scoreUpdateTimer.scheduleAtFixedRate(
             new TimerTask() {
                 public void run() {
-                    ballUpdate();
+                    scoreUpdate();
                 }
             }, 0, SCORE_UPDATE_SEND_RATE);
     }
